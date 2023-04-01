@@ -1,0 +1,88 @@
+@startuml
+skinparam linetype ortho
+
+entity User {
+  id: UUID <<PK>>
+  name: String
+}
+
+entity UserPassword {
+  user_id: UUID <<PK>> <<FK>>
+  password_hash: String
+  salt: String
+  hash_algorithm: String
+}
+
+entity Email {
+    email: String <<PK>>
+    user_id: UUID <<FK>>
+}
+
+entity Book {
+    id: UUID <<PK>>
+}
+
+entity Author {
+    id: UUID <<PK>>
+    name: String
+}
+
+entity Edition {
+    id: String <<PK>>
+    book_id: UUID <<FK>>
+    title: String
+    published_at: Date
+}
+
+entity EditionPages {
+    edition_id: String <<PK>> <<FK>>
+    page_count: Integer
+}
+
+entity EditionMinutes {
+    edition_id: String <<PK>> <<FK>>
+    minutes: Integer
+}
+
+entity Recommendation {
+    id: UUID <<PK>>
+    user_id: UUID <<FK>>
+    book_id: UUID <<FK>>
+    created_at: Date
+    priority: Integer
+}
+
+entity Vote {
+    user_id: UUID <<FK>>
+    recommendation_id: UUID <<FK>>
+}
+
+entity Event {
+    id: UUID <<PK>>
+    date: Date
+    host_id: UUID <<FK>>
+    book_id: UUID <<FK>>
+}
+
+entity Participation {
+    user_id: UUID <<FK>>
+    event_id: UUID <<FK>>
+}
+
+User ||--|| UserPassword
+Edition }|--|| Book
+Author |o--|{ Book
+Author ||--|{ Edition
+User ||--|{ Email
+Edition ||--o{ EditionPages
+Edition ||--o{ EditionMinutes
+User ||--o{ Recommendation
+Book ||--|{ Recommendation
+Vote }|--|| Recommendation
+Vote }|--|| User
+Event ||--|| User : host_id == id
+Event ||--|| Book
+Participation |o--|| User
+Participation |o--|| Event
+
+@enduml
