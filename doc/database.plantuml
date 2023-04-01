@@ -4,6 +4,7 @@ skinparam linetype ortho
 entity User {
   id: UUID <<PK>>
   name: String
+  is_admin: Boolean
 }
 
 entity UserPassword {
