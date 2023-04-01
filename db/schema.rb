@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_01_055643) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_01_064658) do
   create_table "emails", primary_key: "email", id: :string, force: :cascade do |t|
     t.integer "user_id", null: false
     t.datetime "created_at", null: false
@@ -20,7 +20,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_01_055643) do
 
   create_table "passwords", force: :cascade do |t|
     t.integer "user_id"
-    t.string "password_hash", null: false
+    t.string "password_digest", null: false
     t.string "salt", null: false
     t.string "hash_algorithm", null: false
     t.datetime "created_at", null: false
