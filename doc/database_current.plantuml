@@ -1,0 +1,29 @@
+@startuml
+skinparam linetype ortho
+
+entity User {
+    id: string <<UUID>> <<PK>>
+    name: string
+    is_admin: boolean
+    created_at: datetime
+    updated_at: datetime
+}
+
+entity Password {
+    user_id: string <<UUID>> <<PK>> <<FK>>
+    password_digest: string
+    salt: string
+    hash_algorithm: string
+    created_at: datetime
+    updated_at: datetime
+}
+
+entity Email {
+    email: string <<PK>>
+    user_id: string <<UUID>> <<FK>>
+}
+
+User ||--|| Password
+User ||--|{ Email
+
+@enduml

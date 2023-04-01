@@ -49,6 +49,7 @@ entity Recommendation {
     id: UUID <<PK>>
     user_id: UUID <<FK>>
     book_id: UUID <<FK>>
+    text: string
     created_at: Date
     priority: Integer
 }
