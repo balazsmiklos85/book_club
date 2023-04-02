@@ -20,11 +20,29 @@ class UsersController < ApplicationController
 
   private
 
+  def assert_email_is_valid(email)
+    return if email =~ URI::MailTo::EMAIL_REGEXP
+
+    flash.now[:danger] = 'Invalid email address provided.'
+    render 'new'
+  end
+
+  def assert_password_is_matching(password, confirmation)
+    return if password == confirmation
+
+    flash.now[:danger] = 'The passwords do not match the confirmation.'
+    render 'new'
+  end
+
   def create_user
-    @user = User.new(name: params[:name], id: SecureRandom.uuid)
+    user = params[:user]
+    assert_email_is_valid user[:email]
+    assert_password_is_matching user[:password], user[:password_confirmation]
+
+    @user = User.new(name: user[:name], id: SecureRandom.uuid)
     random_salt = SecureRandom.hex 32
-    @password = Password.new(password: params[:password], salt: random_salt, hash_algorithm: 'bcrypt', user: @user)
-    @email = Email.new(email: params[:email], user: @user)
+    @password = Password.new(password: user[:password], salt: random_salt, hash_algorithm: 'bcrypt', user: @user)
+    @email = Email.new(email: user[:email], user: @user)
   end
 
   def save_user
