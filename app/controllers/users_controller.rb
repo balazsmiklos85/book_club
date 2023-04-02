@@ -21,7 +21,7 @@ class UsersController < ApplicationController
   private
 
   def create_user
-    @user = User.new(name: params[:name])
+    @user = User.new(name: params[:name], id: SecureRandom.uuid)
     random_salt = SecureRandom.hex 32
     @password = Password.new(password: params[:password], salt: random_salt, hash_algorithm: 'bcrypt', user: @user)
     @email = Email.new(email: params[:email], user: @user)
