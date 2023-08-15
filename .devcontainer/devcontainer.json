@@ -12,7 +12,8 @@
 				"GitHub.copilot",
 				"GitHub.vscode-pull-request-github",
 				"eamodio.gitlens",
-				"vmware.vscode-boot-dev-pack"
+				"vmware.vscode-boot-dev-pack",
+				"vscjava.vscode-gradle"
 			]
 		}
 	}
