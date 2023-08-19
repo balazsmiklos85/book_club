@@ -8,10 +8,11 @@ entity User {
 }
 
 entity UserPassword {
-  user_id: UUID <<PK>> <<FK>>
+  id: Integer <<PK>>
   password_hash: String
   salt: String
   hash_algorithm: String
+  user_id: UUID <<FK>>
 }
 
 entity Email {
