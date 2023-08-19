@@ -13,7 +13,9 @@
 				"GitHub.vscode-pull-request-github",
 				"eamodio.gitlens",
 				"vmware.vscode-boot-dev-pack",
-				"vscjava.vscode-gradle"
+				"vscjava.vscode-gradle",
+				"cweijan.vscode-postgresql-client2",
+				"ms-azuretools.vscode-docker"
 			]
 		}
 	}
