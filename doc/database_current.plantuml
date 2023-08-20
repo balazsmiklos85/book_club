@@ -2,28 +2,25 @@
 skinparam linetype ortho
 
 entity User {
-    id: string <<UUID>> <<PK>>
-    name: string
-    is_admin: boolean
-    created_at: datetime
-    updated_at: datetime
+  id: UUID <<PK>>
+  name: String
+  is_admin: Boolean
 }
 
-entity Password {
-    user_id: string <<UUID>> <<PK>> <<FK>>
-    password_digest: string
-    salt: string
-    hash_algorithm: string
-    created_at: datetime
-    updated_at: datetime
+entity UserPassword {
+  id: Integer <<PK>>
+  password_hash: String
+  salt: String
+  hash_algorithm: String
+  user_id: UUID <<FK>>
 }
 
 entity Email {
-    email: string <<PK>>
-    user_id: string <<UUID>> <<FK>>
+    email: String <<PK>>
+    user_id: UUID <<FK>>
 }
 
-User ||--|| Password
+User ||--|| UserPassword
 User ||--|{ Email
 
 @enduml
