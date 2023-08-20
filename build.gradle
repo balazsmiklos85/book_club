@@ -12,28 +12,29 @@ java {
 	sourceCompatibility = '17'
 }
 
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
 repositories {
 	mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.postgresql:postgresql'
-	implementation 'org.liquibase:liquibase-core:4.3.2'
-	implementation 'org.liquibase:liquibase-gradle-plugin:2.2.0'
+	implementation 'org.liquibase:liquibase-core'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'org.postgresql:postgresql'
+	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
-
-liquibase {
-	activities {
-		main {
-			changeLogFile 'changelog.xml'
-			url 'jdbc:h2:db/book_club;FILE_LOCK=NO'
-			username 'sa'
-			password ''
-		}
-	}
+	testImplementation 'org.springframework.security:spring-security-test'
 }
 
 tasks.named('test') {

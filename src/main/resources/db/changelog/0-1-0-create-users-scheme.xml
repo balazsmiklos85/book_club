@@ -1,0 +1,40 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+<changeSet id="0.1.0" author="Miklós Balázs">
+    <createTable tableName="users">
+      <column name="id" type="uuid">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="name" type="varchar(255)" />
+      <column name="is_admin" type="boolean">
+        <constraints nullable="false" />
+      </column>
+      <column name="external_id" type="int">
+        <constraints nullable="false" unique="true" />
+      </column>
+    </createTable>
+    <createTable tableName="user_passwords">
+      <column name="user_id" type="uuid">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="password_hash" type="varchar(255)">
+        <constraints nullable="false" />
+      </column>
+      <column name="salt" type="varchar(255)">
+        <constraints nullable="false" />
+      </column>
+      <column name="hash_algorithm" type="varchar(255)"> 
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+    <addForeignKeyConstraint baseTableName="user_passwords" baseColumnNames="user_id" constraintName="fk_password_user" referencedTableName="users" referencedColumnNames="id" />
+    <createTable tableName="emails">
+      <column name="email_address" type="varchar(255)">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="user_id" type="uuid">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+    <addForeignKeyConstraint baseTableName="emails" baseColumnNames="user_id" constraintName="fk_email_user" referencedTableName="users" referencedColumnNames="id" />
+  </changeSet>
+</databaseChangeLog>
