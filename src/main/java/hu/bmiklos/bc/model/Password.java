@@ -11,10 +11,10 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "user_password")
-public class UserPassword {
+public class Password {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "user_id")
     private UUID userId;
 
     @Column(name = "password_hash")
@@ -30,16 +30,16 @@ public class UserPassword {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public UserPassword() {}
+    public Password() {}
 
-    public UserPassword(UUID userId, String passwordHash, String salt, String hashAlgorithm) {
+    public Password(UUID userId, String passwordHash, String salt, String hashAlgorithm) {
         this.userId = userId;
         this.passwordHash = passwordHash;
         this.salt = salt;
         this.hashAlgorithm = hashAlgorithm;
     }
 
-    public UserPassword(User user, String passwordHash, String salt, String hashAlgorithm) {
+    public Password(User user, String passwordHash, String salt, String hashAlgorithm) {
         this(user.getId(), passwordHash, salt, hashAlgorithm);
     }
 

@@ -5,9 +5,10 @@ import org.springframework.stereotype.Service;
 
 import hu.bmiklos.bc.exception.UserRegistrationException;
 import hu.bmiklos.bc.model.User;
-import hu.bmiklos.bc.model.UserPassword;
+import hu.bmiklos.bc.model.Password;
 import hu.bmiklos.bc.repository.PasswordRepository;
 import hu.bmiklos.bc.repository.UserRepository;
+import hu.bmiklos.bc.service.security.SaltedPasswordEncoder;
 import hu.bmiklos.bc.util.SaltGenerator;
 
 @Service
@@ -15,12 +16,10 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordRepository passwordRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository, PasswordRepository passwordRepository) {
         this.userRepository = userRepository;
         this.passwordRepository = passwordRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     public void registerUser(User user, String password) {
@@ -28,10 +27,11 @@ public class UserService {
             throw new UserRegistrationException("External ID is already registered.");
         }
 
-        var salt = new SaltGenerator().generateSalt();
-        var passwordHash = passwordEncoder.encode(password + salt);
         userRepository.save(user);
-        var userPassword = new UserPassword(user, passwordHash, salt, "bcrypt");
+        var salt = new SaltGenerator().generateSalt();
+        var passwordHash = new SaltedPasswordEncoder("bcrypt", salt)
+            .encode(password) ;
+        var userPassword = new Password(user, passwordHash, salt, "bcrypt");
         passwordRepository.save(userPassword);
     }
 }

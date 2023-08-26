@@ -4,6 +4,6 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import hu.bmiklos.bc.model.UserPassword;
+import hu.bmiklos.bc.model.Password;
 
-public interface PasswordRepository extends JpaRepository<UserPassword, UUID> { }
+public interface PasswordRepository extends JpaRepository<Password, UUID> { }

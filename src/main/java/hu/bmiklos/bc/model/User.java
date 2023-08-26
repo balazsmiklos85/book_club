@@ -28,7 +28,7 @@ public class User {
     private int externalId;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private UserPassword userPassword;
+    private Password password;
 
     public User() {}
 
@@ -68,5 +68,13 @@ public class User {
 
     public void setExternalId(int externalId) {
         this.externalId = externalId;
+    }
+
+    public Password getPassword() {
+        return password;
+    }
+
+    public void setPassword(Password password) {
+        this.password = password;
     }
 }
