@@ -40,7 +40,7 @@ public class AlgorithmDependentAuthenticationProvider implements AuthenticationP
 
         if (authenticationSuccessful) {
             var principal = new EmailPrincipal(email.get());
-            return new UsernamePasswordAuthenticationToken(principal, password);
+            return new UsernamePasswordAuthenticationToken(principal, password, principal.getAuthorities());
         } else {
             throw new WrongPasswordException();
         }

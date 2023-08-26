@@ -1,13 +1,16 @@
 package hu.bmiklos.bc.service.security;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
+import static hu.bmiklos.bc.service.security.BookClubAuthority.BOOKCLUB_ADMIN;
+import static hu.bmiklos.bc.service.security.BookClubAuthority.BOOKCLUB_USER;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import hu.bmiklos.bc.model.Email;
+import hu.bmiklos.bc.model.Password;
+import hu.bmiklos.bc.model.User;
 
 public class EmailPrincipal implements UserDetails {
 
@@ -19,16 +22,20 @@ public class EmailPrincipal implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (email.getUser().isAdmin()) {
-            return Arrays.asList(() -> "ROLE_ADMIN");
-        } else {
-            return Collections.emptyList();
+        var result = new ArrayList<GrantedAuthority>(2);
+        result.add(BOOKCLUB_USER);
+        User user = email.getUser();
+        if (user.isAdmin()) {
+            result.add(BOOKCLUB_ADMIN);
         }
+        return result;
     }
 
     @Override
     public String getPassword() {
-        return email.getUser().getPassword().getPasswordHash();
+        User user = email.getUser();
+        Password password = user.getPassword();
+        return password.getPasswordHash();
     }
 
     @Override
