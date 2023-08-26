@@ -1,6 +1,8 @@
 package hu.bmiklos.bc.exception;
 
-public class WrongPasswordException extends RuntimeException {
+import org.springframework.security.core.AuthenticationException;
+
+public class WrongPasswordException extends AuthenticationException {
     public WrongPasswordException() {
         super("Authentication failed: wrong password.");
     }

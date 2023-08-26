@@ -1,7 +1,5 @@
 package hu.bmiklos.bc.service.security;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Optional;
 
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -13,8 +11,8 @@ import org.springframework.stereotype.Component;
 import hu.bmiklos.bc.exception.EmailAddressNotFoundException;
 import hu.bmiklos.bc.exception.WrongPasswordException;
 import hu.bmiklos.bc.model.Email;
-import hu.bmiklos.bc.model.User;
 import hu.bmiklos.bc.model.Password;
+import hu.bmiklos.bc.model.User;
 import hu.bmiklos.bc.repository.EmailRepository;
 
 @Component
