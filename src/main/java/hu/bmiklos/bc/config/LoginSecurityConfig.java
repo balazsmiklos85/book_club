@@ -18,7 +18,7 @@ public class LoginSecurityConfig {
         http.csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(
                         authorizeHttpRequests -> authorizeHttpRequests.requestMatchers("/login*").permitAll()
-                                .requestMatchers("/register*").permitAll()
+                                .requestMatchers("/registration*").permitAll()
                                 .requestMatchers("/admin/**").hasAuthority(BOOKCLUB_ADMIN.getAuthority())
                                 .anyRequest().hasAnyAuthority(BOOKCLUB_USER.getAuthority()))
                 .formLogin(login -> login.loginPage("/login")

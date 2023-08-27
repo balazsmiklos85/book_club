@@ -1,37 +1,72 @@
 package hu.bmiklos.bc.service;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import hu.bmiklos.bc.exception.UserRegistrationException;
 import hu.bmiklos.bc.model.User;
+import hu.bmiklos.bc.model.Email;
 import hu.bmiklos.bc.model.Password;
+import hu.bmiklos.bc.repository.EmailRepository;
 import hu.bmiklos.bc.repository.PasswordRepository;
 import hu.bmiklos.bc.repository.UserRepository;
 import hu.bmiklos.bc.service.security.SaltedPasswordEncoder;
 import hu.bmiklos.bc.util.SaltGenerator;
+import jakarta.transaction.Transactional;
 
 @Service
 public class UserService {
 
+    private final EmailRepository emailRepository;
     private final UserRepository userRepository;
     private final PasswordRepository passwordRepository;
 
-    public UserService(UserRepository userRepository, PasswordRepository passwordRepository) {
+    public UserService(UserRepository userRepository, PasswordRepository passwordRepository, EmailRepository emailRepository) {
         this.userRepository = userRepository;
         this.passwordRepository = passwordRepository;
+        this.emailRepository = emailRepository;
     }
 
-    public void registerUser(User user, String password) {
-        if (userRepository.findByExternalId(user.getExternalId()) != null) {
-            throw new UserRegistrationException("External ID is already registered.");
+    @Transactional
+    public void registerUser(String externalId, String name, String email, String confirmEmail, String password, String confirmPassword) {
+        if (!password.equals(confirmPassword)) {
+            throw new UserRegistrationException("The passwords do not match.");
         }
 
-        userRepository.save(user);
+        try {
+            User user = createUser(externalId, name);
+            creatPassword(user, password);
+            createEmail(user, email, confirmEmail);
+        } catch (NumberFormatException e) {
+            throw new UserRegistrationException("The external ID must be a number.");
+        }
+    }
+
+    private void createEmail(User user, String emailAddress, String confirmEmail) {
+        if (!emailAddress.equals(confirmEmail)) {
+            throw new UserRegistrationException("The email addresses do not match.");
+        }
+
+        if (emailRepository.findById(emailAddress).isPresent()) {
+            throw new UserRegistrationException("This email address is already registered.");
+        }
+        var email = new Email(emailAddress, user);
+        emailRepository.save(email);
+    }
+
+    private void creatPassword(User user, String password) {
         var salt = new SaltGenerator().generateSalt();
         var passwordHash = new SaltedPasswordEncoder("bcrypt", salt)
-            .encode(password) ;
+                .encode(password);
         var userPassword = new Password(user, passwordHash, salt, "bcrypt");
         passwordRepository.save(userPassword);
+    }
+
+    private User createUser(String externalId, String name) {
+        var extId = Integer.parseInt(externalId);
+        if (userRepository.findByExternalId(extId).isPresent()) {
+            throw new UserRegistrationException("This external ID is already registered.");
+        }
+        var user = new User(name, false, extId);
+        return userRepository.save(user);
     }
 }
