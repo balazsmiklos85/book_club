@@ -16,7 +16,8 @@
 				"vscjava.vscode-gradle",
 				"cweijan.vscode-postgresql-client2",
 				"ms-azuretools.vscode-docker",
-				"redhat.vscode-xml"
+				"redhat.vscode-xml",
+				"SonarSource.sonarlint-vscode"
 			]
 		}
 	}
