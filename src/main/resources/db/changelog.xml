@@ -5,4 +5,5 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <include file="changelog/0-1-0-create-users-scheme.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/0-1-1-rename_user_password_table.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
