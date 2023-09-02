@@ -3,6 +3,11 @@
 {
 	"name": "Java & PostgreSQL",
 	"dockerComposeFile": "docker-compose.yml",
+	"features": {
+		"ghcr.io/devcontainers/features/node:1": {
+			"version": "14.17.0"
+		}
+	},
 	"service": "app",
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 	"customizations": {
