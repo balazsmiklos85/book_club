@@ -1,4 +1,4 @@
-package hu.bmiklos.bc;
+package hu.bmiklos.bc.controller;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
