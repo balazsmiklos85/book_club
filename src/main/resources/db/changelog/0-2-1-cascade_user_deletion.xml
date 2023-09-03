@@ -1,0 +1,12 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                      http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+  <changeSet id="0.2.1" author="Miklós Balázs">
+      <dropForeignKeyConstraint baseTableName="user_password" constraintName="fk_password_user"/>
+      <addForeignKeyConstraint baseTableName="user_password" baseColumnNames="user_id" constraintName="fk_password_user" referencedTableName="users" referencedColumnNames="id" onDelete="CASCADE" onUpdate="CASCADE" />
+      <dropForeignKeyConstraint baseTableName="emails" constraintName="fk_email_user"/>      
+      <addForeignKeyConstraint baseTableName="emails" baseColumnNames="user_id" constraintName="fk_email_user" referencedTableName="users" referencedColumnNames="id" onDelete="CASCADE" onUpdate="CASCADE" />
+    </changeSet>
+</databaseChangeLog>

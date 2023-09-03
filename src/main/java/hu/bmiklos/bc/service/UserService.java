@@ -27,21 +27,26 @@ public class UserService {
     }
 
     @Transactional
-    public void registerUser(String externalId, String name, String email, String confirmEmail, String password, String confirmPassword) {
+    public void deleteUser(Email email) {
+        userRepository.delete(email.getUser());
+    }
+
+    @Transactional
+    public Email registerUser(String externalId, String name, String email, String confirmEmail, String password, String confirmPassword) {
         if (!password.equals(confirmPassword)) {
             throw new UserRegistrationException("The passwords do not match.");
         }
 
         try {
             User user = createUser(externalId, name);
-            creatPassword(user, password);
-            createEmail(user, email, confirmEmail);
+            createPassword(user, password);
+            return createEmail(user, email, confirmEmail);
         } catch (NumberFormatException e) {
             throw new UserRegistrationException("The external ID must be a number.");
         }
     }
 
-    private void createEmail(User user, String emailAddress, String confirmEmail) {
+    private Email createEmail(User user, String emailAddress, String confirmEmail) {
         if (!emailAddress.equals(confirmEmail)) {
             throw new UserRegistrationException("The email addresses do not match.");
         }
@@ -50,10 +55,10 @@ public class UserService {
             throw new UserRegistrationException("This email address is already registered.");
         }
         var email = new Email(emailAddress, user);
-        emailRepository.save(email);
+        return emailRepository.save(email);
     }
 
-    private void creatPassword(User user, String password) {
+    private void createPassword(User user, String password) {
         var salt = new SaltGenerator().generateSalt();
         var passwordHash = new SaltedPasswordEncoder("bcrypt", salt)
                 .encode(password);

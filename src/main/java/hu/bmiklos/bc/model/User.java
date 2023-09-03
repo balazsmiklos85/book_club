@@ -1,5 +1,6 @@
 package hu.bmiklos.bc.model;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
@@ -13,7 +14,9 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements Serializable {
+
+    private static final long serialVersionUID = -688746974752178530L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,7 +31,7 @@ public class User {
     private int externalId;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Password password;
+    private transient Password password;
 
     public User() {}
 

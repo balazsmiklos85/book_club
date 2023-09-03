@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import hu.bmiklos.bc.controller.dto.AddEmailRequest;
+import hu.bmiklos.bc.controller.dto.UpdatePasswordRequest;
 import hu.bmiklos.bc.service.UserService;
 
 import org.springframework.web.bind.annotation.PutMapping;
