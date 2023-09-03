@@ -1,4 +1,4 @@
-package hu.bmiklos.bc.controller;
+package hu.bmiklos.bc.controller.dto;
 
 public class RegistrationRequest {
     private String externalId;

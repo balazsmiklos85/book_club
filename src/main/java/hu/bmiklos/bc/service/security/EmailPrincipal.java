@@ -31,6 +31,10 @@ public class EmailPrincipal implements UserDetails {
         return result;
     }
 
+    public int getExternalId() {
+        return email.getUser().getExternalId();
+    }
+
     @Override
     public String getPassword() {
         User user = email.getUser();
@@ -41,6 +45,10 @@ public class EmailPrincipal implements UserDetails {
     @Override
     public String getUsername() {
         return email.getEmailAddress();
+    }
+
+    public User getUser() {
+        return email.getUser();
     }
 
     @Override

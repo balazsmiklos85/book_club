@@ -1,5 +1,7 @@
 package hu.bmiklos.bc.model;
 
+import java.io.Serializable;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -9,7 +11,8 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "emails")
-public class Email {
+public class Email implements Serializable {
+    private static final long serialVersionUID = 4126957909483700948L;
 
     @Id
     @Column(name = "email_address", length = 255)

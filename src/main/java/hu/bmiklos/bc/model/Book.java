@@ -24,7 +24,7 @@ public class Book {
     private String title;
 
     @Column(nullable = false, unique = true)
-    private String link;
+    private String url;
 
     @Column(nullable = false)
     private int recommenderExternalId;
@@ -34,10 +34,10 @@ public class Book {
 
     public Book() {}
 
-    public Book(String author, String title, String link, int recommenderExternalId, Instant recommendedAt) {
+    public Book(String author, String title, String url, int recommenderExternalId, Instant recommendedAt) {
         this.author = author;
         this.title = title;
-        this.link = link;
+        this.url = url;
         this.recommenderExternalId = recommenderExternalId;
         this.recommendedAt = recommendedAt;
     }
@@ -66,12 +66,12 @@ public class Book {
         this.title = title;
     }
 
-    public String getLink() {
-        return link;
+    public String getUrl() {
+        return url;
     }
 
-    public void setLink(String link) {
-        this.link = link;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public int getRecommenderExternalId() {
