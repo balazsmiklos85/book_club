@@ -1,5 +1,6 @@
 package hu.bmiklos.bc.model;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -11,7 +12,9 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "user_password")
-public class Password {
+public class Password implements Serializable {
+
+    private static final long serialVersionUID = -2679510096228680927L;
 
     @Id
     @Column(name = "user_id")
