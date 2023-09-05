@@ -5,6 +5,12 @@
 </head>
 <body>
 	<h1>Leaderboard</h1>
+
+	<ul th:each="book : ${books}">
+		<li>
+			<a th:href="${book.url}" th:text="${book.author} + ': ' + ${book.title}"></a>
+		</li>
+	</ul>
 	<button th:href="@{/book/new}" class="btn btn-primary">New Book</button>
 </body>
 </html>

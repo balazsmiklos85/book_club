@@ -27,10 +27,12 @@ import org.springframework.web.context.WebApplicationContext;
 
 import hu.bmiklos.bc.model.Book;
 import hu.bmiklos.bc.repository.BookRepository;
+import jakarta.transaction.Transactional;
 
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-integrationtest.properties")
 @AutoConfigureMockMvc
+@Transactional
 class BookControllerIntegrationTest extends IntegrationTestWithUser {
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -76,8 +78,5 @@ class BookControllerIntegrationTest extends IntegrationTestWithUser {
         assertEquals("Clean Code", book.getTitle(), "Book title is not saved correctly.");
         assertEquals("Robert C. Martin", book.getAuthor(), "Book author is not saved correctly.");
         assertEquals(-255832533, book.getRecommenderExternalId(), "Book recommender external ID is not saved correctly.");
-
-        bookRepository.delete(book);
-        deleteTestedUser();
     }
 }

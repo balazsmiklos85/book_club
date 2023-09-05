@@ -16,8 +16,4 @@ public abstract class IntegrationTestWithUser {
         testUser = userService.registerUser("" + externalId, name, email, email, password, password);
         return testUser;
     }
-
-    protected void deleteTestedUser() {
-        userService.deleteUser(testUser);
-    }
 }
