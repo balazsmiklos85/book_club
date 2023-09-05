@@ -31,7 +31,7 @@ public class User implements Serializable {
     private int externalId;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private transient Password password;
+    private Password password;
 
     public User() {}
 
