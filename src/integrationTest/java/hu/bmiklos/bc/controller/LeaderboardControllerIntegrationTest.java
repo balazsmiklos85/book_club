@@ -42,7 +42,7 @@ class LeaderboardControllerIntegrationTest extends IntegrationTestWithUser {
     void homePageCanAddNewBooks() throws Exception {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("<button href=\"/book/new\"")));
+                .andExpect(content().string(containsString("<a href=\"/book/new\"")));
     }
 
     @Test
