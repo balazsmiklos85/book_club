@@ -16,21 +16,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import hu.bmiklos.bc.controller.dto.CreateBookRequest;
 import hu.bmiklos.bc.model.Book;
-import hu.bmiklos.bc.service.BookService;
 import jakarta.transaction.Transactional;
 
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-integrationtest.properties")
 @AutoConfigureMockMvc
 @Transactional
-class LeaderboardControllerIntegrationTest extends IntegrationTestWithUser {
+class LeaderboardControllerIntegrationTest extends TestDataCreator {
     @Autowired
     private WebApplicationContext webApplicationContext;
-
-    @Autowired
-    private BookService bookService;
 
     private MockMvc mockMvc;
 
@@ -42,8 +37,8 @@ class LeaderboardControllerIntegrationTest extends IntegrationTestWithUser {
     @Test
     @WithMockUser(username = "695103999@test.hu", password = "password", authorities = { "ROLE_USER "})
     void hasVoteButtons() throws Exception {
-        createUserForTest(-695103999, "Test User", "695103999@test.hu", "password");
-        Book book = createBookToShow();
+        createUser(-695103999, "Test User", "695103999@test.hu", "password");
+        Book book = createBook();
 
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
@@ -63,19 +58,11 @@ class LeaderboardControllerIntegrationTest extends IntegrationTestWithUser {
     @Test
     @WithMockUser(username = "531406113@test.hu", password = "password", authorities = { "ROLE_USER "})
     void showsLeaderboard() throws Exception {
-        createUserForTest(-531406113, "Test User", "531406113@test.hu", "password");
-        createBookToShow();
+        createUser(-531406113, "Test User", "531406113@test.hu", "password");
+        createBook();
 
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("<a href=\"https://moly.hu/konyvek/robert-c-martin-clean-code\">Robert C. Martin: Clean Code</a>")));
-    }
-
-    private Book createBookToShow() {
-        var createBookRequest = new CreateBookRequest();
-        createBookRequest.setAuthor("Robert C. Martin");
-        createBookRequest.setTitle("Clean Code");
-        createBookRequest.setUrl("https://moly.hu/konyvek/robert-c-martin-clean-code");
-        return bookService.createBook(createBookRequest);
     }
 }
