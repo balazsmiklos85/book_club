@@ -22,7 +22,11 @@
 				"cweijan.vscode-postgresql-client2",
 				"ms-azuretools.vscode-docker",
 				"redhat.vscode-xml",
-				"SonarSource.sonarlint-vscode"
+				"SonarSource.sonarlint-vscode",
+				"vscjava.vscode-java-debug",
+				"vscjava.vscode-java-test",
+				"vscjava.vscode-java-dependency",
+				"redhat.java"
 			]
 		}
 	}

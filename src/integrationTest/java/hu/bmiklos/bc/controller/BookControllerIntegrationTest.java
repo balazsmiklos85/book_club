@@ -3,14 +3,12 @@ package hu.bmiklos.bc.controller;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.startsWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +31,7 @@ import jakarta.transaction.Transactional;
 @TestPropertySource(locations = "classpath:application-integrationtest.properties")
 @AutoConfigureMockMvc
 @Transactional
-class BookControllerIntegrationTest extends IntegrationTestWithUser {
+class BookControllerIntegrationTest extends TestDataCreator {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
@@ -61,7 +59,7 @@ class BookControllerIntegrationTest extends IntegrationTestWithUser {
     @Test
     @WithMockUser(username = "255832533@test.hu", password = "password", authorities = { "ROLE_USER "})
     void bookCreation() throws Exception {
-        createUserForTest(-255832533, "Test User", "255832533@test.hu", "password");
+        createUser(-255832533, "Test User", "255832533@test.hu", "password");
 
         mockMvc.perform(post("/book")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
