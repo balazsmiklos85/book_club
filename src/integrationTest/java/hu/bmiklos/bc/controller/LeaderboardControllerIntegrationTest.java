@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import hu.bmiklos.bc.controller.dto.CreateBookRequest;
+import hu.bmiklos.bc.model.Book;
 import hu.bmiklos.bc.service.BookService;
 import jakarta.transaction.Transactional;
 
@@ -39,6 +40,20 @@ class LeaderboardControllerIntegrationTest extends IntegrationTestWithUser {
     }
 
     @Test
+    @WithMockUser(username = "695103999@test.hu", password = "password", authorities = { "ROLE_USER "})
+    void hasVoteButtons() throws Exception {
+        createUserForTest(-695103999, "Test User", "695103999@test.hu", "password");
+        Book book = createBookToShow();
+
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("<form action=\"/vote\"")))
+                .andExpect(content().string(containsString("<input type=\"hidden\" name=\"_method\" value=\"put\" />")))
+                .andExpect(content().string(containsString("<input type=\"hidden\" value=\"" + book.getId() + "\" name=\"bookId\" />")))
+                .andExpect(content().string(containsString("<button type=\"submit\">")));
+    }
+
+    @Test
     void homePageCanAddNewBooks() throws Exception {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
@@ -49,16 +64,18 @@ class LeaderboardControllerIntegrationTest extends IntegrationTestWithUser {
     @WithMockUser(username = "531406113@test.hu", password = "password", authorities = { "ROLE_USER "})
     void showsLeaderboard() throws Exception {
         createUserForTest(-531406113, "Test User", "531406113@test.hu", "password");
-
-        var createBookRequest = new CreateBookRequest();
-        createBookRequest.setAuthor("Robert C. Martin");
-        createBookRequest.setTitle("Clean Code");
-        createBookRequest.setUrl("https://moly.hu/konyvek/robert-c-martin-clean-code");
-        bookService.createBook(createBookRequest);
-
+        createBookToShow();
 
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("<a href=\"https://moly.hu/konyvek/robert-c-martin-clean-code\">Robert C. Martin: Clean Code</a>")));
+    }
+
+    private Book createBookToShow() {
+        var createBookRequest = new CreateBookRequest();
+        createBookRequest.setAuthor("Robert C. Martin");
+        createBookRequest.setTitle("Clean Code");
+        createBookRequest.setUrl("https://moly.hu/konyvek/robert-c-martin-clean-code");
+        return bookService.createBook(createBookRequest);
     }
 }

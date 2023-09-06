@@ -8,10 +8,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "books")
+@NamedEntityGraph(name = "Book.recommenderInfo", attributeNodes = @NamedAttributeNode("recommender"))
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,6 +36,10 @@ public class Book {
 
     @Column(nullable = false)
     private Instant recommendedAt;
+
+    @OneToOne
+    @JoinColumn(name = "recommenderExternalId", referencedColumnName = "externalId", insertable = false, updatable = false)
+    private User recommender;
 
     public Book() {}
 
@@ -89,6 +98,12 @@ public class Book {
     public void setRecommendedAt(Instant recommendedAt) {
         this.recommendedAt = recommendedAt;
     }
-
     
+    public User getRecommender() {
+        return recommender;
+    }
+
+    public void setRecommender(User recommender) {
+        this.recommender = recommender;
+    }
 }

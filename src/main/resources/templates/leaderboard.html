@@ -1,15 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<title>Leaderboard</title>
 </head>
+
 <body>
 	<h1>Leaderboard</h1>
 	<ol>
 		<li th:each="book : ${books}">
-			<a th:href="${book.url}" th:text="${book.author} + ': ' + ${book.title}"></a>
+			<span>
+				<a th:href="${book.url}" th:text="${book.author} + ': ' + ${book.title}"></a>
+				<br />
+				<span><span>Recommender: </span><span th:text="${book?.recommender?.name}"></span></span>
+			</span>
+			<form th:action="@{/vote}" method="post" style="display: inline;">
+				<input type="hidden" name="_method" value="put" />
+				<input type="hidden" th:value="${book.id}" name="bookId" />
+				<button type="submit">👍 Vote</button>
+			</form>
+			<form th:action="@{/vote}" method="post" style="display: inline;">
+				<input type="hidden" name="_method" value="delete" />
+				<input type="hidden" th:value="${book.id}" name="bookId" />
+				<button type="submit">👎 Nope</button>
+			</form>
 		</li>
 	</ol>
 	<a href="/book/new">New book</a>
 </body>
+
 </html>
