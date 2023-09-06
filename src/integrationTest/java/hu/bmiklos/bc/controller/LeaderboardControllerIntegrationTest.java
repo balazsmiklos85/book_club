@@ -47,7 +47,7 @@ class LeaderboardControllerIntegrationTest extends IntegrationTestWithUser {
 
     @Test
     @WithMockUser(username = "531406113@test.hu", password = "password", authorities = { "ROLE_USER "})
-    void newBookForm() throws Exception {
+    void showsLeaderboard() throws Exception {
         createUserForTest(-531406113, "Test User", "531406113@test.hu", "password");
 
         var createBookRequest = new CreateBookRequest();
