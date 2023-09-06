@@ -43,7 +43,7 @@ class LeaderboardControllerIntegrationTest extends TestDataCreator {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("<form action=\"/vote\"")))
-                .andExpect(content().string(containsString("<input type=\"hidden\" name=\"_method\" value=\"put\" />")))
+                .andExpect(content().string(containsString("<input type=\"hidden\" name=\"method\" value=\"put\" />")))
                 .andExpect(content().string(containsString("<input type=\"hidden\" value=\"" + book.getId() + "\" name=\"bookId\" />")))
                 .andExpect(content().string(containsString("<button type=\"submit\">")));
     }
