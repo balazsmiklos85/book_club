@@ -41,7 +41,7 @@ class LeaderboardControllerIntegrationTest extends TestDataCreator {
     void adminHasNewEventForm() throws Exception {
         Email email = createUser(-1254112040, "Test Admin", "1254112040@test.hu", "password");
         setAdmin(email.getUser());
-        createBook();
+        createBook(email.getUser());
 
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
@@ -51,8 +51,8 @@ class LeaderboardControllerIntegrationTest extends TestDataCreator {
     @Test
     @WithMockUser(username = "695103999@test.hu", password = "password", authorities = { "ROLE_USER "})
     void hasVoteButtons() throws Exception {
-        createUser(-695103999, "Test User", "695103999@test.hu", "password");
-        Book book = createBook();
+        Email userEmail = createUser(-695103999, "Test User", "695103999@test.hu", "password");
+        Book book = createBook(userEmail.getUser());
 
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
@@ -63,17 +63,20 @@ class LeaderboardControllerIntegrationTest extends TestDataCreator {
     }
 
     @Test
+    @WithMockUser(username = "360919753@test.hu", password = "password", authorities = { "ROLE_USER "})
     void homePageCanAddNewBooks() throws Exception {
+        createUser(-360919753, "Test User", "360919753@test.hu", "password");
+
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("<a href=\"/book/new\"")));
+                .andExpect(content().string(containsString("<form action=\"/book/new\" method=\"get\"")));
     }
 
     @Test
     @WithMockUser(username = "531406113@test.hu", password = "password", authorities = { "ROLE_USER "})
     void showsLeaderboard() throws Exception {
-        createUser(-531406113, "Test User", "531406113@test.hu", "password");
-        createBook();
+        Email userEmail = createUser(-531406113, "Test User", "531406113@test.hu", "password");
+        createBook(userEmail.getUser());
 
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
@@ -83,8 +86,8 @@ class LeaderboardControllerIntegrationTest extends TestDataCreator {
     @Test
     @WithMockUser(username = "943409260@test.hu", password = "password")
     void userHasNoNewEventForm() throws Exception {
-        createUser(-943409260, "Test User", "943409260@test.hu", "password");
-        createBook();
+        Email userEmail = createUser(-943409260, "Test User", "943409260@test.hu", "password");
+        createBook(userEmail.getUser());
 
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())

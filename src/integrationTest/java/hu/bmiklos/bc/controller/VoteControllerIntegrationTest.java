@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import hu.bmiklos.bc.model.Book;
+import hu.bmiklos.bc.model.Email;
 import hu.bmiklos.bc.model.Vote;
 import hu.bmiklos.bc.service.VoteService;
 import jakarta.transaction.Transactional;
@@ -46,8 +47,8 @@ class VoteControllerIntegrationTest extends TestDataCreator {
     @Test
     @WithMockUser(username = "975032506@test.hu", password = "password", authorities = { "ROLE_USER "})
     void voteAndUnvote() throws Exception {
-        createUser(-975032506, "Test User", "975032506@test.hu", "password");
-        Book book = createBook();
+        Email userEmail = createUser(-975032506, "Test User", "975032506@test.hu", "password");
+        Book book = createBook(userEmail.getUser());
 
         mockMvc.perform(put("/vote")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)

@@ -18,12 +18,14 @@ public abstract class TestDataCreator {
     @Autowired
     private UserService userService;
     
-    protected Book createBook() {
+    protected Book createBook(User recommender) {
         var createBookRequest = new CreateBookRequest();
         createBookRequest.setAuthor("Robert C. Martin");
         createBookRequest.setTitle("Clean Code");
         createBookRequest.setUrl("https://moly.hu/konyvek/robert-c-martin-clean-code");
-        return bookService.createBook(createBookRequest);
+        Book result = bookService.createBook(createBookRequest);
+        result.setRecommender(recommender); // TODO should be set by book creation
+        return result;
     }
 
     protected Email createUser(int externalId, String name, String email, String password) {

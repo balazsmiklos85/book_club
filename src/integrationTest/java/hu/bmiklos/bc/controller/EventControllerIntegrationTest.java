@@ -39,8 +39,7 @@ class EventControllerIntegrationTest extends TestDataCreator {
     @WithMockUser(username = "319705020@test.hu", password = "password", authorities = { "ROLE_USER "})
     void eventFormShown() throws Exception {
         Email userEmail = createUser(-319705020, "Test User", "319705020@test.hu", "password");
-        Book book = createBook();
-        book.setRecommender(userEmail.getUser()); // TODO should be set by book creation
+        Book book = createBook(userEmail.getUser());
 
         mockMvc.perform(get("/event/new?bookId=" + book.getId()))
                 .andExpect(status().isOk())
