@@ -20,6 +20,8 @@ public class UserController {
     }
 
     @PostMapping("/registration")
+    // TODO Too many parameters. Create a DTO class for this.
+    // I think this method was declared like this, because the DTO did not pick up the parameters with snake case names. Try to not use snake case names in the template.
     public ModelAndView registration(@RequestParam("external_id") String externalId, @RequestParam String name, @RequestParam String email, @RequestParam("confirm_email") String confirmEmail, @RequestParam String password, @RequestParam("confirm_password") String confirmPassword) {
         userService.registerUser(externalId, name, email, confirmEmail, password, confirmPassword);
         return new ModelAndView("redirect:/login");
