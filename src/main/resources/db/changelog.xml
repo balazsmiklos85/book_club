@@ -8,4 +8,5 @@
     <include file="changelog/0-2-0-create_books_scheme.xml" relativeToChangelogFile="true" />
     <include file="changelog/0-2-1-cascade_user_deletion.xml" relativeToChangelogFile="true" />
     <include file="changelog/0-3-0-vote_scheme.xml" relativeToChangelogFile="true" />
+    <include file="changelog/0-4-0-event_scheme.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

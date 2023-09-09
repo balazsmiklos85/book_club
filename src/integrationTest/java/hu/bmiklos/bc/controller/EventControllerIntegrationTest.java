@@ -10,11 +10,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import hu.bmiklos.bc.model.Book;
+import hu.bmiklos.bc.model.Email;
 import jakarta.transaction.Transactional;
 
 @SpringBootTest
@@ -33,8 +36,13 @@ class EventControllerIntegrationTest extends TestDataCreator {
     }
     
     @Test
+    @WithMockUser(username = "319705020@test.hu", password = "password", authorities = { "ROLE_USER "})
     void eventFormShown() throws Exception {
-        mockMvc.perform(get("/event/new"))
+        Email userEmail = createUser(-319705020, "Test User", "319705020@test.hu", "password");
+        Book book = createBook();
+        book.setRecommender(userEmail.getUser()); // TODO should be set by book creation
+
+        mockMvc.perform(get("/event/new?bookId=" + book.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("<form action=\"/event\" method=\"post\">")));
     }
