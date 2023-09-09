@@ -5,13 +5,19 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 
 public class DateTimeMapper {
     private DateTimeMapper() {
     }
 
     public static Instant toInstant(String date, String time) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+            .append(DateTimeFormatter.ISO_DATE)
+            .appendLiteral(' ')
+            .append(DateTimeFormatter.ISO_TIME)
+            .toFormatter();
+
         LocalDateTime dateTime = LocalDateTime.parse(date + " " + time, formatter);
         return dateTime.toInstant(ZoneOffset.UTC);
     }
