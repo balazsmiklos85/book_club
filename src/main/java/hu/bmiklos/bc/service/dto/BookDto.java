@@ -1,6 +1,7 @@
 package hu.bmiklos.bc.service.dto;
 
 import java.time.Instant;
+import java.util.Objects;
 import java.util.UUID;
 
 public class BookDto {
@@ -42,5 +43,22 @@ public class BookDto {
 
     public UserDto getRecommender() {
         return recommender;
-    }    
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, author, title, url, recommendedAt, recommender);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!(obj instanceof BookDto))
+            return false;
+        BookDto other = (BookDto) obj;
+        return Objects.equals(id, other.id) && Objects.equals(author, other.author)
+                && Objects.equals(title, other.title) && Objects.equals(url, other.url)
+                && Objects.equals(recommendedAt, other.recommendedAt) && Objects.equals(recommender, other.recommender);
+    }
 }
