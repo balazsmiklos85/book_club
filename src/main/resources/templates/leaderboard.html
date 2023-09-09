@@ -24,6 +24,10 @@
 				<input type="hidden" th:value="${book.id}" name="bookId" />
 				<button type="submit">👎 Nope</button>
 			</form>
+			<form th:action="@{/event/new}" method="get" style="display: inline;" th:if="${isAdmin}">
+				<input type="hidden" th:value="${book.id}" name="bookId" />
+				<button type="submit">🗓️ Schedule</button>
+			</form>
 		</li>
 	</ol>
 	<a href="/book/new">New book</a>

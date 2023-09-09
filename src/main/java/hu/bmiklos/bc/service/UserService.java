@@ -1,5 +1,7 @@
 package hu.bmiklos.bc.service;
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 
 import hu.bmiklos.bc.exception.UserRegistrationException;
@@ -44,6 +46,14 @@ public class UserService {
         } catch (NumberFormatException e) {
             throw new UserRegistrationException("The external ID must be a number.");
         }
+    }
+
+    @Transactional
+    public void setAsAdmin(UUID id) {
+        var user = userRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("User not found."));
+        user.setAdmin(true);
+        userRepository.saveAndFlush(user);
     }
 
     private Email createEmail(User user, String emailAddress, String confirmEmail) {

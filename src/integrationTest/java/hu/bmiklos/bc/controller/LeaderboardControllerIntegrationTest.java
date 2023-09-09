@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import hu.bmiklos.bc.model.Book;
+import hu.bmiklos.bc.model.Email;
 import jakarta.transaction.Transactional;
 
 @SpringBootTest
@@ -37,7 +38,8 @@ class LeaderboardControllerIntegrationTest extends TestDataCreator {
     @Test
     @WithMockUser(username = "1254112040@test.hu", password = "password", authorities = { "ROLE_USER ", "ROLE_ADMIN"})
     void adminHasNewEventForm() throws Exception {
-        createUser(-1254112040, "Test Admin", "1254112040@test.hu", "password");
+        Email email = createUser(-1254112040, "Test Admin", "1254112040@test.hu", "password");
+        setAdmin(email.getUser());
         createBook();
 
         mockMvc.perform(get("/"))
