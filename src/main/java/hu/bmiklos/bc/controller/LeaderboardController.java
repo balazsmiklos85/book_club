@@ -7,22 +7,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import hu.bmiklos.bc.model.Book;
-import hu.bmiklos.bc.repository.BookRepository;
 import hu.bmiklos.bc.service.ActiveUserService;
+import hu.bmiklos.bc.service.BookSortingService;
+import hu.bmiklos.bc.service.dto.BookDto;
 
 @Controller
 public class LeaderboardController {
     @Autowired
     private ActiveUserService activeUserService;
     
-    // TODO The controller should not depend on the repository. Instead, it should depend on a service that uses the repository.
     @Autowired
-    private BookRepository bookRepository;
+    private BookSortingService bookSortingService;
 
     @GetMapping("/")
     public ModelAndView getLeaderboard() {
-        List<Book> books = bookRepository.findAll();
+        List<BookDto> books = bookSortingService.getAll();
         ModelAndView modelAndView = new ModelAndView("leaderboard");
         modelAndView.addObject("books", books);
         modelAndView.addObject("isAdmin", activeUserService.isAdmin());

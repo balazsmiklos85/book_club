@@ -1,6 +1,8 @@
 package hu.bmiklos.bc.model;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -8,12 +10,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "events")
 public class Event {
-@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
@@ -29,7 +33,12 @@ public class Event {
     @Column
     private UUID hostId;
 
-    public Event() {}
+    @OneToMany
+    @JoinColumn(name = "eventId", referencedColumnName = "id", insertable = false, updatable = false)
+    private List<Participant> participants;
+
+    public Event() {
+    }
 
     public Event(UUID bookId, Instant time, UUID hostId) {
         this.bookId = bookId;
@@ -67,7 +76,7 @@ public class Event {
 
     public void setHostExternalId(Integer hostExternalId) {
         this.hostExternalId = hostExternalId;
-    }    
+    }
 
     public UUID getHostId() {
         return hostId;
@@ -75,5 +84,32 @@ public class Event {
 
     public void setHostId(UUID hostId) {
         this.hostId = hostId;
-    }    
+    }
+
+    public List<Participant> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(List<Participant> participants) {
+        this.participants = participants;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, bookId, time, hostExternalId, hostId);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!(obj instanceof Event))
+            return false;
+        Event other = (Event) obj;
+        return Objects.equals(id, other.id)
+                && Objects.equals(bookId, other.bookId)
+                && Objects.equals(time, other.time)
+                && Objects.equals(hostExternalId, other.hostExternalId)
+                && Objects.equals(hostId, other.hostId);
+    }
 }
