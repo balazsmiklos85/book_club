@@ -13,7 +13,7 @@ public class EventMapper {
     public static EventDto mapToDto(CreateEventRequest event) {
         UUID mappedBookId = UUID.fromString(event.getBookId());
         Instant mappedTime = DateTimeMapper.toInstant(event.getDate(), event.getTime());
-        UUID mappedHostId = UUID.fromString(event.getHostId());
+        UUID mappedHostId = UUID.fromString(event.getHost());
 
         return new EventDto(mappedBookId, mappedTime, mappedHostId);
     }

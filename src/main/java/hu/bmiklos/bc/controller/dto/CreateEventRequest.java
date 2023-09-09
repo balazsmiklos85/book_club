@@ -1,18 +1,10 @@
 package hu.bmiklos.bc.controller.dto;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.util.UUID;
-
-import hu.bmiklos.bc.service.dto.EventDto;
-
 public class CreateEventRequest {
     private String bookId;
     private String date;
     private String time;
-    private String hostId;
+    private String host;
     
     public String getBookId() {
         return bookId;
@@ -38,11 +30,11 @@ public class CreateEventRequest {
         this.time = time;
     }
 
-    public String getHostId() {
-        return hostId;
+    public String getHost() {
+        return host;
     }
 
-    public void setHostId(String hostId) {
-        this.hostId = hostId;
+    public void setHost(String host) {
+        this.host = host;
     }
 }
