@@ -30,7 +30,9 @@
 			</form>
 		</li>
 	</ol>
-	<a href="/book/new">New book</a>
+	<form th:action="@{/book/new}" method="get">
+		<button type="submit">📚 New book</button>
+	</form>
 </body>
 
 </html>
