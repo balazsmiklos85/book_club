@@ -1,7 +1,6 @@
 package hu.bmiklos.bc.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import hu.bmiklos.bc.controller.dto.CreateBookRequest;
 import hu.bmiklos.bc.model.Book;
