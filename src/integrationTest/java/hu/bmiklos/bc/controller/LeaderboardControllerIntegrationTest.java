@@ -1,6 +1,7 @@
 package hu.bmiklos.bc.controller;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -77,5 +78,16 @@ class LeaderboardControllerIntegrationTest extends TestDataCreator {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("<a href=\"https://moly.hu/konyvek/robert-c-martin-clean-code\">Robert C. Martin: Clean Code</a>")));
+    }
+
+    @Test
+    @WithMockUser(username = "943409260@test.hu", password = "password")
+    void userHasNoNewEventForm() throws Exception {
+        createUser(-943409260, "Test User", "943409260@test.hu", "password");
+        createBook();
+
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(not(containsString("<form action=\"/event/new\""))));
     }
 }
