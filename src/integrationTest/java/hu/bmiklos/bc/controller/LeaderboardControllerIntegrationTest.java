@@ -35,6 +35,17 @@ class LeaderboardControllerIntegrationTest extends TestDataCreator {
     }
 
     @Test
+    @WithMockUser(username = "1254112040@test.hu", password = "password", authorities = { "ROLE_USER ", "ROLE_ADMIN"})
+    void adminHasNewEventForm() throws Exception {
+        createUser(-1254112040, "Test Admin", "1254112040@test.hu", "password");
+        createBook();
+
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("<form action=\"/event/new\"")));
+    }
+
+    @Test
     @WithMockUser(username = "695103999@test.hu", password = "password", authorities = { "ROLE_USER "})
     void hasVoteButtons() throws Exception {
         createUser(-695103999, "Test User", "695103999@test.hu", "password");
