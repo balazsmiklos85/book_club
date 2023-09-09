@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import hu.bmiklos.bc.exception.NotAuthenticatedException;
 import hu.bmiklos.bc.service.security.EmailPrincipal;
 
+// TODO The functionality is to be moved to ActiveUserService. Then include that class in other services instead of extending this one. Composition over inheritance.
 public abstract class AuthenticatedService {
 
     @Autowired
@@ -27,8 +28,11 @@ public abstract class AuthenticatedService {
         return principal.getUser().getId();
     }
 
-    private EmailPrincipal getPrincipal() {
+    protected EmailPrincipal getPrincipal() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            throw new NotAuthenticatedException();
+        }
         if (authentication.getPrincipal() instanceof EmailPrincipal sessionPrincipal) {
             return sessionPrincipal;
         }

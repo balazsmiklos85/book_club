@@ -12,21 +12,27 @@
 			<span>
 				<a th:href="${book.url}" th:text="${book.author} + ': ' + ${book.title}"></a>
 				<br />
-				<span><span>Recommender: </span><span th:text="${book?.recommender?.name}"></span></span>
+				<span><span>Recommender: </span><span th:text="${book.recommenderName}"></span></span>
 			</span>
-			<form th:action="@{/vote}" method="post" style="display: inline;">
+			<form th:action="@{/vote}" method="post" style="display: inline;" th:if="${!book.userVoted}">
 				<input type="hidden" name="method" value="put" />
 				<input type="hidden" th:value="${book.id}" name="bookId" />
 				<button type="submit">👍 Vote</button>
 			</form>
-			<form th:action="@{/vote}" method="post" style="display: inline;">
+			<form th:action="@{/vote}" method="post" style="display: inline;" th:if="${book.userVoted}">
 				<input type="hidden" name="method" value="delete" />
 				<input type="hidden" th:value="${book.id}" name="bookId" />
 				<button type="submit">👎 Nope</button>
 			</form>
+			<form th:action="@{/event/new}" method="get" style="display: inline;" th:if="${isAdmin}">
+				<input type="hidden" th:value="${book.id}" name="bookId" />
+				<button type="submit">🗓️ Schedule</button>
+			</form>
 		</li>
 	</ol>
-	<a href="/book/new">New book</a>
+	<form th:action="@{/book/new}" method="get">
+		<button type="submit">📚 New book</button>
+	</form>
 </body>
 
 </html>

@@ -1,5 +1,8 @@
 package hu.bmiklos.bc.service;
 
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 
 import hu.bmiklos.bc.exception.UserRegistrationException;
@@ -9,6 +12,8 @@ import hu.bmiklos.bc.model.Password;
 import hu.bmiklos.bc.repository.EmailRepository;
 import hu.bmiklos.bc.repository.PasswordRepository;
 import hu.bmiklos.bc.repository.UserRepository;
+import hu.bmiklos.bc.service.dto.UserDto;
+import hu.bmiklos.bc.service.mapper.UserMapper;
 import hu.bmiklos.bc.service.security.SaltedPasswordEncoder;
 import hu.bmiklos.bc.util.SaltGenerator;
 import jakarta.transaction.Transactional;
@@ -31,6 +36,13 @@ public class UserService {
         userRepository.delete(email.getUser());
     }
 
+    public List<UserDto> getUsers() {
+        return userRepository.findAll().stream()
+            .map(UserMapper::mapToDto)
+            .toList();
+    }
+
+
     @Transactional
     public Email registerUser(String externalId, String name, String email, String confirmEmail, String password, String confirmPassword) {
         if (!password.equals(confirmPassword)) {
@@ -44,6 +56,14 @@ public class UserService {
         } catch (NumberFormatException e) {
             throw new UserRegistrationException("The external ID must be a number.");
         }
+    }
+
+    @Transactional
+    public void setAsAdmin(UUID id) {
+        var user = userRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("User not found."));
+        user.setAdmin(true);
+        userRepository.saveAndFlush(user);
     }
 
     private Email createEmail(User user, String emailAddress, String confirmEmail) {

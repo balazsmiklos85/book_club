@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+	<title>Create New Event</title>
+</head>
+
+<body>
+	<h1>Create New Event</h1>
+	<form action="/event" method="post">
+		<div>
+			<label for="book">book</label>
+			<input type="text" name="book" th:value="${title} + ': ' + ${author}" disabled="disabled" />
+            <input type="hidden" name="bookId" th:value="${bookId}" />
+		</div>        
+		<div>
+            <label for="date">Date</label>
+            <input type="date" name="date" th:value="${proposedDate}" />
+        </div>
+        <div>
+            <label for="time">Time</label>
+            <input type="time" name="time" th:value="${proposedTime}" />
+        </div>
+        <div>
+            <label for="host">Host</label>
+            <select name="host" th:value="${host}">
+                <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+            </select>
+		<input type="submit" value="Create event" />
+	</form>
+</body>
+
+</html>
