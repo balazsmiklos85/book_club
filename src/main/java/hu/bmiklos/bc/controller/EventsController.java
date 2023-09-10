@@ -23,6 +23,7 @@ public class EventsController {
     @Autowired
     private EventService eventService;
 
+    // TODO add integration test
     @GetMapping
     public ModelAndView getEvents() {
         List<GetEventDto> eventDtos = eventService.getEvents();
