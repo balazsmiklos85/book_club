@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -32,6 +33,18 @@ public class Event {
 
     @Column
     private UUID hostId;
+
+    @OneToOne
+    @JoinColumn(name = "bookId", referencedColumnName = "id", insertable = false, updatable = false)
+    private Book book;
+
+    @OneToOne
+    @JoinColumn(name = "hostId", referencedColumnName = "id", insertable = false, updatable = false)
+    private User hostByHostId;
+
+    @OneToOne
+    @JoinColumn(name = "hostExternalId", referencedColumnName = "externalId", insertable = false, updatable = false)
+    private User hostByHostExternalId;
 
     @OneToMany
     @JoinColumn(name = "eventId", referencedColumnName = "id", insertable = false, updatable = false)
@@ -92,6 +105,30 @@ public class Event {
 
     public void setParticipants(List<Participant> participants) {
         this.participants = participants;
+    }    
+
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
+    }
+
+    public User getHostByHostId() {
+        return hostByHostId;
+    }
+
+    public void setHostByHostId(User hostByHostId) {
+        this.hostByHostId = hostByHostId;
+    }
+
+    public User getHostByHostExternalId() {
+        return hostByHostExternalId;
+    }
+
+    public void setHostByHostExternalId(User hostByHostExternalId) {
+        this.hostByHostExternalId = hostByHostExternalId;
     }
 
     @Override
