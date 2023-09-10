@@ -6,7 +6,8 @@
 </head>
 
 <body>
-	<h1>Leaderboard</h1>
+	<div th:replace="fragments/menu :: menu"></div>
+	<h2>Leaderboard</h2>
 	<ol>
 		<li th:each="book : ${books}">
 			<span>
