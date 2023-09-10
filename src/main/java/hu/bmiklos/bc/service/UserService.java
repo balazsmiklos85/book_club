@@ -1,10 +1,13 @@
 package hu.bmiklos.bc.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import hu.bmiklos.bc.exception.EmailAddressNotFoundException;
+import hu.bmiklos.bc.exception.NotAuthenticatedException;
 import hu.bmiklos.bc.exception.UserRegistrationException;
 import hu.bmiklos.bc.model.User;
 import hu.bmiklos.bc.model.Email;
@@ -21,14 +24,51 @@ import jakarta.transaction.Transactional;
 @Service
 public class UserService {
 
+    private final ActiveUserService activeUserService;
     private final EmailRepository emailRepository;
     private final UserRepository userRepository;
     private final PasswordRepository passwordRepository;
 
-    public UserService(UserRepository userRepository, PasswordRepository passwordRepository, EmailRepository emailRepository) {
+    public UserService(ActiveUserService activeUserService, UserRepository userRepository, PasswordRepository passwordRepository, EmailRepository emailRepository) {
+        this.activeUserService = activeUserService;
         this.userRepository = userRepository;
         this.passwordRepository = passwordRepository;
         this.emailRepository = emailRepository;
+    }
+
+    @Transactional
+    public String addEmail(String email) {
+        User user = userRepository.findById(activeUserService.getUserId())
+            .orElseThrow(NotAuthenticatedException::new);
+        Email createdEmail = createEmail(user, email, email);
+        return createdEmail.getEmailAddress();
+    }
+
+    @Transactional
+    public void changePassword(String oldPassword, String password, String confirmPassword) {
+        if (!password.equals(confirmPassword)) {
+            throw new IllegalArgumentException("The passwords do not match.");
+        }
+        User user = userRepository.findById(activeUserService.getUserId())
+            .orElseThrow(NotAuthenticatedException::new);
+        Password storedPassword = user.getPassword();
+        boolean authenticationSuccessful = new SaltedPasswordEncoder(storedPassword.getHashAlgorithm(), storedPassword.getSalt())
+            .matches(oldPassword, storedPassword.getPasswordHash());
+        if (!authenticationSuccessful) {
+            throw new IllegalArgumentException("The old password is incorrect.");
+        }
+        passwordRepository.delete(storedPassword);
+        passwordRepository.flush();
+        createPassword(user, password);
+    }
+
+    @Transactional
+    public void deleteEmail(String email) {
+        Integer userEmailCount = emailRepository.countByUserId(activeUserService.getUserId());
+        if (userEmailCount <= 1) {
+            throw new IllegalArgumentException("You cannot delete your last email address.");
+        }
+        emailRepository.deleteById(email);
     }
 
     @Transactional
