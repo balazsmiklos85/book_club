@@ -1,8 +1,6 @@
 package hu.bmiklos.bc.controller;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +20,7 @@ import hu.bmiklos.bc.service.BookService;
 import hu.bmiklos.bc.service.EventService;
 import hu.bmiklos.bc.service.UserService;
 import hu.bmiklos.bc.service.dto.BookDto;
-import hu.bmiklos.bc.service.dto.EventDto;
+import hu.bmiklos.bc.service.dto.CreateEventDto;
 import hu.bmiklos.bc.service.dto.UserDto;
 
 @Controller
@@ -58,7 +56,7 @@ public class EventController {
 
     @PostMapping
     public ModelAndView createBook(@ModelAttribute CreateEventRequest event) {
-        EventDto eventDto = EventMapper.mapToDto(event);
+        CreateEventDto eventDto = EventMapper.mapToDto(event);
         eventService.createEvent(eventDto);
         return new ModelAndView("redirect:/");
     }    

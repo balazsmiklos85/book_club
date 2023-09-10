@@ -27,7 +27,7 @@ public class LeaderboardController {
     private VoteService voteService;
 
     @GetMapping("/")
-    public ModelAndView getLeaderboard() {
+    public ModelAndView getRoot() {
         List<BookDto> books = bookSortingService.getAll();
         List<BookDto> userVotedBooks = voteService.getVotedBooks();
         List<LeaderboardBookData> bookData = BookMapper.mapToLeaderboardBookData(books, userVotedBooks);
@@ -36,5 +36,10 @@ public class LeaderboardController {
         modelAndView.addObject("books", bookData);
         modelAndView.addObject("isAdmin", activeUserService.isAdmin());
         return modelAndView;
+    }
+
+    @GetMapping("/leaderboard")
+    public ModelAndView getLeaderboard() {
+        return getRoot();
     }
 }

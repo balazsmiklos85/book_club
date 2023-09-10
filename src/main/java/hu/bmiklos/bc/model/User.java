@@ -1,6 +1,8 @@
 package hu.bmiklos.bc.model;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
@@ -9,6 +11,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -32,6 +35,9 @@ public class User implements Serializable {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Password password;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Email> emails;
 
     public User() {}
 
@@ -79,5 +85,29 @@ public class User implements Serializable {
 
     public void setPassword(Password password) {
         this.password = password;
+    }
+
+    public List<Email> getEmails() {
+        return emails;
+    }
+
+    public void setEmails(List<Email> emails) {
+        this.emails = emails;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, isAdmin, externalId);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!(obj instanceof User))
+            return false;
+        User other = (User) obj;
+        return Objects.equals(id, other.id) && Objects.equals(name, other.name) && isAdmin == other.isAdmin
+                && externalId == other.externalId;
     }
 }
