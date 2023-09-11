@@ -10,7 +10,7 @@ public class BookMapper {
     private BookMapper() {}
 
     public static BookDto mapToDto(Book book) {
-        return new BookDto(book.getId(), book.getAuthor(), book.getTitle(), book.getUrl(), book.getRecommendedAt(), UserMapper.mapToDto(book.getRecommender()));
+        return new BookDto(book.getId(), book.getAuthor(), book.getTitle(), book.getUrl(), book.getRecommendedAt(), UserMapper.mapToDto(book.getRecommender(), book.getRecommenderExternalId()));
     }
 
     public static List<LeaderboardBookData> mapToLeaderboardBookData(List<BookDto> books, List<BookDto> userVotedBooks) {

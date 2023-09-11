@@ -4,8 +4,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import org.springframework.lang.Nullable;
+
 public class UserDto {
+    @Nullable
     private final UUID id;
+    @Nullable
     private final String name;
     private final int externalId;
     private List<String> emails;
@@ -21,10 +25,12 @@ public class UserDto {
         this.emails = emails;
     }
 
+    @Nullable
     public UUID getId() {
         return id;
     }
 
+    @Nullable
     public String getName() {
         return name;
     }
