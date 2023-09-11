@@ -21,6 +21,10 @@ public class BookMapper {
 
     private static LeaderboardBookData mapToLeaderboardBookData(BookDto book, List<BookDto> userVotedBooks) {
         boolean userVoted = userVotedBooks.contains(book);
-        return new LeaderboardBookData(book.getId(), book.getAuthor(), book.getTitle(), book.getUrl(), book.getRecommender(), userVoted);
+        String recommender = book.getRecommender().getName();
+        if (recommender == null || recommender.isBlank()) {
+            recommender = "[" + book.getRecommender().getExternalId() + "]";
+        }
+        return new LeaderboardBookData(book.getId(), book.getAuthor(), book.getTitle(), book.getUrl(), recommender, userVoted);
     }
 }

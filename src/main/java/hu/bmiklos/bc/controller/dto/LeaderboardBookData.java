@@ -2,8 +2,6 @@ package hu.bmiklos.bc.controller.dto;
 
 import java.util.UUID;
 
-import hu.bmiklos.bc.service.dto.UserDto;
-
 public class LeaderboardBookData {
     private final String id;
     private final String author;
@@ -12,12 +10,12 @@ public class LeaderboardBookData {
     private final String recommenderName;
     private final boolean userVoted;
 
-    public LeaderboardBookData(UUID id, String author, String title, String url, UserDto recommender, boolean userVoted) {
+    public LeaderboardBookData(UUID id, String author, String title, String url, String recommender, boolean userVoted) {
         this.id = id.toString();
         this.author = author;
         this.title = title;
         this.url = url;
-        this.recommenderName = recommender.getName();
+        this.recommenderName = recommender;
         this.userVoted = userVoted;
     }
 
