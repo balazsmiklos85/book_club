@@ -10,7 +10,7 @@ public class BookMapper {
     private BookMapper() {}
 
     public static BookDto mapToDto(Book book) {
-        return new BookDto(book.getId(), book.getAuthor(), book.getTitle(), book.getUrl(), book.getRecommendedAt(), UserMapper.mapToDto(book.getRecommender()));
+        return new BookDto(book.getId(), book.getAuthor(), book.getTitle(), book.getUrl(), book.getRecommendedAt(), UserMapper.mapToDto(book.getRecommender(), book.getRecommenderExternalId()));
     }
 
     public static List<LeaderboardBookData> mapToLeaderboardBookData(List<BookDto> books, List<BookDto> userVotedBooks) {
@@ -21,6 +21,10 @@ public class BookMapper {
 
     private static LeaderboardBookData mapToLeaderboardBookData(BookDto book, List<BookDto> userVotedBooks) {
         boolean userVoted = userVotedBooks.contains(book);
-        return new LeaderboardBookData(book.getId(), book.getAuthor(), book.getTitle(), book.getUrl(), book.getRecommender(), userVoted);
+        String recommender = book.getRecommender().getName();
+        if (recommender == null || recommender.isBlank()) {
+            recommender = "[" + book.getRecommender().getExternalId() + "]";
+        }
+        return new LeaderboardBookData(book.getId(), book.getAuthor(), book.getTitle(), book.getUrl(), recommender, userVoted);
     }
 }

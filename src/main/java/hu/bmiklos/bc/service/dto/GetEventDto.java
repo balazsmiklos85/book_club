@@ -4,10 +4,14 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.lang.Nullable;
+
 public class GetEventDto {
     private final Instant time;
     private final BookDto book;
+    @Nullable
     private final UserDto host;
+    @Nullable
     private final Integer hostExternalId;
     private final List<UserDto> participants;
 
@@ -27,6 +31,7 @@ public class GetEventDto {
         return book;
     }
 
+    @Nullable
     public UserDto getHost() {
         return host;
     }
@@ -35,6 +40,7 @@ public class GetEventDto {
         return participants;
     }
 
+    @Nullable
     public Integer getHostExternalId() {
         return hostExternalId;
     }

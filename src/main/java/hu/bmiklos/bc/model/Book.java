@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.lang.Nullable;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -45,6 +47,7 @@ public class Book {
 
     @OneToOne
     @JoinColumn(name = "recommenderExternalId", referencedColumnName = "externalId", insertable = false, updatable = false)
+    @Nullable
     private User recommender;
 
     public Book() {}
@@ -113,6 +116,7 @@ public class Book {
         this.events = events;
     }
     
+    @Nullable
     public User getRecommender() {
         return recommender;
     }
