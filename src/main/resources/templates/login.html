@@ -2,23 +2,23 @@
 <html lang="en">
 
 <head>
-	<title>Login</title>
+	<title th:text="#{login}"></title>
 </head>
 
 <body>
-	<h1>Login</h1>
+	<h1 th:text="#{login}"></h1>
 	<form name='login_form' action="login" method='POST'>
 		<div>
-			<label>E-mail address:</label>
+			<label th:text="#{field.email} + ':'"></label>
 			<input type='text' name='username' value='' />
 		</div>
 		<div>
-			<label>Password:</label>
+			<label th:text="#{field.password} + ':'"></label>
 			<input type='password' name='password' value='' />
 		</div>
-		<input name="submit" type="submit" value="submit" />
+		<button type="submit" th:text="'🔓' + #{login}"></button>
 	</form>
-	<a href="/registration">Register here</a>
+	<a href="/registration" th:text="#{register_here}"></a>
 </body>
 
 </html>
