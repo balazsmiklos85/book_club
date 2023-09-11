@@ -7,19 +7,19 @@
 
 <body>
     <div th:fragment="menu">
-        <h1>Book club</h1>
+        <h1 th:text="#{book_club}"></h1>
         <ul>
             <li style="display: inline;">
-                <a href="/leaderboard">📊 Leaderboard</a>
+                <a href="/leaderboard" th:text="'📊' + #{leaderboard}"></a>
             </li>
             <li style="display: inline;">
-                <a href="/events">📆 Events</a>
+                <a href="/events" th:text="'📆' + #{events}"></a>
             </li>
             <li style="display: inline;">
-                <a href="/profile">👤 Profile</a>
+                <a href="/profile" th:text="'👤' + #{user.profile}"></a>
             </li>
             <li style="display: inline;">
-                <a href="/logout">🚪 Logout</a>
+                <a href="/logout" th:text="'🚪' + #{logout}"></a>
             </li>
         </ul>
     </div>

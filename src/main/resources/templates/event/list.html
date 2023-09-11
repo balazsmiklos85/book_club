@@ -2,18 +2,18 @@
 <html lang="en">
 
 <head>
-    <title>Events</title>
+    <title th:text="#{events}"></title>
 </head>
 
 <body>
     <div th:replace="fragments/menu :: menu"></div>
-    <h2>Events</h2>
+    <h2 th:text="#{events}"></h2>
     <ol reversed>
         <li th:each="event : ${events}" th:classappend="${event.userAttended} ? attendedEvent : notAttendedEvent">
             <div th:text="${event.date} + ':'"></div>
             <div th:text="${event.author} + ': ' + ${event.title}"></div>
             <div th:classappend="${event.userHosted} ? hostedEvent : notHostedEvent">
-                <span>Host: </span>
+                <span th:text="#{field.host} + ': '"></span>
                 <span th:text="${event.hostName}"></span>
             </div>
         </li>

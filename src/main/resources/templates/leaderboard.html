@@ -2,37 +2,37 @@
 <html lang="en">
 
 <head>
-	<title>Leaderboard</title>
+	<title th:text="#{leaderboard}"></title>
 </head>
 
 <body>
 	<div th:replace="fragments/menu :: menu"></div>
-	<h2>Leaderboard</h2>
+	<h2 th:text="#{leaderboard}"></h2>
 	<ol>
 		<li th:each="book : ${books}">
 			<span>
 				<a th:href="${book.url}" th:text="${book.author} + ': ' + ${book.title}"></a>
 				<br />
-				<span><span>Recommender: </span><span th:text="${book.recommenderName}"></span></span>
+				<span><span th:text="#{field.recommender} + ': '"></span><span th:text="${book.recommenderName}"></span></span>
 			</span>
 			<form th:action="@{/vote}" method="post" style="display: inline;" th:if="${!book.userVoted}">
 				<input type="hidden" name="method" value="put" />
 				<input type="hidden" th:value="${book.id}" name="bookId" />
-				<button type="submit">👍 Vote</button>
+				<button type="submit" th:text="'👍' + #{button.vote}"></button>
 			</form>
 			<form th:action="@{/vote}" method="post" style="display: inline;" th:if="${book.userVoted}">
 				<input type="hidden" name="method" value="delete" />
 				<input type="hidden" th:value="${book.id}" name="bookId" />
-				<button type="submit">👎 Nope</button>
+				<button type="submit" th:text="'👎' + #{button.unvote}"></button>
 			</form>
 			<form th:action="@{/event/new}" method="get" style="display: inline;" th:if="${isAdmin}">
 				<input type="hidden" th:value="${book.id}" name="bookId" />
-				<button type="submit">🗓️ Schedule</button>
+				<button type="submit" th:text="'🗓️' + #{events.new}"></button>
 			</form>
 		</li>
 	</ol>
 	<form th:action="@{/book/new}" method="get">
-		<button type="submit">📚 New book</button>
+		<button type="submit"  th:text="'📚' + #{book.add_new}"></button>
 	</form>
 </body>
 
