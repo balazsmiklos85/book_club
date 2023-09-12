@@ -1,5 +1,6 @@
 package hu.bmiklos.bc.service;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ public class UserWeights {
 
     public UserWeights(List<Event> events) {
         Stream<Event> lastFewEvents = events.stream()
+                .filter(this::isPastEvent)
                 .sorted((event1, event2) -> event2.getTime().compareTo(event1.getTime()))
                 .limit(LAST_CONSIDERED_EVENTS);
         List<Participant> lastParticipants = lastFewEvents.map(Event::getParticipants)
@@ -43,5 +45,9 @@ public class UserWeights {
 
     public long getWeight(User userById) {
         return weights.getOrDefault(userById, 0L);
+    }
+
+    private boolean isPastEvent(Event event) {
+        return event.getTime().isBefore(Instant.now());
     }
 }
