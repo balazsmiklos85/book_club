@@ -2,9 +2,10 @@ package hu.bmiklos.bc.service;
 
 import java.time.Instant;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,14 +19,14 @@ public class UserWeights {
     private final Map<User, Long> weights;
     private final Map<Integer, Long> externalWeights;
 
-    public UserWeights(List<Event> events) {
+    public UserWeights(Collection<Event> events) {
         Stream<Event> lastFewEvents = events.stream()
                 .filter(this::isPastEvent)
                 .sorted((event1, event2) -> event2.getTime().compareTo(event1.getTime()))
                 .limit(LAST_CONSIDERED_EVENTS);
-        List<Participant> lastParticipants = lastFewEvents.map(Event::getParticipants)
+        Set<Participant> lastParticipants = lastFewEvents.map(Event::getParticipants)
                 .flatMap(Collection::stream)
-                .toList();
+                .collect(Collectors.toSet());
         Stream<User> lastUsers = lastParticipants.stream()
                 .map(Participant::getUser)
                 .filter(Objects::nonNull);
@@ -40,7 +41,17 @@ public class UserWeights {
     }
 
     public long getWeight(Integer integer) {
-        return externalWeights.getOrDefault(integer, 0L);
+        Long historicWeight = externalWeights.get(integer);
+        if (historicWeight != null) {
+            return historicWeight;
+        }
+        Optional<User> user = weights.keySet().stream()
+                .filter(u -> Objects.equals(u.getExternalId(), integer))
+                .findFirst();
+        if (user.isPresent()) {
+            return weights.get(user.get());
+        }
+        return 0L;
     }
 
     public long getWeight(User userById) {
