@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -46,5 +47,12 @@ public class VoteController {
         UUID bookId = UUID.fromString(voteRequest.getBookId());
         voteService.unvote(bookId);
         return new ModelAndView("redirect:/");
+    }
+
+    @GetMapping("/matrix")
+    public ModelAndView getVoteMatrix() {
+        ModelAndView modelAndView = new ModelAndView("matrix");
+        modelAndView.addObject("matrix", voteService.getMatrix());
+        return modelAndView;
     }
 }

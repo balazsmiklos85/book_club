@@ -15,4 +15,6 @@ public interface VoteService {
     List<Vote> getUserVotes();
 
     List<BookDto> getVotedBooks();
+
+    List<List<String>> getMatrix();
 }
