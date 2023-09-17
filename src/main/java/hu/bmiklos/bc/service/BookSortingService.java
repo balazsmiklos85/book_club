@@ -1,5 +1,6 @@
 package hu.bmiklos.bc.service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -32,8 +33,8 @@ public class BookSortingService {
     }
 
     public List<BookDto> getAll() {
-        List<Vote> votes = voteRepository.findAll();
-        List<Event> events = eventRepostiory.findAll();
+        Collection<Vote> votes = voteRepository.findAll();
+        Collection<Event> events = eventRepostiory.findAll();
         UserWeights userWeights = new UserWeights(events);
         BookWeights bookWeights = new BookWeights(votes, userWeights);
 
