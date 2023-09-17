@@ -40,3 +40,10 @@ jobs:
           path: build/libs/
       - name: Test with Gradle
         run: ./gradlew test integrationTest
+      - name: Upload Test Report
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: test-report
+          path: build/reports/tests/**
+
