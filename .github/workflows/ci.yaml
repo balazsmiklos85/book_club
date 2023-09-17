@@ -40,3 +40,13 @@ jobs:
           path: build/libs/
       - name: Test with Gradle
         run: ./gradlew test integrationTest
+        env:
+          DATABASE_URL: 'jdbc:h2:mem:testdb'
+          PORT: '8080'
+      - name: Upload Test Report
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: test-report
+          path: build/reports/tests/**
+

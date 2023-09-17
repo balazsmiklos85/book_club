@@ -57,7 +57,11 @@ public class VoteServiceImpl extends AuthenticatedService  implements VoteServic
 
     @Override
     public List<BookDto> getVotedBooks() {
-        List<Vote> userVotes = voteRepository.findByUserId(activeUserService.getUserId());
+        List<Vote> votesByUserId = voteRepository.findByUserId(activeUserService.getUserId());
+        List<Vote> votesByUserExternalId = voteRepository.findByUserExternalId(activeUserService.getExternalUserId());
+        List<Vote> userVotes = new ArrayList<>(votesByUserId.size() + votesByUserExternalId.size());
+        userVotes.addAll(votesByUserId);
+        userVotes.addAll(votesByUserExternalId);
         return userVotes.stream()
             .map(Vote::getBook)
             .map(BookMapper::mapToDto)
