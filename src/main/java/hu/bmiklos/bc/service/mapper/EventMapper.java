@@ -30,7 +30,7 @@ public class EventMapper {
                 .stream()
                 .map(participant -> UserMapper.mapToDto(participant.getUser(), participant.getParticipantExternalId()))
                 .toList();
-        return new GetEventDto(time, book, host, event.getHostExternalId(), participants);
+        return new GetEventDto(event.getId(), time, book, host, event.getHostExternalId(), participants);
     }
 
     @Nullable

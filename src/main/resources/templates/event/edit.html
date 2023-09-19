@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+	<title th:text="#{events.details}"></title>
+</head>
+
+<body>
+	<div th:replace="fragments/menu :: menu"></div>
+	<h2 th:text="#{events.details}"></h2>
+	<form action="/event" method="post">
+		<input type="hidden" name="id" th:value="${event.id}" />
+		<div>
+			<label for="book" th:text="#{field.book}"></label>
+			<input type="text" name="book" th:value="${event.book.title} + ': ' + ${event.book.author}" disabled="disabled" />
+			<input type="hidden" name="bookId" th:value="${event.book.id}" />
+		</div>
+		<div>
+			<label for="date" th:text="#{field.date}"></label>
+			<input type="date" name="date" th:value="${event.date}" />
+		</div>
+		<div>
+			<label for="time" th:text="#{field.time}"></label>
+			<input type="time" name="time" th:value="${event.time}" />
+		</div>
+		<div>
+			<label for="host" th:text="#{field.host}"></label>
+			<select name="host" th:value="${event.host.id}">
+				<option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+			</select>
+			<button type="submit" th:text="#{events.new}"></button>
+	</form>
+</body>
+
+</html>

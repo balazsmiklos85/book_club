@@ -34,6 +34,7 @@ public class EventService {
         return EventMapper.mapToDto(saved);
     }
 
+    @Transactional
     public List<GetEventDto> getEvents() {
         return eventRepository.findAll()
             .stream()
@@ -46,5 +47,11 @@ public class EventService {
         return eventRepository.findTopByOrderByTimeDesc()
             .map(Event::getTime)
             .map(lastEventTime -> lastEventTime.plus(4 * 7l, ChronoUnit.DAYS)); // java.time.temporal.UnsupportedTemporalTypeException: Unsupported unit: Weeks
+    }
+
+    public GetEventDto getEvent(UUID eventUuid) {
+        return eventRepository.findById(eventUuid)
+            .map(EventMapper::mapToGetDto)
+            .orElseThrow(() -> new IllegalArgumentException("No event found with ID " + eventUuid));
     }
 }

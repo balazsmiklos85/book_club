@@ -11,10 +11,12 @@
     <ol reversed>
         <li th:each="event : ${events}" th:classappend="${event.userAttended} ? attendedEvent : notAttendedEvent">
             <div th:text="${event.date} + ':'"></div>
-            <div th:text="${event.author} + ': ' + ${event.title}"></div>
+            <a th:href="@{/event/{id}(id=${event.id})}">
+                <div th:text="${event.book.author} + ': ' + ${event.book.title}"></div>
+            </a>
             <div th:classappend="${event.userHosted} ? hostedEvent : notHostedEvent">
                 <span th:text="#{field.host} + ': '"></span>
-                <span th:text="${event.hostName}"></span>
+                <span th:text="${event.host.name}"></span>
             </div>
         </li>
     </ol>
