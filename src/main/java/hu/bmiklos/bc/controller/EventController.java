@@ -11,19 +11,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import hu.bmiklos.bc.controller.dto.CreateEventRequest;
+import hu.bmiklos.bc.controller.dto.EditEventRequest;
 import hu.bmiklos.bc.controller.dto.EventData;
 import hu.bmiklos.bc.controller.dto.HostData;
+import hu.bmiklos.bc.controller.dto.ParticipantData;
 import hu.bmiklos.bc.controller.mapper.DateTimeMapper;
 import hu.bmiklos.bc.controller.mapper.EventMapper;
 import hu.bmiklos.bc.controller.mapper.UserMapper;
 import hu.bmiklos.bc.service.ActiveUserService;
 import hu.bmiklos.bc.service.BookService;
 import hu.bmiklos.bc.service.EventService;
+import hu.bmiklos.bc.service.ParticipantService;
 import hu.bmiklos.bc.service.UserService;
 import hu.bmiklos.bc.service.dto.BookDto;
 import hu.bmiklos.bc.service.dto.CreateEventDto;
@@ -41,6 +44,9 @@ public class EventController {
 
     @Autowired
     private EventService eventService;
+
+    @Autowired
+    private ParticipantService participantService;
 
     @Autowired
     private UserService userService;
@@ -71,6 +77,7 @@ public class EventController {
         EventData eventData = EventMapper.mapToEventData(event, activeUserService.getUserId());
         List<UserDto> users = userService.getUsers();
         List<HostData> hosts = UserMapper.mapToHostData(users);
+        List<ParticipantData> participants = UserMapper.mapToParticipantData(event.getParticipants());
 
         ModelAndView modelAndView = new ModelAndView("event/edit");
         modelAndView.addObject("event", eventData);
@@ -80,9 +87,27 @@ public class EventController {
     }
 
     @PostMapping
-    public ModelAndView createBook(@ModelAttribute CreateEventRequest event) {
-        CreateEventDto eventDto = EventMapper.mapToDto(event);
-        eventService.createEvent(eventDto);
+    public ModelAndView editEvent(@ModelAttribute EditEventRequest event) {
+        if (event.getId() == null) {
+            CreateEventDto eventDto = EventMapper.mapToDto(event);
+            eventService.createEvent(eventDto);
+        } else {
+            if (activeUserService.isAdmin()) {
+                eventService.editEvent(EventMapper.mapToEditDto(event));
+                return new ModelAndView("redirect:/event/" + event.getId());
+            }
+        }
         return new ModelAndView("redirect:/");
-    }    
+    }
+
+    @PostMapping("/{eventId}/participant/")
+    public ModelAndView addParticipant(@PathVariable String eventId, @RequestParam String participant) {
+        if (activeUserService.isAdmin()) {
+            UUID eventUuid = UUID.fromString(eventId);
+            participantService.addParticipant(eventUuid, participant);
+        }
+        return new ModelAndView("redirect:/event/" + eventId);
+    }
+    
+
 }

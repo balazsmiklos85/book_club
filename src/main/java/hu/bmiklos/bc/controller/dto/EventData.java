@@ -1,5 +1,7 @@
 package hu.bmiklos.bc.controller.dto;
 
+import java.util.Collections;
+import java.util.List;
 
 public class EventData {
     private final String id;
@@ -7,15 +9,15 @@ public class EventData {
     private final String time;
     private final BookData book;
     private final HostData host;
-    private final boolean userAttended;
+    private final List<ParticipantData> participants;
 
-    public EventData(String id, String date, String time, BookData book, HostData host, boolean userAttended) {
+    public EventData(String id, String date, String time, BookData book, HostData host, List<ParticipantData> participants) {
         this.id = id;
         this.date = date;
         this.time = time;
         this.book = book;
         this.host = host;
-        this.userAttended = userAttended;
+        this.participants = Collections.unmodifiableList(participants);
     }
 
     public String getId() {
@@ -34,15 +36,15 @@ public class EventData {
         return host;
     }
 
-    public boolean isUserAttended() {
-        return userAttended;
-    }
-
     public boolean isUserHosted() {
         return host.isUserHosted();
     }
 
     public String getTime() {
         return time;
+    }
+
+    public List<ParticipantData> getParticipants() {
+        return participants;
     }
 }

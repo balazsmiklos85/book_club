@@ -2,23 +2,23 @@ package hu.bmiklos.bc.controller.mapper;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import hu.bmiklos.bc.controller.dto.BookData;
-import hu.bmiklos.bc.controller.dto.CreateEventRequest;
+import hu.bmiklos.bc.controller.dto.EditEventRequest;
 import hu.bmiklos.bc.controller.dto.EventData;
 import hu.bmiklos.bc.controller.dto.HostData;
+import hu.bmiklos.bc.controller.dto.ParticipantData;
 import hu.bmiklos.bc.service.dto.CreateEventDto;
+import hu.bmiklos.bc.service.dto.EditEventDto;
 import hu.bmiklos.bc.service.dto.GetEventDto;
-import hu.bmiklos.bc.service.dto.UserDto;
 
 public class EventMapper {
 
     private EventMapper() {}
 
-    public static CreateEventDto mapToDto(CreateEventRequest event) {
+    public static CreateEventDto mapToDto(EditEventRequest event) {
         UUID mappedBookId = UUID.fromString(event.getBookId());
         Instant mappedTime = DateTimeMapper.toInstant(event.getDate(), event.getTime());
         UUID mappedHostId = UUID.fromString(event.getHost());
@@ -39,8 +39,17 @@ public class EventMapper {
         String author = eventDto.getBook().getAuthor();
         String title = eventDto.getBook().getTitle();
         HostData host = UserMapper.mapToHostData(eventDto, currentUser);
-        boolean userAttended = eventDto.getParticipants().contains(eventDto.getHost());
+        List<ParticipantData> participants = UserMapper.mapToParticipantData(eventDto.getParticipants());
 
-        return new EventData(eventDto.getId().toString(), date, time, new BookData(bookId, title, author), host, userAttended);
+        return new EventData(eventDto.getId().toString(), date, time, new BookData(bookId, title, author), host, participants);
+    }
+
+    public static EditEventDto mapToEditDto(EditEventRequest event) {
+        UUID mappedId = UUID.fromString(event.getId());
+        UUID mappedBookId = UUID.fromString(event.getBookId());
+        Instant mappedTime = DateTimeMapper.toInstant(event.getDate(), event.getTime());
+        UUID mappedHostId = UUID.fromString(event.getHost());
+
+        return new EditEventDto(mappedId, mappedBookId, mappedTime, mappedHostId);
     }
 }

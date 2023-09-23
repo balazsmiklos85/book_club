@@ -9,7 +9,7 @@
     <div th:replace="fragments/menu :: menu"></div>
     <h2 th:text="#{events}"></h2>
     <ol reversed>
-        <li th:each="event : ${events}" th:classappend="${event.userAttended} ? attendedEvent : notAttendedEvent">
+        <li th:each="event : ${events}">
             <div th:text="${event.date} + ':'"></div>
             <a th:href="@{/event/{id}(id=${event.id})}">
                 <div th:text="${event.book.author} + ': ' + ${event.book.title}"></div>

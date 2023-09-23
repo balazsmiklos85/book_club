@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import hu.bmiklos.bc.controller.dto.ExternalId;
 import hu.bmiklos.bc.controller.dto.HostData;
+import hu.bmiklos.bc.controller.dto.ParticipantData;
 import hu.bmiklos.bc.controller.dto.ProfileInformation;
 import hu.bmiklos.bc.service.dto.GetEventDto;
 import hu.bmiklos.bc.service.dto.UserDto;
@@ -57,5 +59,17 @@ public class UserMapper {
                 .map(UserDto::getId)
                 .map(UUID::toString)
                 .orElse(null);
+    }
+
+    public static List<ParticipantData> mapToParticipantData(List<UserDto> users) {
+        return users.stream()
+                .map(UserMapper::mapToParticipantData)
+                .toList();
+    }
+
+    private static ParticipantData mapToParticipantData(UserDto user) {
+        String userName = user.getName();
+        ExternalId externalId = new ExternalId(user.getExternalId());
+        return new ParticipantData(userName, externalId);
     }
 }

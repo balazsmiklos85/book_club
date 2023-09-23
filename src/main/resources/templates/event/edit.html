@@ -8,27 +8,56 @@
 <body>
 	<div th:replace="fragments/menu :: menu"></div>
 	<h2 th:text="#{events.details}"></h2>
-	<form action="/event" method="post">
+	<form th:if="${isAdmin}" action="/event" method="post">
 		<input type="hidden" name="id" th:value="${event.id}" />
 		<div>
 			<label for="book" th:text="#{field.book}"></label>
-			<input type="text" name="book" th:value="${event.book.title} + ': ' + ${event.book.author}" disabled="disabled" />
+			<span th:text="${event.book.title} + ': ' + ${event.book.author}"></span>
 			<input type="hidden" name="bookId" th:value="${event.book.id}" />
 		</div>
 		<div>
 			<label for="date" th:text="#{field.date}"></label>
-			<input type="date" name="date" th:value="${event.date}" />
+			<input type="date" name="date" th:value="${event.date}" th:disabled="${!isAdmin}" />
 		</div>
 		<div>
 			<label for="time" th:text="#{field.time}"></label>
-			<input type="time" name="time" th:value="${event.time}" />
+			<input type="time" name="time" th:value="${event.time}" th:disabled="${!isAdmin}" />
 		</div>
 		<div>
 			<label for="host" th:text="#{field.host}"></label>
-			<select name="host" th:value="${event.host.id}">
+			<select name="host" th:value="${event.host.id}" th:disabled="${!isAdmin}">
 				<option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
 			</select>
-			<button type="submit" th:text="#{events.new}"></button>
+			<button type="submit" th:text="#{button.save}"></button>
+	</form>
+	<div th:if="${!isAdmin}">
+		<div>
+			<span th:text="#{field.book} + ': '"></span>
+			<span th:text="${event.book.title} + ': ' + ${event.book.author}"></span>
+		</div>
+		<div>
+			<span th:text="#{field.date} + ': '"></span>
+			<span th:text="${event.date}"></span>
+		</div>
+		<div>
+			<span th:text="#{field.time} + ': '"></span>
+			<span th:text="${event.time}"></span>
+		</div>
+		<div>
+			<span th:text="#{field.host} + ': '"></span>
+			<span th:text="${event.host.name}"></span>
+		</div>
+	</div>
+	<h2 th:text="#{event.participants}"></h2>
+	<ul>
+		<li th:each="participant : ${event.participants}">
+			<span th:text="${participant}"></span>
+		</li>
+	</ul>
+	<form th:if="${isAdmin}" th:action="@{/event/} + ${event.id} + @{/participant/}" method="post">
+		<label for="participant" th:text="#{field.participant}"></label>
+		<input type="text" name="participant" th:value="${participant}" />
+		<button type="submit" th:text="#{events.addParticipant}"></button>
 	</form>
 </body>
 
