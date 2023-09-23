@@ -5,8 +5,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,19 +38,19 @@ public class Event {
     @Column
     private UUID hostId;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "bookId", referencedColumnName = "id", insertable = false, updatable = false)
     private Book book;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "hostId", referencedColumnName = "id", insertable = false, updatable = false)
     private User hostByHostId;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "hostExternalId", referencedColumnName = "externalId", insertable = false, updatable = false)
     private User hostByHostExternalId;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "eventId", referencedColumnName = "id", insertable = false, updatable = false)
     private List<Participant> participants;
 

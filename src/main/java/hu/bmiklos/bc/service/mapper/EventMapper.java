@@ -6,20 +6,14 @@ import java.util.List;
 import org.springframework.lang.Nullable;
 
 import hu.bmiklos.bc.model.Event;
-import hu.bmiklos.bc.model.Participant;
 import hu.bmiklos.bc.model.User;
 import hu.bmiklos.bc.service.dto.BookDto;
-import hu.bmiklos.bc.service.dto.CreateEventDto;
 import hu.bmiklos.bc.service.dto.GetEventDto;
 import hu.bmiklos.bc.service.dto.UserDto;
 
 public class EventMapper {
 
     private EventMapper() {
-    }
-
-    public static CreateEventDto mapToDto(Event lastEvent) {
-        return new CreateEventDto(lastEvent.getBookId(), lastEvent.getTime(), lastEvent.getHostId());
     }
 
     public static GetEventDto mapToGetDto(Event event) {
@@ -30,7 +24,7 @@ public class EventMapper {
                 .stream()
                 .map(participant -> UserMapper.mapToDto(participant.getUser(), participant.getParticipantExternalId()))
                 .toList();
-        return new GetEventDto(time, book, host, event.getHostExternalId(), participants);
+        return new GetEventDto(event.getId(), time, book, host, event.getHostExternalId(), participants);
     }
 
     @Nullable

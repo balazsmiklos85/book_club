@@ -1,5 +1,6 @@
 package hu.bmiklos.bc.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -12,4 +13,6 @@ import hu.bmiklos.bc.model.User;
 public interface UserRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findByExternalId(int externalId);
+
+    List<User> findByNameLike(String string);
 }

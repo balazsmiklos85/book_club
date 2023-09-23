@@ -2,21 +2,23 @@ package hu.bmiklos.bc.controller.mapper;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import hu.bmiklos.bc.controller.dto.CreateEventRequest;
+import hu.bmiklos.bc.controller.dto.BookData;
+import hu.bmiklos.bc.controller.dto.EditEventRequest;
 import hu.bmiklos.bc.controller.dto.EventData;
+import hu.bmiklos.bc.controller.dto.HostData;
+import hu.bmiklos.bc.controller.dto.ParticipantData;
 import hu.bmiklos.bc.service.dto.CreateEventDto;
+import hu.bmiklos.bc.service.dto.EditEventDto;
 import hu.bmiklos.bc.service.dto.GetEventDto;
-import hu.bmiklos.bc.service.dto.UserDto;
 
 public class EventMapper {
 
     private EventMapper() {}
 
-    public static CreateEventDto mapToDto(CreateEventRequest event) {
+    public static CreateEventDto mapToDto(EditEventRequest event) {
         UUID mappedBookId = UUID.fromString(event.getBookId());
         Instant mappedTime = DateTimeMapper.toInstant(event.getDate(), event.getTime());
         UUID mappedHostId = UUID.fromString(event.getHost());
@@ -30,29 +32,24 @@ public class EventMapper {
             .collect(Collectors.toList());
     }
 
-    private static EventData mapToEventData(GetEventDto eventDto, UUID currentUser) {
+    public static EventData mapToEventData(GetEventDto eventDto, UUID currentUser) {
         String date = DateTimeMapper.toLocalDateString(eventDto.getTime());
+        String time = DateTimeMapper.toLocalTimeString(eventDto.getTime());
+        String bookId = eventDto.getBook().getId().toString();
         String author = eventDto.getBook().getAuthor();
-        String title = eventDto.getBook().getTitle();    
-        String hostName = getHostNameOrExternalId(eventDto);
-        boolean userAttended = eventDto.getParticipants().contains(eventDto.getHost());
-        boolean userHosted = Optional.ofNullable(eventDto.getHost())
-            .map(UserDto::getId)
-            .map(id -> id.equals(currentUser))
-            .orElse(false);
-        return new EventData(date, author, title, hostName, userAttended, userHosted);
+        String title = eventDto.getBook().getTitle();
+        HostData host = UserMapper.mapToHostData(eventDto, currentUser);
+        List<ParticipantData> participants = UserMapper.mapToParticipantData(eventDto.getParticipants());
+
+        return new EventData(eventDto.getId().toString(), date, time, new BookData(bookId, title, author), host, participants);
     }
 
-    private static String getHostNameOrExternalId(GetEventDto eventDto) {
-        return Optional.ofNullable(eventDto.getHost())
-            .map(UserDto::getName)
-            .orElse(getHostExternalId(eventDto));
-    }
+    public static EditEventDto mapToEditDto(EditEventRequest event) {
+        UUID mappedId = UUID.fromString(event.getId());
+        UUID mappedBookId = UUID.fromString(event.getBookId());
+        Instant mappedTime = DateTimeMapper.toInstant(event.getDate(), event.getTime());
+        UUID mappedHostId = UUID.fromString(event.getHost());
 
-    private static String getHostExternalId(GetEventDto eventDto) {
-        String hostExternalId = Optional.ofNullable(eventDto.getHostExternalId())
-            .map(Object::toString)
-            .orElse("N/A");
-        return "[" + hostExternalId + "]";
+        return new EditEventDto(mappedId, mappedBookId, mappedTime, mappedHostId);
     }
 }

@@ -1,62 +1,50 @@
 package hu.bmiklos.bc.controller.dto;
 
-import java.util.Objects;
+import java.util.Collections;
+import java.util.List;
 
 public class EventData {
+    private final String id;
     private final String date;
-    private final String author;
-    private final String title;
-    private final String hostName;
-    private final boolean userAttended;
-    private final boolean userHosted;
+    private final String time;
+    private final BookData book;
+    private final HostData host;
+    private final List<ParticipantData> participants;
 
-    public EventData(String date, String author, String title, String hostName, boolean userAttended, boolean userHosted) {
+    public EventData(String id, String date, String time, BookData book, HostData host, List<ParticipantData> participants) {
+        this.id = id;
         this.date = date;
-        this.author = author;
-        this.title = title;
-        this.hostName = hostName;
-        this.userAttended = userAttended;
-        this.userHosted = userHosted;
+        this.time = time;
+        this.book = book;
+        this.host = host;
+        this.participants = Collections.unmodifiableList(participants);
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getDate() {
         return date;
     }
 
-    public String getAuthor() {
-        return author;
+    public BookData getBook() {
+        return book;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public String getHostName() {
-        return hostName;
-    }
-
-    public boolean isUserAttended() {
-        return userAttended;
+    public HostData getHost() {
+        return host;
     }
 
     public boolean isUserHosted() {
-        return userHosted;
+        return host.isUserHosted();
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(date, author, title, hostName, userAttended, userHosted);
+    public String getTime() {
+        return time;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!(obj instanceof EventData))
-            return false;
-        EventData other = (EventData) obj;
-        return Objects.equals(date, other.date) && Objects.equals(author, other.author)
-                && Objects.equals(title, other.title) && Objects.equals(hostName, other.hostName)
-                && userAttended == other.userAttended && userHosted == other.userHosted;
-    }    
+    public List<ParticipantData> getParticipants() {
+        return participants;
+    }
 }

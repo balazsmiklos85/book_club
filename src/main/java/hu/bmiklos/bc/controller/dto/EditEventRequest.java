@@ -1,10 +1,19 @@
 package hu.bmiklos.bc.controller.dto;
 
-public class CreateEventRequest {
+public class EditEventRequest {
+    private String id;
     private String bookId;
     private String date;
     private String time;
     private String host;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
     
     public String getBookId() {
         return bookId;
