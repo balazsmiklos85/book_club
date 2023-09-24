@@ -9,6 +9,7 @@ public class LeaderboardBookData {
     private final String url;
     private final String recommenderName;
     private final boolean userVoted;
+    private boolean isNew = false;
 
     public LeaderboardBookData(UUID id, String author, String title, String url, String recommender, boolean userVoted) {
         this.id = id.toString();
@@ -39,7 +40,15 @@ public class LeaderboardBookData {
         return recommenderName;
     }
 
+    public boolean isNew() {
+        return isNew;
+    }
+
+    public void setNew(boolean isNew) {
+        this.isNew = isNew;
+    }
+
     public boolean isUserVoted() {
         return userVoted;
-    }    
+    }
 }

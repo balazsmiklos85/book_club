@@ -11,7 +11,9 @@
 	<ol>
 		<li th:each="book : ${books}">
 			<span>
+				<span th:if="${book.isNew}" th:text="'🆕'"></span>
 				<a th:href="${book.url}" th:text="${book.author} + ': ' + ${book.title}"></a>
+				<span th:if="${book.isNew}" th:text="'🆕'"></span>
 				<br />
 				<span><span th:text="#{field.recommender} + ': '"></span><span th:text="${book.recommenderName}"></span></span>
 			</span>

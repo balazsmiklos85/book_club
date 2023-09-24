@@ -1,5 +1,7 @@
 package hu.bmiklos.bc.service.mapper;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import hu.bmiklos.bc.controller.dto.LeaderboardBookData;
@@ -25,6 +27,9 @@ public class BookMapper {
         if (recommender == null || recommender.isBlank()) {
             recommender = "[" + book.getRecommender().getExternalId() + "]";
         }
-        return new LeaderboardBookData(book.getId(), book.getAuthor(), book.getTitle(), book.getUrl(), recommender, userVoted);
+        LeaderboardBookData result = new LeaderboardBookData(book.getId(), book.getAuthor(), book.getTitle(), book.getUrl(), recommender, userVoted);
+        boolean isFromTheLastMonth = book.getRecommendedAt().isAfter(Instant.now().minus(30l, ChronoUnit.DAYS));
+        result.setNew(isFromTheLastMonth);
+        return result;
     }
 }
