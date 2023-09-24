@@ -25,8 +25,8 @@
 		</div>
 		<div>
 			<label for="host" th:text="#{field.host}"></label>
-			<select name="host" th:value="${event.host.id}" th:disabled="${!isAdmin}">
-				<option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+			<select name="host" th:disabled="${!isAdmin}">
+				<option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}" th:selected="${event.host.id} == ${user.id}"></option>
 			</select>
 			<button type="submit" th:text="#{button.save}"></button>
 	</form>
