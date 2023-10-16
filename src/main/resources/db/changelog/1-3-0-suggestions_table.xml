@@ -1,0 +1,29 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                      http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+  <changeSet author="Miklós Balázs" id="1.3.0">
+    <createTable tableName="suggestions">
+      <column name="id" type="uuid">
+        <constraints primaryKey="true" nullable="false" />
+      </column>
+      <column name="book_id" type="uuid">
+        <constraints nullable="false" />
+      </column>
+      <column name="user_id" type="uuid">
+        <constraints nullable="false" />
+      </column>
+      <column name="creation_date" type="timestamp">
+        <constraints nullable="false" />
+      </column>
+      <column name="description" type="text">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+    <addForeignKeyConstraint baseColumnNames="book_id" baseTableName="suggestions"
+      constraintName="fk_suggestions_book_id" referencedColumnNames="id" referencedTableName="books" />
+    <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="suggestions"
+      constraintName="fk_suggestions_user_id" referencedColumnNames="id" referencedTableName="users" />
+  </changeSet>
+</databaseChangeLog>

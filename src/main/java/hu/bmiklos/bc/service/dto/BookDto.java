@@ -1,7 +1,8 @@
 package hu.bmiklos.bc.service.dto;
 
-import java.time.Instant;
-import java.util.Objects;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 public class BookDto {
@@ -9,16 +10,25 @@ public class BookDto {
     private final String author;
     private final String title;
     private final String url;
-    private final Instant recommendedAt;
-    private final UserDto recommender;
+    private final Integer historicSuggester;
+    private final Set<SuggestionDto> suggesters;
 
-    public BookDto(UUID id, String author, String title, String url, Instant recommendedAt, UserDto recommender) {
+    public BookDto(UUID id, String author, String title, String url, Collection<SuggestionDto> suggesters) {
         this.id = id;
         this.author = author;
         this.title = title;
         this.url = url;
-        this.recommendedAt = recommendedAt;
-        this.recommender = recommender;
+        this.historicSuggester = null;
+        this.suggesters = Set.copyOf(suggesters);
+    }
+
+    public BookDto(UUID id, String author, String title, String url, Integer historicSuggester) {
+        this.id = id;
+        this.author = author;
+        this.title = title;
+        this.url = url;
+        this.historicSuggester = historicSuggester;
+        this.suggesters = Set.of();
     }
 
     public UUID getId() {
@@ -37,28 +47,11 @@ public class BookDto {
         return url;
     }
 
-    public Instant getRecommendedAt() {
-        return recommendedAt;
+    public Optional<Integer> getHistoricSuggester() {
+        return Optional.ofNullable(historicSuggester);
     }
 
-    public UserDto getRecommender() {
-        return recommender;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, author, title, url, recommendedAt, recommender);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!(obj instanceof BookDto))
-            return false;
-        BookDto other = (BookDto) obj;
-        return Objects.equals(id, other.id) && Objects.equals(author, other.author)
-                && Objects.equals(title, other.title) && Objects.equals(url, other.url)
-                && Objects.equals(recommendedAt, other.recommendedAt) && Objects.equals(recommender, other.recommender);
+    public Set<SuggestionDto> getSuggesters() {
+        return suggesters;
     }
 }

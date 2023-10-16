@@ -48,7 +48,7 @@ public class BookSortingService {
         List<Book> allBooks = bookRepository.findAll();
         Stream<Book> booksWithoutEvents = allBooks
                 .stream()
-                .filter(this::hasNoEvents);
+                .filter(this::isSuggested);
         List<Book> preSortedBooks = booksWithoutEvents
                 .sorted(new BookComparator(bookWeights))
                 .toList();
@@ -59,7 +59,10 @@ public class BookSortingService {
                 .toList();
     }
 
-    private boolean hasNoEvents(Book book) {
-        return Objects.isNull(book.getEvents()) || book.getEvents().isEmpty();
+    private boolean isSuggested(Book book) {
+        boolean hasSuggestion = Objects.nonNull(book.getSuggestions()) && !book.getSuggestions().isEmpty();
+        boolean hasRecommender = Objects.nonNull(book.getRecommenderExternalId());
+        boolean hasNoEvent = Objects.isNull(book.getEvents()) || book.getEvents().isEmpty();
+        return hasSuggestion || hasRecommender && hasNoEvent;
     }
 }

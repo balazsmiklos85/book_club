@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -31,6 +30,7 @@ import hu.bmiklos.bc.service.UserService;
 import hu.bmiklos.bc.service.dto.BookDto;
 import hu.bmiklos.bc.service.dto.CreateEventDto;
 import hu.bmiklos.bc.service.dto.GetEventDto;
+import hu.bmiklos.bc.service.dto.SuggestionDto;
 import hu.bmiklos.bc.service.dto.UserDto;
 
 @Controller
@@ -65,7 +65,11 @@ public class EventController {
             modelAndView.addObject("proposedDate", DateTimeMapper.toLocalDateString(proposedDateTime.get()));
             modelAndView.addObject("proposedTime", DateTimeMapper.toLocalTimeString(proposedDateTime.get()));
         }
-        modelAndView.addObject("host", book.getRecommender().getId());
+        Optional<UUID> host = book.getSuggesters().stream()
+            .min((a, b) -> a.getSuggestedAt().compareTo(b.getSuggestedAt()))
+            .map(SuggestionDto::getSuggester)
+            .map(UserDto::getId);
+        host.ifPresent(h -> modelAndView.addObject("host", h));
         modelAndView.addObject("users", users);
         return modelAndView;
     }
