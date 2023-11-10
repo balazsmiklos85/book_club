@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import org.springframework.lang.Nullable;
 
+import hu.bmiklos.bc.controller.dto.SuggestionReference;
 import hu.bmiklos.bc.model.Suggestion;
 import hu.bmiklos.bc.model.User;
 import hu.bmiklos.bc.service.dto.SuggestionDto;
@@ -26,6 +27,10 @@ public class SuggestionMapper {
         if (suggester == null) {
             return null;
         }
-        return new SuggestionDto(suggestion.getCreationDate(), UserMapper.mapToDto(suggester));
+        return new SuggestionDto(suggestion.getId(), suggestion.getCreationDate(), UserMapper.mapToDto(suggester));
+    }
+
+    public static SuggestionReference mapToReference(SuggestionDto suggestion) {
+        return new SuggestionReference(suggestion.getId(), suggestion.getSuggester().getName());
     }
 }

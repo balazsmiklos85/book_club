@@ -8,16 +8,16 @@ public class LeaderboardBookData {
     private final String author;
     private final String title;
     private final String url;
-    private final List<String> suggesters;
+    private final List<SuggestionReference> suggestions;
     private final boolean userVoted;
     private boolean isNew = false;
 
-    public LeaderboardBookData(UUID id, String author, String title, String url, List<String> suggesters, boolean userVoted) {
+    public LeaderboardBookData(UUID id, String author, String title, String url, List<SuggestionReference> suggestions, boolean userVoted) {
         this.id = id.toString();
         this.author = author;
         this.title = title;
         this.url = url;
-        this.suggesters = suggesters;
+        this.suggestions = suggestions;
         this.userVoted = userVoted;
     }
 
@@ -37,8 +37,8 @@ public class LeaderboardBookData {
         return url;
     }
 
-    public List<String> getSuggesters() {
-        return suggesters;
+    public List<SuggestionReference> getSuggestions() {
+        return suggestions;
     }
 
     public boolean isNew() {

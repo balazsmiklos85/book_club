@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import hu.bmiklos.bc.controller.dto.LeaderboardBookData;
+import hu.bmiklos.bc.controller.dto.SuggestionReference;
 import hu.bmiklos.bc.model.Book;
 import hu.bmiklos.bc.service.BookAgeDeterminator;
 import hu.bmiklos.bc.service.dto.BookDto;
@@ -36,18 +37,19 @@ public class BookMapper {
     }
 
     private static LeaderboardBookData mapToLeaderboardBookData(BookDto book, List<BookDto> userVotedBooks) {
-        List<String> suggesters;
+        List<SuggestionReference> suggestions;
         if (book.getHistoricSuggester().isPresent()) {
-            suggesters = List.of("[" + book.getHistoricSuggester().get() + "]");
+            suggestions = List.of("[" + book.getHistoricSuggester().get() + "]").stream()
+                .map(SuggestionReference::new)
+                .toList();
         } else {
-            suggesters = book.getSuggesters()
+            suggestions = book.getSuggesters()
                 .stream()
-                .map(SuggestionDto::getSuggester)
-                .map(UserDto::getName)
+                .map(SuggestionMapper::mapToReference)
                 .toList();
         }
         boolean userVoted = userVotedBooks.contains(book);
-        LeaderboardBookData result = new LeaderboardBookData(book.getId(), book.getAuthor(), book.getTitle(), book.getUrl(), suggesters, userVoted);
+        LeaderboardBookData result = new LeaderboardBookData(book.getId(), book.getAuthor(), book.getTitle(), book.getUrl(), suggestions, userVoted);
         result.setNew(new BookAgeDeterminator(book).isFromTheLastMonth());
         return result;
     }
