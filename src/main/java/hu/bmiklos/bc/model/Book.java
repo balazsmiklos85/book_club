@@ -36,10 +36,10 @@ public class Book {
     @Column(nullable = false, unique = true)
     private String url;
 
-    @Column(nullable = false)
-    private int recommenderExternalId;
+    @Column(nullable = true)
+    private Integer recommenderExternalId;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Instant recommendedAt;
 
     @OneToMany
@@ -58,12 +58,20 @@ public class Book {
 
     public Book() {}
 
-    public Book(String author, String title, String url, int recommenderExternalId, Instant recommendedAt) {
+    /**
+     * @deprecated Use {@link Suggestion} to store information about who suggested the book.
+     */
+    @Deprecated
+    public Book(String author, String title, String url, Integer recommenderExternalId, Instant recommendedAt) {
         this.author = author;
         this.title = title;
         this.url = url;
         this.recommenderExternalId = recommenderExternalId;
         this.recommendedAt = recommendedAt;
+    }
+
+    public Book(String author, String title, String url) {
+        this(author, title, url, null, null);
     }
 
     public UUID getId() {
@@ -102,7 +110,8 @@ public class Book {
      * @deprecated Use {@link Suggestion} to get information about the recommender.
      */
     @Deprecated
-    public int getRecommenderExternalId() {
+    @Nullable
+    public Integer getRecommenderExternalId() {
         return recommenderExternalId;
     }
 

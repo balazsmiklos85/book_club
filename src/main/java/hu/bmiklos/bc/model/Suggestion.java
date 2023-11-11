@@ -27,6 +27,16 @@ public class Suggestion {
     @JoinColumn(name = "bookId", referencedColumnName = "id", insertable = false, updatable = false)
     private Book book;
 
+    public Suggestion() {}
+
+    public Suggestion(UUID bookId, UUID userId, Instant creationDate, String description) {
+        this.id = UUID.randomUUID();
+        this.bookId = bookId;
+        this.userId = userId;
+        this.creationDate = creationDate;
+        this.description = description;
+    }
+
     public UUID getId() {
         return id;
     }

@@ -20,6 +20,10 @@
 			<label for="url" th:text="#{book.url}"></label>
 			<input type="text" name="url" />
 		</div>
+		<div>
+			<label for="url" th:text="#{book.description}"></label>
+			<textarea type="text" name="description"></textarea>
+		</div>
 		<button type="submit" th:text="'📚 ' + #{book.add_new}"></button>
 	</form>
 </body>
