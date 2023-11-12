@@ -38,16 +38,17 @@ public class SuggestionController {
     @GetMapping("/{id}")
     public ModelAndView getSuggestion(@PathVariable UUID id) {
         SuggestionDto suggestion = suggestionService.getSuggestion(id);
+        if (suggestion == null) {
+            throw new IllegalArgumentException("No suggestion found with ID " + id);
+        }
         if (activeUserService.isCurrentUser(
-                Optional.ofNullable(suggestion)
-                        .map(SuggestionDto::getSuggester)
+                Optional.ofNullable(suggestion.getSuggester())
                         .map(UserDto::getId)
                         .orElse(null))) {
             return new ModelAndView("suggestion/edit", "suggestion", suggestion);
         } else {
             return new ModelAndView("suggestion/view", "suggestion", suggestion);
         }
-
     }
 
     @PostMapping
