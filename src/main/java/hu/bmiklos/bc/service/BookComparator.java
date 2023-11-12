@@ -2,6 +2,7 @@ package hu.bmiklos.bc.service;
 
 import java.time.Instant;
 import java.util.Comparator;
+import java.util.Optional;
 
 import hu.bmiklos.bc.model.Book;
 import hu.bmiklos.bc.model.Suggestion;
@@ -27,7 +28,7 @@ public class BookComparator implements Comparator<Book> {
     }
 
     private Instant getRecommendedAt(Book book) {
-        return java.util.Optional.ofNullable(book.getRecommendedAt())
+        return Optional.ofNullable(book.getRecommendedAt())
             .orElse(book.getSuggestions()
                 .stream()
                 .map(Suggestion::getCreationDate)
