@@ -2,7 +2,9 @@ package hu.bmiklos.bc.service;
 
 import static hu.bmiklos.bc.service.security.BookClubAuthority.BOOKCLUB_ADMIN;
 
+import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -36,5 +38,9 @@ public class ActiveUserService extends AuthenticatedService {
         return userRepository.findById(getUserId())
             .map(UserMapper::mapToDto)
             .orElseThrow(NotAuthenticatedException::new);
+    }
+
+    public boolean isCurrentUser(UUID userId) {
+        return Objects.equals(getUserId(), userId);
     }
 }

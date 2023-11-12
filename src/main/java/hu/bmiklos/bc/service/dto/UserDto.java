@@ -11,14 +11,14 @@ public class UserDto {
     private final UUID id;
     @Nullable
     private final String name;
-    private final int externalId;
+    private final Integer externalId;
     private List<String> emails;
 
-    public UserDto(UUID id, String name, int externalId) {
+    public UserDto(UUID id, String name, Integer externalId) {
         this(id, name, externalId, List.of());
     }
 
-    public UserDto(UUID id, String name, int externalId, List<String> emails) {
+    public UserDto(UUID id, String name, Integer externalId, List<String> emails) {
         this.id = id;
         this.name = name;
         this.externalId = externalId;
@@ -35,7 +35,7 @@ public class UserDto {
         return name;
     }
 
-    public int getExternalId() {
+    public Integer getExternalId() {
         return externalId;
     }
 

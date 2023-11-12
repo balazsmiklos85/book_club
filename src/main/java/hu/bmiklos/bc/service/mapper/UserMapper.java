@@ -20,7 +20,7 @@ public class UserMapper {
         return mapToDto(user, user.getExternalId());
     }
 
-    public static UserDto mapToDto(@Nullable User user, int externalId) {
+    public static UserDto mapToDto(@Nullable User user, Integer externalId) {
         Optional<User> safeUser = Optional.ofNullable(user);
         UUID userId = safeUser.map(User::getId)
             .orElse(null);

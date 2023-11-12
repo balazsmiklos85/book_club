@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+	<title th:text="#{book.edit}"></title>
+</head>
+
+<body>
+	<h2 th:text="#{book.edit}"></h2>
+	<form action="/book" method="post">
+		<input type="hidden" name="bookId" th:value="${book.id}" />
+		<input type="hidden" name="suggestionId" th:value="${suggestion.id}" />
+		<div>
+			<label for="author" th:text="#{book.author}"></label>
+			<input type="text" name="author" th:value="${book.author}" />
+		</div>
+		<div>
+			<label for="title" th:text="#{book.title}"></label>
+			<input type="text" name="title" th:value="${book.title}" />
+		</div>
+		<div>
+			<label for="url" th:text="#{book.url}"></label>
+			<input type="text" name="url" th:value="${book.url}" />
+		</div>
+		<div>
+			<label for="url" th:text="#{suggestion.description}"></label>
+			<textarea type="text" name="description" th:value="${suggestion.description}"></textarea>
+		</div>
+		<button type="submit" th:text="'📚 ' + #{book.edit}"></button>
+	</form>
+</body>
+
+</html>
