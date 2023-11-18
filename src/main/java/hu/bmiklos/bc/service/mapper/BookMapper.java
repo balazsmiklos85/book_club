@@ -1,56 +1,54 @@
 package hu.bmiklos.bc.service.mapper;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import hu.bmiklos.bc.controller.dto.LeaderboardBookData;
 import hu.bmiklos.bc.controller.dto.SuggestionReference;
 import hu.bmiklos.bc.model.Book;
 import hu.bmiklos.bc.service.BookAgeDeterminator;
+import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
 import hu.bmiklos.bc.service.dto.BookDto;
 import hu.bmiklos.bc.service.dto.SuggestionDto;
-import hu.bmiklos.bc.service.dto.UserDto;
 
 public class BookMapper {
     private BookMapper() {}
 
-    public static BookDto mapToDto(Book book) {
+    public static BookAndSuggesterDto mapToDto(Book book) {
         List<SuggestionDto> suggesters;
         if (book.getSuggestions() == null || book.getSuggestions().isEmpty()) {
             if (book.getRecommender() == null) {
-                return new BookDto(book.getId(), book.getAuthor(), book.getTitle(), book.getUrl(), book.getRecommenderExternalId());
+                return new BookAndSuggesterDto(book.getId(), book.getAuthor(), book.getTitle(), book.getUrl(), book.getRecommenderExternalId());
             }
-            suggesters =  List.of(new SuggestionDto(book.getRecommendedAt(), UserMapper.mapToDto(book.getRecommender(), book.getRecommenderExternalId())));
+            var suggester = new SuggestionDto(book.getRecommendedAt(), UserMapper.mapToDto(book.getRecommender(), book.getRecommenderExternalId()), "");
+            suggesters =  List.of(suggester);
         } else {
             suggesters = SuggestionMapper.mapToDto(book.getSuggestions());
         }
-        return new BookDto(book.getId(), book.getAuthor(), book.getTitle(), book.getUrl(), suggesters);
+        return new BookAndSuggesterDto(book.getId(), book.getAuthor(), book.getTitle(), book.getUrl(), suggesters);
     }
 
-    public static List<LeaderboardBookData> mapToLeaderboardBookData(List<BookDto> books, List<BookDto> userVotedBooks) {
+    public static List<LeaderboardBookData> mapToLeaderboardBookData(List<BookAndSuggesterDto> books, List<BookAndSuggesterDto> userVotedBooks) {
         return books.stream()
             .map(book -> mapToLeaderboardBookData(book, userVotedBooks))
             .toList();
     }
 
-    private static LeaderboardBookData mapToLeaderboardBookData(BookDto book, List<BookDto> userVotedBooks) {
+    private static LeaderboardBookData mapToLeaderboardBookData(BookAndSuggesterDto bookAndSuggester, List<BookAndSuggesterDto> userVotedBooks) {
+        BookDto book = bookAndSuggester.getBook();
         List<SuggestionReference> suggestions;
-        if (book.getHistoricSuggester().isPresent()) {
-            suggestions = List.of("[" + book.getHistoricSuggester().get() + "]").stream()
+        if (bookAndSuggester.getHistoricSuggester().isPresent()) {
+            suggestions = List.of("[" + bookAndSuggester.getHistoricSuggester().get() + "]").stream()
                 .map(SuggestionReference::new)
                 .toList();
         } else {
-            suggestions = book.getSuggesters()
+            suggestions = bookAndSuggester.getSuggesters()
                 .stream()
                 .map(SuggestionMapper::mapToReference)
                 .toList();
         }
         boolean userVoted = userVotedBooks.contains(book);
         LeaderboardBookData result = new LeaderboardBookData(book.getId(), book.getAuthor(), book.getTitle(), book.getUrl(), suggestions, userVoted);
-        result.setNew(new BookAgeDeterminator(book).isFromTheLastMonth());
+        result.setNew(new BookAgeDeterminator(bookAndSuggester).isFromTheLastMonth());
         return result;
     }
 }

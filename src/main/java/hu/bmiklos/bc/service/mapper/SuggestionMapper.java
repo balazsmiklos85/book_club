@@ -10,6 +10,7 @@ import hu.bmiklos.bc.controller.dto.SuggestionReference;
 import hu.bmiklos.bc.model.Book;
 import hu.bmiklos.bc.model.Suggestion;
 import hu.bmiklos.bc.model.User;
+import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
 import hu.bmiklos.bc.service.dto.SuggestionDto;
 
 public class SuggestionMapper {
@@ -23,16 +24,12 @@ public class SuggestionMapper {
     }
 
     /**
-     * @deprecated Use {@link #mapToDto(Suggestion)} instead.
-     */
+     * @deprecated Should be inlined at some point.
+     */ 
     @Deprecated
     @Nullable
-    public static SuggestionDto mapToDto(Book book) {
-        User recommender = book.getRecommender();
-        if (recommender == null) {
-            return null;
-        }
-        return new SuggestionDto(null, book.getRecommendedAt(), UserMapper.mapToDto(recommender, book.getRecommenderExternalId()));
+    public static BookAndSuggesterDto mapToDto(Book book) {
+        return BookMapper.mapToDto(book);
     }
 
     @Nullable
@@ -41,7 +38,7 @@ public class SuggestionMapper {
         if (suggester == null) {
             return null;
         }
-        return new SuggestionDto(suggestion.getId(), suggestion.getCreationDate(), UserMapper.mapToDto(suggester));
+        return new SuggestionDto(suggestion.getId(), suggestion.getCreationDate(), UserMapper.mapToDto(suggester), suggestion.getDescription());
     }
 
     public static SuggestionReference mapToReference(SuggestionDto suggestion) {

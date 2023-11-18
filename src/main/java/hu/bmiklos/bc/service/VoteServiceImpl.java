@@ -21,6 +21,7 @@ import hu.bmiklos.bc.repository.BookRepository;
 import hu.bmiklos.bc.repository.EventRepository;
 import hu.bmiklos.bc.repository.UserRepository;
 import hu.bmiklos.bc.repository.VoteRepository;
+import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
 import hu.bmiklos.bc.service.dto.BookDto;
 import hu.bmiklos.bc.service.mapper.BookMapper;
 import jakarta.transaction.Transactional;
@@ -75,7 +76,7 @@ public class VoteServiceImpl extends AuthenticatedService implements VoteService
     }
 
     @Override
-    public List<BookDto> getVotedBooks() {
+    public List<BookAndSuggesterDto> getVotedBooks() {
         List<Vote> votesByUserId = voteRepository.findByUserId(activeUserService.getUserId());
         List<Vote> votesByUserExternalId = voteRepository.findByUserExternalId(activeUserService.getExternalUserId());
         List<Vote> userVotes = new ArrayList<>(votesByUserId.size() + votesByUserExternalId.size());

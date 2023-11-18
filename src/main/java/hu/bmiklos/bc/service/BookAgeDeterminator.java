@@ -2,25 +2,24 @@ package hu.bmiklos.bc.service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Set;
 
-import hu.bmiklos.bc.service.dto.BookDto;
+import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
 import hu.bmiklos.bc.service.dto.SuggestionDto;
 
 public class BookAgeDeterminator {
 
-    private BookDto book;
+    private Set<SuggestionDto> suggesters;
 
-    public BookAgeDeterminator(BookDto book) {
-        this.book = book;
+    public BookAgeDeterminator(BookAndSuggesterDto book) {
+        this.suggesters = Set.copyOf(book.getSuggesters());
     }
 
     public boolean isFromTheLastMonth() {
-        return book.getSuggesters()
+        return suggesters
             .stream()
             .map(SuggestionDto::getSuggestedAt)
-            .filter(BookAgeDeterminator::isFromTheLastMonth)
-            .findAny()
-            .isPresent();
+            .anyMatch(BookAgeDeterminator::isFromTheLastMonth);
     }
 
     private static boolean isFromTheLastMonth(Instant instant) {

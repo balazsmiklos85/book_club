@@ -27,6 +27,7 @@ import hu.bmiklos.bc.service.BookService;
 import hu.bmiklos.bc.service.EventService;
 import hu.bmiklos.bc.service.ParticipantService;
 import hu.bmiklos.bc.service.UserService;
+import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
 import hu.bmiklos.bc.service.dto.BookDto;
 import hu.bmiklos.bc.service.dto.CreateEventDto;
 import hu.bmiklos.bc.service.dto.GetEventDto;
@@ -53,19 +54,19 @@ public class EventController {
 
     @GetMapping("/new")
     public ModelAndView newBookForm(@RequestParam String bookId) {
-        BookDto book = bookService.getBookById(bookId);
+        BookAndSuggesterDto bookAndSuggester = bookService.getBookById(bookId);
         Optional<Instant> proposedDateTime = eventService.proposeNewTime();
         List<UserDto> users = userService.getUsers();
 
         ModelAndView modelAndView = new ModelAndView("event/new");
-        modelAndView.addObject("author", book.getAuthor());
-        modelAndView.addObject("title", book.getTitle());
+        modelAndView.addObject("author", bookAndSuggester.getBook().getAuthor());
+        modelAndView.addObject("title", bookAndSuggester.getBook().getTitle());
         modelAndView.addObject("bookId", bookId);
         if (proposedDateTime.isPresent()) {
             modelAndView.addObject("proposedDate", DateTimeMapper.toLocalDateString(proposedDateTime.get()));
             modelAndView.addObject("proposedTime", DateTimeMapper.toLocalTimeString(proposedDateTime.get()));
         }
-        Optional<UUID> host = book.getSuggesters().stream()
+        Optional<UUID> host = bookAndSuggester.getSuggesters().stream()
             .min((a, b) -> a.getSuggestedAt().compareTo(b.getSuggestedAt()))
             .map(SuggestionDto::getSuggester)
             .map(UserDto::getId);

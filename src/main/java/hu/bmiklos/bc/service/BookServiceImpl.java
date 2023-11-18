@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import hu.bmiklos.bc.controller.dto.CreateBookRequest;
 import hu.bmiklos.bc.model.Book;
 import hu.bmiklos.bc.repository.BookRepository;
+import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
 import hu.bmiklos.bc.service.dto.BookDto;
 import hu.bmiklos.bc.service.mapper.BookMapper;
 import jakarta.persistence.EntityNotFoundException;
@@ -36,7 +37,7 @@ public class BookServiceImpl extends AuthenticatedService implements BookService
     }
 
     @Override
-    public BookDto getBookById(String rawId) {
+    public BookAndSuggesterDto getBookById(String rawId) {
         var bookId = UUID.fromString(rawId);
         Book book = bookRepository.findById(bookId)
             .orElseThrow(() -> new EntityNotFoundException("Book not found."));

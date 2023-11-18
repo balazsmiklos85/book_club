@@ -1,8 +1,5 @@
 package hu.bmiklos.bc.service.dto;
 
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 public class BookDto {
@@ -10,25 +7,12 @@ public class BookDto {
     private final String author;
     private final String title;
     private final String url;
-    private final Integer historicSuggester;
-    private final Set<SuggestionDto> suggesters;
 
-    public BookDto(UUID id, String author, String title, String url, Collection<SuggestionDto> suggesters) {
+    public BookDto(UUID id, String author, String title, String url) {
         this.id = id;
         this.author = author;
         this.title = title;
         this.url = url;
-        this.historicSuggester = null;
-        this.suggesters = Set.copyOf(suggesters);
-    }
-
-    public BookDto(UUID id, String author, String title, String url, Integer historicSuggester) {
-        this.id = id;
-        this.author = author;
-        this.title = title;
-        this.url = url;
-        this.historicSuggester = historicSuggester;
-        this.suggesters = Set.of();
     }
 
     public UUID getId() {
@@ -45,13 +29,5 @@ public class BookDto {
 
     public String getUrl() {
         return url;
-    }
-
-    public Optional<Integer> getHistoricSuggester() {
-        return Optional.ofNullable(historicSuggester);
-    }
-
-    public Set<SuggestionDto> getSuggesters() {
-        return suggesters;
     }
 }

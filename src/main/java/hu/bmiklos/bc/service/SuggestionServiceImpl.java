@@ -1,8 +1,10 @@
 package hu.bmiklos.bc.service;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -12,8 +14,11 @@ import hu.bmiklos.bc.model.Book;
 import hu.bmiklos.bc.model.Suggestion;
 import hu.bmiklos.bc.repository.BookRepository;
 import hu.bmiklos.bc.repository.SuggestionRepository;
+import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
 import hu.bmiklos.bc.service.dto.SuggestionDto;
+import hu.bmiklos.bc.service.mapper.BookMapper;
 import hu.bmiklos.bc.service.mapper.SuggestionMapper;
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class SuggestionServiceImpl extends AuthenticatedService implements SuggestionService {
@@ -43,9 +48,20 @@ public class SuggestionServiceImpl extends AuthenticatedService implements Sugge
             return SuggestionMapper.mapToDto(suggestion.get());
         }
         Optional<Book> book = bookRepository.findById(id);
-        if (book.isPresent()) {
-            return SuggestionMapper.mapToDto(book.get());
-        }
-        return null;
+        return book.map(SuggestionMapper::mapToDto)
+            .map(BookAndSuggesterDto::getSuggesters)
+            .map(Collection::stream)
+            .map(Stream::findFirst)
+            .map(Optional::get)
+            .orElse(null);
+    }
+
+    @Override
+    public BookAndSuggesterDto getBookBySuggestionId(UUID id) {
+        Optional<Suggestion> suggestion = suggestionRepository.findById(id);
+
+        return suggestion.map(Suggestion::getBook)
+            .map(BookMapper::mapToDto)
+            .orElseThrow(() -> new EntityNotFoundException("Suggestion or book not found."));
     }
 }
