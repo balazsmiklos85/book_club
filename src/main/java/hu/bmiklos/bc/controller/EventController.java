@@ -93,9 +93,11 @@ public class EventController {
 
     @PostMapping
     public ModelAndView editEvent(@ModelAttribute EditEventRequest event) {
+        // TODO: non-admin users should be able to schedule events
         if (event.getId() == null) {
             CreateEventDto eventDto = EventMapper.mapToDto(event);
-            eventService.createEvent(eventDto);
+            UUID eventId = eventService.createEvent(eventDto);
+            return new ModelAndView("redirect:/event/" + eventId);
         } else {
             if (activeUserService.isAdmin()) {
                 eventService.editEvent(EventMapper.mapToEditDto(event));

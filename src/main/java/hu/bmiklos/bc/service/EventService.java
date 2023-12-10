@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import hu.bmiklos.bc.model.Event;
+import hu.bmiklos.bc.repository.BookRepository;
 import hu.bmiklos.bc.repository.EventRepository;
 import hu.bmiklos.bc.service.dto.CreateEventDto;
 import hu.bmiklos.bc.service.dto.EditEventDto;
@@ -18,21 +19,22 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class EventService {
+    private final BookRepository bookRepository;
     private final EventRepository eventRepository;
 
-    public EventService(EventRepository eventRepository) {
+    public EventService(BookRepository bookRepository, EventRepository eventRepository) {
+        this.bookRepository = bookRepository;
         this.eventRepository = eventRepository;
     }
 
     @Transactional
-    public GetEventDto createEvent(CreateEventDto event) {
+    public UUID createEvent(CreateEventDto event) {
         UUID hostId = event.getHostId()
             .orElseThrow(() -> new IllegalArgumentException("The host ID is required for new events."));
 
         var toCreate = new Event(event.getBookId(), event.getTime(), hostId);
         Event saved = eventRepository.saveAndFlush(toCreate);
-        
-        return EventMapper.mapToGetDto(saved);
+        return saved.getId();
     }
 
     @Transactional
