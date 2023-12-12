@@ -38,6 +38,7 @@ public class SuggestionController {
         return new ModelAndView("suggestion/new", "book", new CreateBookRequest());
     }
 
+    // FIXME Request method 'POST' is not supported
     @GetMapping("/{id}")
     public ModelAndView getSuggestion(@PathVariable UUID id) {
         BookAndSuggesterDto bookAndSuggestion = suggestionService.getBookBySuggestionId(id);
