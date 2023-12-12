@@ -34,7 +34,7 @@ public class SuggestionController {
 
     @GetMapping("/new")
     public ModelAndView newBookForm() {
-        return new ModelAndView("book/new", "book", new CreateBookRequest());
+        return new ModelAndView("suggestion/new", "book", new CreateBookRequest());
     }
 
     @GetMapping("/{id}")
