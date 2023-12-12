@@ -6,21 +6,22 @@
 </head>
 
 <body>
-	<h2 th:text="#{book.edit}"></h2>
+	<h2 th:text="#{book.edit}" th:if="${suggestion.isSuggestedByMe}"></h2>
+	<h2 th:text="#{suggestion.details}" th:if="${!suggestion.isSuggestedByMe}"></h2>
 	<form action="/suggestion/${suggestion.id}" method="post">
-		<input type="hidden" name="bookId" th:value="${book.id}" />
-		<input type="hidden" name="suggestionId" th:value="${suggestion.id}" />
+		<input type="hidden" name="bookId" th:value="${suggestion.bookId}" />
+		<input type="hidden" name="suggestionId" th:value="${suggestion.suggestionId}" />
 		<div>
 			<label for="author" th:text="#{book.author}"></label>
-			<input type="text" name="author" th:value="${book.author}" />
+			<input type="text" name="author" th:value="${suggestion.author}" />
 		</div>
 		<div>
 			<label for="title" th:text="#{book.title}"></label>
-			<input type="text" name="title" th:value="${book.title}" />
+			<input type="text" name="title" th:value="${suggestion.title}" />
 		</div>
 		<div>
 			<label for="url" th:text="#{book.url}"></label>
-			<input type="text" name="url" th:value="${book.url}" />
+			<input type="text" name="url" th:value="${suggestion.url}" />
 		</div>
 		<div>
 			<label for="url" th:text="#{suggestion.description}"></label>

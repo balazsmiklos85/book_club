@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import hu.bmiklos.bc.controller.dto.CreateBookRequest;
+import hu.bmiklos.bc.controller.dto.SuggestionFormData;
 import hu.bmiklos.bc.service.ActiveUserService;
 import hu.bmiklos.bc.service.BookService;
 import hu.bmiklos.bc.service.SuggestionService;
@@ -44,7 +45,7 @@ public class SuggestionController {
         if (suggestion.isEmpty()) {
             throw new IllegalArgumentException("No suggestion found with ID " + id);
         }
-        var suggestionData = new SuggestionDtoToSuggestionFormDataConverter().convert(bookAndSuggestion);
+        SuggestionFormData suggestionData = new SuggestionDtoToSuggestionFormDataConverter().convert(bookAndSuggestion);
         if (activeUserService.isCurrentUser(
                 suggestion.map(SuggestionDto::getSuggester)
                         .map(UserDto::getId)
