@@ -38,7 +38,6 @@ public class SuggestionController {
         return new ModelAndView("suggestion/new", "book", new CreateBookRequest());
     }
 
-    // FIXME Request method 'POST' is not supported
     @GetMapping("/{id}")
     public ModelAndView getSuggestion(@PathVariable UUID id) {
         BookAndSuggesterDto bookAndSuggestion = suggestionService.getBookBySuggestionId(id);
@@ -56,6 +55,18 @@ public class SuggestionController {
         return new ModelAndView("suggestion/edit", "suggestion", suggestionData);
     }
 
+    @PostMapping("/{id}")
+    public ModelAndView updateSuggestion(@PathVariable UUID id, @ModelAttribute SuggestionFormData suggestionData) {
+        SuggestionDto suggestion = suggestionService.getSuggestion(id);
+
+        if (!activeUserService.isCurrentUser(suggestion.getSuggester().getId())) {
+            throw new IllegalArgumentException("You can only edit your own suggestions.");
+        }
+
+        suggestionService.updateSuggestion(id, suggestionData);
+        return new ModelAndView("redirect:/");
+    }
+
     @PostMapping
     public ModelAndView createBook(@ModelAttribute CreateBookRequest book) {
         suggestionService.createSuggestion(book);
@@ -65,7 +76,7 @@ public class SuggestionController {
     private Optional<SuggestionDto> getSuggestion(BookAndSuggesterDto bookAndSuggestion, UUID id) {
         return bookAndSuggestion.getSuggesters()
                 .stream()
-                .filter(suggestion -> id.equals(suggestion.getId()))
+                .filter(suggestion -> id.equals(suggestion.getId()) || id.equals(bookAndSuggestion.getBook().getId()))
                 .findFirst();
     }
 }

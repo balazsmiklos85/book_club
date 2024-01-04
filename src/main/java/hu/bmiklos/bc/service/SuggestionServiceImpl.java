@@ -10,8 +10,10 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import hu.bmiklos.bc.controller.dto.CreateBookRequest;
+import hu.bmiklos.bc.controller.dto.SuggestionFormData;
 import hu.bmiklos.bc.model.Book;
 import hu.bmiklos.bc.model.Suggestion;
+import hu.bmiklos.bc.model.User;
 import hu.bmiklos.bc.repository.BookRepository;
 import hu.bmiklos.bc.repository.SuggestionRepository;
 import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
@@ -23,11 +25,14 @@ import jakarta.persistence.EntityNotFoundException;
 @Service
 public class SuggestionServiceImpl extends AuthenticatedService implements SuggestionService {
 
+    private final ActiveUserService activeUserService;
     private final BookService bookService;
     private final BookRepository bookRepository;
     private final SuggestionRepository suggestionRepository;
 
-    public SuggestionServiceImpl(BookService bookService, BookRepository bookRepository, SuggestionRepository suggestionRepository) {
+    public SuggestionServiceImpl(ActiveUserService activeUserService, BookService bookService,
+            BookRepository bookRepository, SuggestionRepository suggestionRepository) {
+        this.activeUserService = activeUserService;
         this.bookService = bookService;
         this.bookRepository = bookRepository;
         this.suggestionRepository = suggestionRepository;
@@ -49,19 +54,58 @@ public class SuggestionServiceImpl extends AuthenticatedService implements Sugge
         }
         Optional<Book> book = bookRepository.findById(id);
         return book.map(SuggestionMapper::mapToDto)
-            .map(BookAndSuggesterDto::getSuggesters)
-            .map(Collection::stream)
-            .map(Stream::findFirst)
-            .map(Optional::get)
-            .orElse(null);
+                .map(BookAndSuggesterDto::getSuggesters)
+                .map(Collection::stream)
+                .map(Stream::findFirst)
+                .map(Optional::get)
+                .orElse(null);
     }
 
     @Override
     public BookAndSuggesterDto getBookBySuggestionId(UUID id) {
         Optional<Suggestion> suggestion = suggestionRepository.findById(id);
 
-        return suggestion.map(Suggestion::getBook)
-            .map(BookMapper::mapToDto)
-            .orElseThrow(() -> new EntityNotFoundException("Suggestion or book not found."));
+        if (suggestion.isPresent()) {
+            return suggestion.map(Suggestion::getBook)
+                    .map(BookMapper::mapToDto)
+                    .orElseThrow(() -> new EntityNotFoundException("Book not found."));
+        }
+
+        Optional<Book> book = bookRepository.findById(id);
+        if (book.isPresent()) {
+            return BookMapper.mapToDto(book.get());
+        }
+        throw new EntityNotFoundException("Suggestion or book not found.");
+    }
+
+    @Override
+    public void updateSuggestion(UUID id, SuggestionFormData suggestionData) {
+        Optional<Suggestion> storedSuggestion = suggestionRepository.findById(id);
+        if (storedSuggestion.isPresent()) {
+            Suggestion suggestion = storedSuggestion.get();
+            suggestion.setDescription(suggestionData.getDescription());
+            suggestionRepository.saveAndFlush(storedSuggestion.get());
+        } else {
+            UUID bookId = UUID.fromString(suggestionData.getBookId());
+            Optional<Book> storedBook = bookRepository.findById(bookId);
+            if (storedBook.isPresent()) {
+                Book book = storedBook.get();
+                User bookRecommender = book.getRecommender();
+                if (activeUserService.isCurrentUser(bookRecommender.getId())
+                        || activeUserService.isCurrentUser(bookRecommender.getExternalId())) {
+                    book.setRecommender(null);
+                    book.setRecommendedAt(null);
+                    book.setRecommenderExternalId(null);
+                    bookRepository.save(book);
+                    var suggestion = new Suggestion(bookId, getUserId(), Instant.now(),
+                            suggestionData.getDescription());
+                    suggestionRepository.saveAndFlush(suggestion);
+                } else {
+                    throw new IllegalArgumentException("You can only edit your own suggestions.");
+                }
+            } else {
+                throw new EntityNotFoundException("Previous suggestion not found.");
+            }
+        }
     }
 }

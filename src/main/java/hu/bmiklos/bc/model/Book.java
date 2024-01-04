@@ -119,7 +119,7 @@ public class Book {
      * @deprecated Use {@link Suggestion} to store information about the recommender.
      */
     @Deprecated
-    public void setRecommenderExternalId(int recommenderExternalId) {
+    public void setRecommenderExternalId(Integer recommenderExternalId) {
         this.recommenderExternalId = recommenderExternalId;
     }
 
@@ -164,6 +164,10 @@ public class Book {
         return recommender;
     }
 
+    /**
+     * @deprecated Use {@link Suggestion} to store information about the recommender.
+     */
+    @Deprecated
     public void setRecommender(User recommender) {
         this.recommender = recommender;
     }

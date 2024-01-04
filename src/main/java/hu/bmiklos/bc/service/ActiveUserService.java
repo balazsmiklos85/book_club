@@ -40,6 +40,10 @@ public class ActiveUserService extends AuthenticatedService {
             .orElseThrow(NotAuthenticatedException::new);
     }
 
+    public boolean isCurrentUser(Integer externalId) {
+        return Objects.equals(getExternalUserId(), externalId);
+    }
+
     public boolean isCurrentUser(UUID userId) {
         return Objects.equals(getUserId(), userId);
     }
