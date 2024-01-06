@@ -8,7 +8,7 @@
 <body>
 	<h2 th:text="#{book.edit}" th:if="${suggestion.isSuggestedByMe}"></h2>
 	<h2 th:text="#{suggestion.details}" th:if="${!suggestion.isSuggestedByMe}"></h2>
-	<form action="/suggestion/${suggestion.id}" method="post">
+	<form th:action="@{/suggestion/} + (${suggestion.suggestionId} == null ? ${suggestion.bookId} : ${suggestion.suggestionId})" method="post">
 		<input type="hidden" name="bookId" th:value="${suggestion.bookId}" />
 		<input type="hidden" name="suggestionId" th:value="${suggestion.suggestionId}" />
 		<div>
