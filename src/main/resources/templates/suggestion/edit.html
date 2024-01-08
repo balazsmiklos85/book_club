@@ -25,7 +25,7 @@
 		</div>
 		<div>
 			<label for="url" th:text="#{suggestion.description}"></label>
-			<textarea type="text" name="description" th:value="${suggestion.description}"></textarea>
+			<textarea type="text" name="description" th:text="${suggestion.description}"></textarea>
 		</div>
 		<button type="submit" th:text="'📚 ' + #{book.edit}"></button>
 	</form>
