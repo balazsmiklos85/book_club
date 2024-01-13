@@ -1,5 +1,6 @@
 package hu.bmiklos.bc.service.mapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import hu.bmiklos.bc.controller.dto.LeaderboardBookData;
@@ -14,15 +15,18 @@ public class BookMapper {
     private BookMapper() {}
 
     public static BookAndSuggesterDto mapToDto(Book book) {
-        List<SuggestionDto> suggesters;
-        if (book.getSuggestions() == null || book.getSuggestions().isEmpty()) {
-            if (book.getRecommender() == null) {
-                return new BookAndSuggesterDto(book.getId(), book.getAuthor(), book.getTitle(), book.getUrl(), book.getRecommenderExternalId());
-            }
-            var suggester = new SuggestionDto(book.getRecommendedAt(), UserMapper.mapToDto(book.getRecommender(), book.getRecommenderExternalId()), "");
-            suggesters =  List.of(suggester);
-        } else {
-            suggesters = SuggestionMapper.mapToDto(book.getSuggestions());
+        final List<SuggestionDto> suggesters = new ArrayList<>(1);
+        if (book.getSuggestions() == null || book.getSuggestions().isEmpty() && book.getRecommender() == null) {
+            return new BookAndSuggesterDto(book.getId(), book.getAuthor(), book.getTitle(), book.getUrl(),
+                    book.getRecommenderExternalId());
+        }
+        if (book.getRecommender() != null) {
+            var suggester = new SuggestionDto(book.getRecommendedAt(), UserMapper.mapToDto(book.getRecommender(),
+                    book.getRecommenderExternalId()), "");
+            suggesters.add(suggester);
+        }
+        if (book.getSuggestions() != null && !book.getSuggestions().isEmpty()) {
+            suggesters.addAll(SuggestionMapper.mapToDto(book.getSuggestions()));
         }
         return new BookAndSuggesterDto(book.getId(), book.getAuthor(), book.getTitle(), book.getUrl(), suggesters);
     }
