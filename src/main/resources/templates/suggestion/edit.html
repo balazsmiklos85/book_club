@@ -6,6 +6,7 @@
 </head>
 
 <body>
+	<div th:replace="fragments/menu :: menu"></div>
 	<h2 th:text="#{book.edit}" th:if="${suggestion.isSuggestedByMe}"></h2>
 	<h2 th:text="#{suggestion.details}" th:if="${!suggestion.isSuggestedByMe}"></h2>
 	<form th:action="@{/suggestion/} + (${suggestion.suggestionId} == null ? ${suggestion.bookId} : ${suggestion.suggestionId})" method="post">
