@@ -101,7 +101,7 @@ public class SuggestionServiceImpl extends AuthenticatedService implements Sugge
                     book.setRecommenderExternalId(null);
                     bookRepository.save(book);
                 } else {
-                    throw new IllegalArgumentException("You can only edit your own suggestions.");
+                    throw new IllegalArgumentException("You can only edit your own suggestions."); // TODO this should be controller responsibility!
                 }
             } else {
                 throw new EntityNotFoundException("Previous suggestion not found.");
