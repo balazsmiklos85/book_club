@@ -93,13 +93,13 @@ public class SuggestionServiceImpl extends AuthenticatedService implements Sugge
                 User bookRecommender = book.getRecommender();
                 if (activeUserService.isCurrentUser(bookRecommender.getId())
                         || activeUserService.isCurrentUser(bookRecommender.getExternalId())) {
+                    var suggestion = new Suggestion(bookId, getUserId(), book.getRecommendedAt(),
+                            suggestionData.getDescription());
+                    suggestionRepository.saveAndFlush(suggestion);
                     book.setRecommender(null);
                     book.setRecommendedAt(null);
                     book.setRecommenderExternalId(null);
                     bookRepository.save(book);
-                    var suggestion = new Suggestion(bookId, getUserId(), Instant.now(),
-                            suggestionData.getDescription());
-                    suggestionRepository.saveAndFlush(suggestion);
                 } else {
                     throw new IllegalArgumentException("You can only edit your own suggestions.");
                 }
