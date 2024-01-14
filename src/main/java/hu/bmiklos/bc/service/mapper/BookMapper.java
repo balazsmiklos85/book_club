@@ -2,6 +2,7 @@ package hu.bmiklos.bc.service.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import hu.bmiklos.bc.controller.dto.LeaderboardBookData;
 import hu.bmiklos.bc.controller.dto.SuggestionReference;
@@ -32,12 +33,16 @@ public class BookMapper {
     }
 
     public static List<LeaderboardBookData> mapToLeaderboardBookData(List<BookAndSuggesterDto> books, List<BookAndSuggesterDto> userVotedBooks) {
+        List<UUID> userVotedBookIds = userVotedBooks.stream()
+            .map(book -> book.getBook())
+            .map(BookDto::getId)
+            .toList();
         return books.stream()
-            .map(book -> mapToLeaderboardBookData(book, userVotedBooks))
+            .map(book -> mapToLeaderboardBookData(book, userVotedBookIds))
             .toList();
     }
 
-    private static LeaderboardBookData mapToLeaderboardBookData(BookAndSuggesterDto bookAndSuggester, List<BookAndSuggesterDto> userVotedBooks) {
+    private static LeaderboardBookData mapToLeaderboardBookData(BookAndSuggesterDto bookAndSuggester, List<UUID> userVotedBooks) {
         BookDto book = bookAndSuggester.getBook();
         List<SuggestionReference> suggestions;
         if (bookAndSuggester.getHistoricSuggester().isPresent()) {
@@ -50,7 +55,7 @@ public class BookMapper {
                 .map(SuggestionMapper::mapToReference)
                 .toList();
         }
-        boolean userVoted = userVotedBooks.contains(book);
+        boolean userVoted = userVotedBooks.contains(book.getId());
         LeaderboardBookData result = new LeaderboardBookData(book.getId(), book.getAuthor(), book.getTitle(), book.getUrl(), suggestions, userVoted);
         result.setNew(new BookAgeDeterminator(bookAndSuggester).isFromTheLastMonth());
         return result;
