@@ -42,6 +42,14 @@ public class SuggestionMapper {
     }
 
     public static SuggestionReference mapToReference(SuggestionDto suggestion) {
-        return new SuggestionReference(suggestion.getId(), suggestion.getSuggester().getName());
+        String suggesterName;
+        if (suggestion.getSuggester().getName() != null) {
+            suggesterName = suggestion.getSuggester().getName();
+        } else if (suggestion.getSuggester().getExternalId() != null) {
+            suggesterName = "[" + suggestion.getSuggester().getExternalId() + "]";
+        } else {
+            suggesterName = "[N/A]";
+        }
+        return new SuggestionReference(suggestion.getId(), suggesterName);
     }
 }

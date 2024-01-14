@@ -21,7 +21,7 @@ public class BookMapper {
             return new BookAndSuggesterDto(book.getId(), book.getAuthor(), book.getTitle(), book.getUrl(),
                     book.getRecommenderExternalId());
         }
-        if (book.getRecommender() != null) {
+        if (book.getRecommender() != null || book.getRecommenderExternalId() != null) {
             var suggester = new SuggestionDto(book.getRecommendedAt(), UserMapper.mapToDto(book.getRecommender(),
                     book.getRecommenderExternalId()), "");
             suggesters.add(suggester);
@@ -44,17 +44,10 @@ public class BookMapper {
 
     private static LeaderboardBookData mapToLeaderboardBookData(BookAndSuggesterDto bookAndSuggester, List<UUID> userVotedBooks) {
         BookDto book = bookAndSuggester.getBook();
-        List<SuggestionReference> suggestions;
-        if (bookAndSuggester.getHistoricSuggester().isPresent()) {
-            suggestions = List.of("[" + bookAndSuggester.getHistoricSuggester().get() + "]").stream()
-                .map(SuggestionReference::new)
-                .toList();
-        } else {
-            suggestions = bookAndSuggester.getSuggesters()
-                .stream()
-                .map(SuggestionMapper::mapToReference)
-                .toList();
-        }
+        List<SuggestionReference> suggestions = bookAndSuggester.getSuggesters()
+            .stream()
+            .map(SuggestionMapper::mapToReference)
+            .toList();
         boolean userVoted = userVotedBooks.contains(book.getId());
         LeaderboardBookData result = new LeaderboardBookData(book.getId(), book.getAuthor(), book.getTitle(), book.getUrl(), suggestions, userVoted);
         result.setNew(new BookAgeDeterminator(bookAndSuggester).isFromTheLastMonth());
