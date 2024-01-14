@@ -15,7 +15,16 @@
 				<a th:href="${book.url}" th:text="${book.author} + ': ' + ${book.title}"></a>
 				<span th:if="${book.isNew}" th:text="'🆕'"></span>
 				<br />
-				<span><span th:text="#{field.recommender} + ': '"></span><span th:text="${book.recommenderName}"></span></span>
+				<div th:each="suggestion : ${book.suggestions}">
+					<span th:if="${suggestion.id == null}">
+						<span th:text="#{field.recommender} + ': '"></span>
+						<a th:text="${suggestion.name}" th:href="@{'/suggestion/' + ${book.id}}"></a>
+					</span>
+					<span th:unless="${suggestion.id == null}">
+						<span th:text="#{field.recommender} + ': '"></span>
+						<a th:text="${suggestion.name}" th:href="@{'/suggestion/' + ${suggestion.id}}"></a>
+					</span>
+				</div>
 			</span>
 			<form th:action="@{/vote}" method="post" style="display: inline;" th:if="${!book.userVoted}">
 				<input type="hidden" name="method" value="put" />
@@ -33,7 +42,7 @@
 			</form>
 		</li>
 	</ol>
-	<form th:action="@{/book/new}" method="get">
+	<form th:action="@{/suggestion/new}" method="get">
 		<button type="submit"  th:text="'📚' + #{book.add_new}"></button>
 	</form>
 </body>

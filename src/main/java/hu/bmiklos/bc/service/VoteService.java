@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import hu.bmiklos.bc.model.Vote;
-import hu.bmiklos.bc.service.dto.BookDto;
+import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
 
 public interface VoteService {
 
@@ -14,7 +14,7 @@ public interface VoteService {
 
     List<Vote> getUserVotes();
 
-    List<BookDto> getVotedBooks();
+    List<BookAndSuggesterDto> getVotedBooks();
 
     List<List<String>> getMatrix();
 }

@@ -2,6 +2,7 @@ package hu.bmiklos.bc.model;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.lang.Nullable;
@@ -35,10 +36,10 @@ public class Book {
     @Column(nullable = false, unique = true)
     private String url;
 
-    @Column(nullable = false)
-    private int recommenderExternalId;
+    @Column(nullable = true)
+    private Integer recommenderExternalId;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Instant recommendedAt;
 
     @OneToMany
@@ -50,14 +51,27 @@ public class Book {
     @Nullable
     private User recommender;
 
+    @OneToMany
+    @JoinColumn(name = "bookId", referencedColumnName = "id", insertable = false, updatable = false)
+    @Nullable
+    private Set<Suggestion> suggestions;
+
     public Book() {}
 
-    public Book(String author, String title, String url, int recommenderExternalId, Instant recommendedAt) {
+    /**
+     * @deprecated Use {@link Suggestion} to store information about who suggested the book.
+     */
+    @Deprecated
+    public Book(String author, String title, String url, Integer recommenderExternalId, Instant recommendedAt) {
         this.author = author;
         this.title = title;
         this.url = url;
         this.recommenderExternalId = recommenderExternalId;
         this.recommendedAt = recommendedAt;
+    }
+
+    public Book(String author, String title, String url) {
+        this(author, title, url, null, null);
     }
 
     public UUID getId() {
@@ -92,18 +106,35 @@ public class Book {
         this.url = url;
     }
 
-    public int getRecommenderExternalId() {
+    /**
+     * @deprecated Use {@link Suggestion} to get information about the recommender.
+     */
+    @Deprecated
+    @Nullable
+    public Integer getRecommenderExternalId() {
         return recommenderExternalId;
     }
 
-    public void setRecommenderExternalId(int recommenderExternalId) {
+    /**
+     * @deprecated Use {@link Suggestion} to store information about the recommender.
+     */
+    @Deprecated
+    public void setRecommenderExternalId(Integer recommenderExternalId) {
         this.recommenderExternalId = recommenderExternalId;
     }
 
+    /**
+     * @deprecated Use {@link Suggestion} to get information about the recommender.
+     */
+    @Deprecated
     public Instant getRecommendedAt() {
         return recommendedAt;
     }
 
+    /**
+     * @deprecated Use {@link Suggestion} to store information about the recommender.
+     */
+    @Deprecated
     public void setRecommendedAt(Instant recommendedAt) {
         this.recommendedAt = recommendedAt;
     }
@@ -115,12 +146,28 @@ public class Book {
     public void setEvent(List<Event> events) {
         this.events = events;
     }
+
+    public Set<Suggestion> getSuggestions() {
+        return suggestions;
+    }
+
+    public void setSuggestions(Set<Suggestion> suggestions) {
+        this.suggestions = suggestions;
+    }
     
+    /**
+     * @deprecated Use {@link Suggestion} to get information about the recommender.
+     */
     @Nullable
+    @Deprecated
     public User getRecommender() {
         return recommender;
     }
 
+    /**
+     * @deprecated Use {@link Suggestion} to store information about the recommender.
+     */
+    @Deprecated
     public void setRecommender(User recommender) {
         this.recommender = recommender;
     }

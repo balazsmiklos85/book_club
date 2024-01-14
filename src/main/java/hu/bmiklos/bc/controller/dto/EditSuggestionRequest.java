@@ -1,6 +1,8 @@
 package hu.bmiklos.bc.controller.dto;
 
-public class CreateBookRequest {
+public class EditSuggestionRequest {
+    private String bookId;
+    private String suggestionId;
     private String author;
     private String description;
     private String title;

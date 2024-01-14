@@ -1,5 +1,6 @@
 package hu.bmiklos.bc.controller.dto;
 
+import java.util.List;
 import java.util.UUID;
 
 public class LeaderboardBookData {
@@ -7,16 +8,16 @@ public class LeaderboardBookData {
     private final String author;
     private final String title;
     private final String url;
-    private final String recommenderName;
+    private final List<SuggestionReference> suggestions;
     private final boolean userVoted;
     private boolean isNew = false;
 
-    public LeaderboardBookData(UUID id, String author, String title, String url, String recommender, boolean userVoted) {
+    public LeaderboardBookData(UUID id, String author, String title, String url, List<SuggestionReference> suggestions, boolean userVoted) {
         this.id = id.toString();
         this.author = author;
         this.title = title;
         this.url = url;
-        this.recommenderName = recommender;
+        this.suggestions = suggestions;
         this.userVoted = userVoted;
     }
 
@@ -36,8 +37,8 @@ public class LeaderboardBookData {
         return url;
     }
 
-    public String getRecommenderName() {
-        return recommenderName;
+    public List<SuggestionReference> getSuggestions() {
+        return suggestions;
     }
 
     public boolean isNew() {

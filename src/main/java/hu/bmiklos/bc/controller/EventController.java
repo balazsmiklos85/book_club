@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -28,9 +27,11 @@ import hu.bmiklos.bc.service.BookService;
 import hu.bmiklos.bc.service.EventService;
 import hu.bmiklos.bc.service.ParticipantService;
 import hu.bmiklos.bc.service.UserService;
+import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
 import hu.bmiklos.bc.service.dto.BookDto;
 import hu.bmiklos.bc.service.dto.CreateEventDto;
 import hu.bmiklos.bc.service.dto.GetEventDto;
+import hu.bmiklos.bc.service.dto.SuggestionDto;
 import hu.bmiklos.bc.service.dto.UserDto;
 
 @Controller
@@ -53,19 +54,23 @@ public class EventController {
 
     @GetMapping("/new")
     public ModelAndView newBookForm(@RequestParam String bookId) {
-        BookDto book = bookService.getBookById(bookId);
+        BookAndSuggesterDto bookAndSuggester = bookService.getBookById(bookId);
         Optional<Instant> proposedDateTime = eventService.proposeNewTime();
         List<UserDto> users = userService.getUsers();
 
         ModelAndView modelAndView = new ModelAndView("event/new");
-        modelAndView.addObject("author", book.getAuthor());
-        modelAndView.addObject("title", book.getTitle());
+        modelAndView.addObject("author", bookAndSuggester.getBook().getAuthor());
+        modelAndView.addObject("title", bookAndSuggester.getBook().getTitle());
         modelAndView.addObject("bookId", bookId);
         if (proposedDateTime.isPresent()) {
             modelAndView.addObject("proposedDate", DateTimeMapper.toLocalDateString(proposedDateTime.get()));
             modelAndView.addObject("proposedTime", DateTimeMapper.toLocalTimeString(proposedDateTime.get()));
         }
-        modelAndView.addObject("host", book.getRecommender().getId());
+        Optional<UUID> host = bookAndSuggester.getSuggesters().stream()
+            .min((a, b) -> a.getSuggestedAt().compareTo(b.getSuggestedAt()))
+            .map(SuggestionDto::getSuggester)
+            .map(UserDto::getId);
+        host.ifPresent(h -> modelAndView.addObject("host", h));
         modelAndView.addObject("users", users);
         return modelAndView;
     }

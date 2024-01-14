@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+	<title th:text="#{book.edit}"></title>
+</head>
+
+<body>
+	<div th:replace="fragments/menu :: menu"></div>
+	<h2 th:text="#{book.edit}" th:if="${suggestion.isSuggestedByMe}"></h2>
+	<h2 th:text="#{suggestion.details}" th:if="${!suggestion.isSuggestedByMe}"></h2>
+	<form th:action="@{/suggestion/} + (${suggestion.suggestionId} == null ? ${suggestion.bookId} : ${suggestion.suggestionId})" method="post">
+		<input type="hidden" name="bookId" th:value="${suggestion.bookId}" th:if="${suggestion.suggestedByMe}" />
+		<input type="hidden" name="suggestionId" th:value="${suggestion.suggestionId}" th:if="${suggestion.suggestedByMe}" />
+		<div>
+			<label for="author" th:text="#{book.author}"></label>
+			<input type="text" name="author" th:value="${suggestion.author}" th:disabled="${!suggestion.suggestedByMe}" />
+		</div>
+		<div>
+			<label for="title" th:text="#{book.title}"></label>
+			<input type="text" name="title" th:value="${suggestion.title}" th:disabled="${!suggestion.suggestedByMe}" />
+		</div>
+		<div>
+			<label for="url" th:text="#{book.url}"></label>
+			<input type="text" name="url" th:value="${suggestion.url}" th:disabled="${!suggestion.suggestedByMe}" />
+		</div>
+		<div>
+			<label for="url" th:text="#{suggestion.description}"></label>
+			<textarea type="text" name="description" th:text="${suggestion.description}" th:disabled="${!suggestion.suggestedByMe}"></textarea>
+		</div>
+		<button type="submit" th:text="'📚 ' + #{book.edit}" th:if="${suggestion.suggestedByMe}"></button>
+	</form>
+</body>
+
+</html>

@@ -12,6 +12,7 @@ import hu.bmiklos.bc.controller.dto.LeaderboardBookData;
 import hu.bmiklos.bc.service.ActiveUserService;
 import hu.bmiklos.bc.service.BookSortingService;
 import hu.bmiklos.bc.service.VoteService;
+import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
 import hu.bmiklos.bc.service.dto.BookDto;
 import hu.bmiklos.bc.service.mapper.BookMapper;
 
@@ -28,8 +29,8 @@ public class LeaderboardController {
 
     @GetMapping("/")
     public ModelAndView getRoot() {
-        List<BookDto> books = bookSortingService.getAll();
-        List<BookDto> userVotedBooks = voteService.getVotedBooks();
+        List<BookAndSuggesterDto> books = bookSortingService.getAll();
+        List<BookAndSuggesterDto> userVotedBooks = voteService.getVotedBooks();
         List<LeaderboardBookData> bookData = BookMapper.mapToLeaderboardBookData(books, userVotedBooks);
 
         ModelAndView modelAndView = new ModelAndView("leaderboard");

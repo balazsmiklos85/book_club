@@ -12,7 +12,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import hu.bmiklos.bc.exception.NotAuthenticatedException;
 import hu.bmiklos.bc.service.security.EmailPrincipal;
 
-// TODO The functionality is to be moved to ActiveUserService. Then include that class in other services instead of extending this one. Composition over inheritance.
+/**
+ * @deprecated The functionality is to be moved to {@link ActiveUserService}. Then include that class in other services instead of extending this one. Composition over inheritance.
+ */
+@Deprecated
 public abstract class AuthenticatedService {
 
     @Autowired

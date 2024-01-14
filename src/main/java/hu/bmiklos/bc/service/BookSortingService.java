@@ -13,6 +13,7 @@ import hu.bmiklos.bc.model.Vote;
 import hu.bmiklos.bc.repository.BookRepository;
 import hu.bmiklos.bc.repository.EventRepository;
 import hu.bmiklos.bc.repository.VoteRepository;
+import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
 import hu.bmiklos.bc.service.dto.BookDto;
 import hu.bmiklos.bc.service.mapper.BookMapper;
 
@@ -37,9 +38,9 @@ public class BookSortingService {
      * Retrieves all books sorted by their recommendation score.
      * 
      * The recommendation score is calculated based on the votes, and the previous events which the voters attended. Books that already have a previous event declared are excluded from the list. Books that are not in the top 5 recommended books for their recommender, are punished, and pushed to the end of the list.
-     * @return a list of {@link BookDto} objects sorted by their recommendation score.
+     * @return a list of {@link BookAndSuggesterDto} objects sorted by their recommendation score.
      */
-    public List<BookDto> getAll() {
+    public List<BookAndSuggesterDto> getAll() {
         Collection<Vote> votes = voteRepository.findAll();
         Collection<Event> events = eventRepostiory.findAll();
         UserWeights userWeights = new UserWeights(events);
@@ -48,7 +49,7 @@ public class BookSortingService {
         List<Book> allBooks = bookRepository.findAll();
         Stream<Book> booksWithoutEvents = allBooks
                 .stream()
-                .filter(this::hasNoEvents);
+                .filter(this::isSuggested);
         List<Book> preSortedBooks = booksWithoutEvents
                 .sorted(new BookComparator(bookWeights))
                 .toList();
@@ -59,7 +60,10 @@ public class BookSortingService {
                 .toList();
     }
 
-    private boolean hasNoEvents(Book book) {
-        return Objects.isNull(book.getEvents()) || book.getEvents().isEmpty();
+    private boolean isSuggested(Book book) {
+        boolean hasSuggestion = Objects.nonNull(book.getSuggestions()) && !book.getSuggestions().isEmpty();
+        boolean hasRecommender = Objects.nonNull(book.getRecommenderExternalId());
+        boolean hasNoEvent = Objects.isNull(book.getEvents()) || book.getEvents().isEmpty();
+        return hasSuggestion || hasRecommender && hasNoEvent;
     }
 }
