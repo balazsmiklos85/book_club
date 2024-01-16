@@ -19,7 +19,7 @@ public class DateTimeMapper {
             .toFormatter();
 
         LocalDateTime dateTime = LocalDateTime.parse(date + " " + time, formatter);
-        return dateTime.toInstant(ZoneOffset.UTC);
+        return dateTime.atZone(ZoneId.systemDefault()).toInstant();
     }
 
     public static String toLocalDateString(Instant instant) {
