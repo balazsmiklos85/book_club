@@ -3,7 +3,7 @@ plugins {
 	id 'jacoco'
 	id 'java'
 	id 'org.liquibase.gradle' version '2.2.0'
-    id 'org.sonarqube' version '3.5.0.2730'
+	id 'org.sonarqube' version '3.5.0.2730'
 	id 'org.springframework.boot' version '3.1.2'
 }
 
@@ -39,8 +39,8 @@ dependencies {
 }
 
 configurations {
-    integrationTestImplementation.extendsFrom testImplementation
-    integrationTestRuntimeOnly.extendsFrom testRuntime
+	integrationTestImplementation.extendsFrom testImplementation
+	integrationTestRuntimeOnly.extendsFrom testRuntime
 }
 
 jacocoTestReport {
@@ -52,10 +52,10 @@ jacocoTestReport {
 }
 
 sourceSets {
-    integrationTest {
-        compileClasspath += sourceSets.main.output + sourceSets.test.output
-        runtimeClasspath += sourceSets.main.output + sourceSets.test.output
-    }
+	integrationTest {
+		compileClasspath += sourceSets.main.output + sourceSets.test.output
+		runtimeClasspath += sourceSets.main.output + sourceSets.test.output
+	}
 }
 
 test {
@@ -68,10 +68,10 @@ task integrationTest(type: Test) {
 	group = "verification"
 	testClassesDirs = sourceSets.integrationTest.output.classesDirs
 	classpath = sourceSets.integrationTest.runtimeClasspath
-	
+
 	useJUnitPlatform()
 
-    testLogging {
-        events "passed"
-    }
+	testLogging {
+		events "passed"
+	}
 }
