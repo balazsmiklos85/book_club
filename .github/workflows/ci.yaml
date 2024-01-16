@@ -39,7 +39,7 @@ jobs:
           name: jar
           path: build/libs/
       - name: Test with Gradle
-        run: ./gradlew test integrationTest
+        run: ./gradlew test integrationTest jacocoTestReport sonarqube
         env:
           DATABASE_URL: 'jdbc:h2:mem:testdb'
           PORT: '8080'
