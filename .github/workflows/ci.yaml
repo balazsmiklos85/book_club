@@ -26,6 +26,8 @@ jobs:
   test:
     needs: assemble
     runs-on: ubuntu-latest
+    env:
+      BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 17
@@ -39,7 +41,7 @@ jobs:
           name: jar
           path: build/libs/
       - name: Test with Gradle
-        run: ./gradlew test jacocoTestReport
+        run: ./gradlew test integrationTest jacocoTestReport sonar
         env:
           DATABASE_URL: 'jdbc:h2:mem:testdb'
           PORT: '8080'
