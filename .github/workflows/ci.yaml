@@ -26,8 +26,13 @@ jobs:
   test:
     needs: assemble
     runs-on: ubuntu-latest
+    env:
+      BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
+      SONARCLOUD_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
@@ -39,7 +44,7 @@ jobs:
           name: jar
           path: build/libs/
       - name: Test with Gradle
-        run: ./gradlew test integrationTest
+        run: ./gradlew test integrationTest jacocoTestReport sonar
         env:
           DATABASE_URL: 'jdbc:h2:mem:testdb'
           PORT: '8080'

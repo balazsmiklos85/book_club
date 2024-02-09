@@ -3,7 +3,6 @@ package hu.bmiklos.bc.controller.mapper;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 
@@ -19,7 +18,7 @@ public class DateTimeMapper {
             .toFormatter();
 
         LocalDateTime dateTime = LocalDateTime.parse(date + " " + time, formatter);
-        return dateTime.toInstant(ZoneOffset.UTC);
+        return dateTime.atZone(ZoneId.systemDefault()).toInstant();
     }
 
     public static String toLocalDateString(Instant instant) {

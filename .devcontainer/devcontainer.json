@@ -12,7 +12,8 @@
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 	"containerEnv": {
 		"DATABASE_URL": "jdbc:postgresql://localhost:5432/postgres?user=postgres&password=postgres",
-		"PORT": "8080"
+		"PORT": "8080",
+		"SONARCLOUD_TOKEN": "${localEnv:SONARCLOUD_TOKEN}"
 	},
 	"customizations": {
 		"vscode": {
