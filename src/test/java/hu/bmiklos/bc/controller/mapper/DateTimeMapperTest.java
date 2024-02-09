@@ -17,7 +17,7 @@ class DateTimeMapperTest {
         var inputTime = "18:00";
 
         Instant asTime = DateTimeMapper.toInstant(inputDate, inputTime);
-
+        
         LocalDateTime inLocalTimeZone = asTime.atZone(ZoneId.systemDefault())
             .toLocalDateTime();
 
@@ -26,7 +26,7 @@ class DateTimeMapperTest {
         assertEquals(22, inLocalTimeZone.getDayOfMonth(), "Parsing the day failed.");
         assertEquals(18, inLocalTimeZone.getHour(), "Parsing the hour failed.");
         assertEquals(0, inLocalTimeZone.getMinute(), "Parsing the minute failed.");
-
+    
         if (ZoneId.systemDefault().getRules().getOffset(asTime).getTotalSeconds() != 0) {
             LocalDateTime inUtc = asTime.atZone(ZoneOffset.UTC)
                 .toLocalDateTime();
