@@ -57,7 +57,7 @@ sonar {
 		property 'sonar.organization', 'balazsmiklos85'
 		property 'sonar.host.url', 'https://sonarcloud.io'
 		property 'sonar.token', System.env.SONARCLOUD_TOKEN
-		property 'sonar.branch.name', System.env.BRANCH_NAME ?: 'develop'
+		property 'sonar.branch.name', System.env.GITHUB_HEAD_REF ?: (System.env.GITHUB_REF_NAME ?: 'local_build')
 	}
 }
 
