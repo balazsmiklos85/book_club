@@ -45,14 +45,14 @@ public class SuggestionController {
         if (suggestion.isEmpty()) {
             throw new IllegalArgumentException("No suggestion found with ID " + id);
         }
-        SuggestionFormData suggestionData = new SuggestionDtoToSuggestionFormDataConverter().convert(bookAndSuggestion);
-        if (activeUserService.isCurrentUser(
-                suggestion.map(SuggestionDto::getSuggester)
+        SuggestionFormData suggestionData = new SuggestionDtoToSuggestionFormDataConverter(
+                activeUserService.getUserId())
+            .convert(bookAndSuggestion);
+        UUID suggesterId = suggestion.map(SuggestionDto::getSuggester)
                         .map(UserDto::getId)
-                        .orElse(null))) {
-            suggestionData.setSuggestedByMe();
-        }
-        return new ModelAndView("suggestion/edit", "suggestion", suggestionData);
+                        .orElse(null);
+        String viewName = "suggestion/" + (activeUserService.isCurrentUser(suggesterId) ? "edit" : "show");
+        return new ModelAndView(viewName, "suggestion", suggestionData);
     }
 
     @PostMapping("/{id}")
