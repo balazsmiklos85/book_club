@@ -1,0 +1,12 @@
+label:after {
+  content: ": ";
+}
+
+form div {
+  display: flex;
+}
+
+form input, form textarea {
+  flex-grow: 1;
+}
+

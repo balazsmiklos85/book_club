@@ -3,6 +3,7 @@
 
 <head>
 	<title th:text="#{book.edit}"></title>
+	<link rel="stylesheet" th:href="@{/forms.css}">
 </head>
 
 <body>
@@ -27,8 +28,10 @@
 			<input type="text" name="url" th:value="${suggestion.url}" />
 		</div>
 		<div>
-			<label for="url" th:text="#{suggestion.description}"></label>
-			<textarea type="text" name="description"
+			<label for="description" th:text="#{suggestion.description}"></label>
+		</div>
+		<div>
+			<textarea type="text" name="description" rows="10"
 				th:text="${suggestion.description}"></textarea>
 		</div>
 		<button type="submit" th:text="'📚 ' + #{book.edit}"></button>
