@@ -26,6 +26,7 @@ class SuggestionControllerTest {
     @BeforeEach
     void setup() {
         activeUserService = mock(ActiveUserService.class);
+        when(activeUserService.getUserId()).thenReturn(UUID.randomUUID());
         suggestionService = mock(SuggestionService.class);
         controller = new SuggestionController(activeUserService, suggestionService);
     }
