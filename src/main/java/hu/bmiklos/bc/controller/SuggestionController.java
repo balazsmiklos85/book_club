@@ -45,8 +45,7 @@ public class SuggestionController {
         if (suggestion.isEmpty()) {
             throw new IllegalArgumentException("No suggestion found with ID " + id);
         }
-        SuggestionFormData suggestionData = new SuggestionDtoToSuggestionFormDataConverter(
-                activeUserService.getUserId())
+        SuggestionFormData suggestionData = new SuggestionDtoToSuggestionFormDataConverter(id)
             .convert(bookAndSuggestion);
         UUID suggesterId = suggestion.map(SuggestionDto::getSuggester)
                         .map(UserDto::getId)
