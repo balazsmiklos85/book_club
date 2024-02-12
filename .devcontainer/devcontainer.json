@@ -19,7 +19,6 @@
 		"vscode": {
 			"extensions": [
 				"jebbs.plantuml",
-				"GitHub.copilot",
 				"GitHub.vscode-pull-request-github",
 				"eamodio.gitlens",
 				"vmware.vscode-boot-dev-pack",
