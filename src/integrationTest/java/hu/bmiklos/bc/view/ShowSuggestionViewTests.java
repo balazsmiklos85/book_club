@@ -20,7 +20,7 @@ class ShowSuggestionViewTests {
     private SpringTemplateEngine templateEngine;
 
     @Test
-    public void suggestionShowViewDoesNotContainInputFields() {
+    void suggestionShowViewRendersValuesButNotAsInput() {
         var context = new Context();
         var suggestion = new SuggestionFormData("test book ID", "test suggestion ID", "Test Author", "Test Title",
                 "test://url.hu", "Test Description");
@@ -29,6 +29,10 @@ class ShowSuggestionViewTests {
         String html = templateEngine.process("suggestion/show", context);
 
         assertThat(html, not(containsString("<input")));
+        assertThat(html, containsString("Test Author"));
+        assertThat(html, containsString("Test Title"));
+        assertThat(html, containsString("test://url.hu"));
+        assertThat(html, containsString("Test Description"));
     }
 }
 

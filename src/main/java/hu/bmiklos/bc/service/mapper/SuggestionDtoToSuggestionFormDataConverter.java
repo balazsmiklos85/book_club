@@ -9,14 +9,13 @@ import org.springframework.lang.NonNull;
 import hu.bmiklos.bc.controller.dto.SuggestionFormData;
 import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
 import hu.bmiklos.bc.service.dto.SuggestionDto;
-import hu.bmiklos.bc.service.dto.UserDto;
 
 public class SuggestionDtoToSuggestionFormDataConverter implements Converter<BookAndSuggesterDto, SuggestionFormData> {
 
-    private final UUID userId;
+    private final UUID suggestionId;
 
-    public SuggestionDtoToSuggestionFormDataConverter(UUID userId) {
-        this.userId = userId;
+    public SuggestionDtoToSuggestionFormDataConverter(@NonNull UUID suggestionId) {
+        this.suggestionId = suggestionId;
     }
 
     @Override
@@ -41,10 +40,9 @@ public class SuggestionDtoToSuggestionFormDataConverter implements Converter<Boo
             .stream()
             .filter(suggestion -> {
                 UUID suggesterUserId = Optional.ofNullable(suggestion)
-                    .map(SuggestionDto::getSuggester)
-                    .map(UserDto::getId)
+                    .map(SuggestionDto::getId)
                     .orElse(null);
-                return userId.equals(suggesterUserId);
+                return suggestionId.equals(suggesterUserId);
             })
             .findFirst();
     }

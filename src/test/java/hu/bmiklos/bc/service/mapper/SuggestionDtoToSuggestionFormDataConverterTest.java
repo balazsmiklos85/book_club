@@ -18,12 +18,12 @@ import hu.bmiklos.bc.service.dto.UserDto;
 class SuggestionDtoToSuggestionFormDataConverterTest {
 
     private SuggestionDtoToSuggestionFormDataConverter converter;
-    private UUID currentUserId;
+    private UUID targetSuggestionId;
 
     @BeforeEach
     void setup() {
-        this.currentUserId = UUID.randomUUID();
-        this.converter = new SuggestionDtoToSuggestionFormDataConverter(currentUserId);
+        this.targetSuggestionId = UUID.randomUUID();
+        this.converter = new SuggestionDtoToSuggestionFormDataConverter(targetSuggestionId);
     }
 
     @Test
@@ -31,11 +31,10 @@ class SuggestionDtoToSuggestionFormDataConverterTest {
         var suggestions = new LinkedHashSet<SuggestionDto>(101);
         for (int i = 0; i < 100; i++) {
             var suggestion = mock(SuggestionDto.class);
-            when(suggestion.getSuggester()).thenReturn(mock(UserDto.class));
+            when(suggestion.getId()).thenReturn(UUID.randomUUID());
             suggestions.add(suggestion);
         }
-        UserDto suggester = new UserDto(currentUserId, "Current Test User", -1);
-        suggestions.add(new SuggestionDto(UUID.randomUUID(), Instant.now(), suggester, "Test description"));
+        suggestions.add(new SuggestionDto(targetSuggestionId, Instant.now(), mock(UserDto.class), "Test description"));
         BookAndSuggesterDto bookAndSuggestions = new BookAndSuggesterDto(UUID.randomUUID(), "Test Author",
                 "Test Title", "http://test.url/for/book", suggestions);
 
