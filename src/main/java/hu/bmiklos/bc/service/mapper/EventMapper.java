@@ -18,7 +18,7 @@ public class EventMapper {
 
     public static GetEventDto mapToGetDto(Event event) {
         Instant time = event.getTime();
-        BookAndSuggesterDto book = BookMapper.mapToDto(event.getBook());
+        BookAndSuggesterDto book = new BookToBookAndSuggesterDtoConverter().convert(event.getBook());
         UserDto host = mapHostByIdOrExternalId(event);
         List<UserDto> participants = event.getParticipants()
                 .stream()

@@ -19,6 +19,7 @@ import hu.bmiklos.bc.repository.SuggestionRepository;
 import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
 import hu.bmiklos.bc.service.dto.SuggestionDto;
 import hu.bmiklos.bc.service.mapper.BookMapper;
+import hu.bmiklos.bc.service.mapper.BookToBookAndSuggesterDtoConverter;
 import hu.bmiklos.bc.service.mapper.SuggestionMapper;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -67,13 +68,13 @@ public class SuggestionServiceImpl extends AuthenticatedService implements Sugge
 
         if (suggestion.isPresent()) {
             return suggestion.map(Suggestion::getBook)
-                    .map(BookMapper::mapToDto)
+                    .map(new BookToBookAndSuggesterDtoConverter()::convert)
                     .orElseThrow(() -> new EntityNotFoundException("Book not found."));
         }
 
         Optional<Book> book = bookRepository.findById(id);
         if (book.isPresent()) {
-            return BookMapper.mapToDto(book.get());
+            return new BookToBookAndSuggesterDtoConverter().convert(book.get());
         }
         throw new EntityNotFoundException("Suggestion or book not found.");
     }

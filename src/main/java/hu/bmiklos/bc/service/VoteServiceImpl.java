@@ -22,8 +22,7 @@ import hu.bmiklos.bc.repository.EventRepository;
 import hu.bmiklos.bc.repository.UserRepository;
 import hu.bmiklos.bc.repository.VoteRepository;
 import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
-import hu.bmiklos.bc.service.dto.BookDto;
-import hu.bmiklos.bc.service.mapper.BookMapper;
+import hu.bmiklos.bc.service.mapper.BookToBookAndSuggesterDtoConverter;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -84,7 +83,7 @@ public class VoteServiceImpl extends AuthenticatedService implements VoteService
         userVotes.addAll(votesByUserExternalId);
         return userVotes.stream()
                 .map(Vote::getBook)
-                .map(BookMapper::mapToDto)
+                .map(new BookToBookAndSuggesterDtoConverter()::convert)
                 .toList();
     }
 

@@ -29,7 +29,7 @@ public class SuggestionMapper {
     @Deprecated
     @Nullable
     public static BookAndSuggesterDto mapToDto(Book book) {
-        return BookMapper.mapToDto(book);
+        return new BookToBookAndSuggesterDtoConverter().convert(book);
     }
 
     @Nullable
