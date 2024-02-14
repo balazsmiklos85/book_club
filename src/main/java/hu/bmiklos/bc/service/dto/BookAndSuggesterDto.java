@@ -17,6 +17,7 @@ public class BookAndSuggesterDto {
         return book;
     }
 
+    // TODO rename, these are not really suggesters, they are suggestions
     public Set<SuggestionDto> getSuggesters() {
         return suggesters;
     }
