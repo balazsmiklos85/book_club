@@ -14,8 +14,6 @@ import hu.bmiklos.bc.repository.BookRepository;
 import hu.bmiklos.bc.repository.EventRepository;
 import hu.bmiklos.bc.repository.VoteRepository;
 import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
-import hu.bmiklos.bc.service.dto.BookDto;
-import hu.bmiklos.bc.service.mapper.BookMapper;
 import hu.bmiklos.bc.service.mapper.BookToBookAndSuggesterDtoConverter;
 
 @Service

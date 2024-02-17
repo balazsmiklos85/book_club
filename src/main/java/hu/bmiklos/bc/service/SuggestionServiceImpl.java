@@ -18,7 +18,6 @@ import hu.bmiklos.bc.repository.BookRepository;
 import hu.bmiklos.bc.repository.SuggestionRepository;
 import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
 import hu.bmiklos.bc.service.dto.SuggestionDto;
-import hu.bmiklos.bc.service.mapper.BookMapper;
 import hu.bmiklos.bc.service.mapper.BookToBookAndSuggesterDtoConverter;
 import hu.bmiklos.bc.service.mapper.SuggestionMapper;
 import jakarta.persistence.EntityNotFoundException;
