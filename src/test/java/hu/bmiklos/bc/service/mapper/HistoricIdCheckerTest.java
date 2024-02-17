@@ -13,7 +13,7 @@ import hu.bmiklos.bc.model.Book;
 import hu.bmiklos.bc.model.Suggestion;
 import hu.bmiklos.bc.model.User;
 
-public class HistoricIdCheckerTest {
+class HistoricIdCheckerTest {
     @Test
     void hasSameId() {
         var book = new Book();
