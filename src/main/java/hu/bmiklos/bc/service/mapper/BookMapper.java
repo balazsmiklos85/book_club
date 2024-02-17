@@ -12,7 +12,7 @@ import hu.bmiklos.bc.service.dto.BookDto;
 /**
  * @deprecated This file should be moved to the controller level.
  */
-@Deprecated
+@Deprecated(since="1.3.4", forRemoval=false)
 public class BookMapper {
     private BookMapper() {}
 
