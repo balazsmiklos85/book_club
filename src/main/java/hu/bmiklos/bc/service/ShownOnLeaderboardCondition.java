@@ -2,6 +2,7 @@ package hu.bmiklos.bc.service;
 
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -11,8 +12,8 @@ public class ShownOnLeaderboardCondition implements Predicate<Book> {
 
     @Override
     public boolean test(Book book) {
-        return (hasSuggestion(book) || hasRecommender(book))
-            && hasNoEvent(book);
+        return hasSuggestion(book) || (hasRecommender(book)
+            && hasNoEvent(book));
     }
 
     private boolean hasNoEvent(Book book) {
@@ -20,8 +21,8 @@ public class ShownOnLeaderboardCondition implements Predicate<Book> {
     }
 
     private boolean hasRecommender(Book book) {
-        return Objects.nonNull(book.getRecommenderExternalId())
-            || Objects.nonNull(book.getRecommender());
+        return Stream.of(book.getRecommender(), book.getRecommenderExternalId())
+                .anyMatch(Objects::nonNull);
     }
 
     private boolean hasSuggestion(Book book) {
