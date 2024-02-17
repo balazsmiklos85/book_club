@@ -14,8 +14,7 @@ import hu.bmiklos.bc.repository.BookRepository;
 import hu.bmiklos.bc.repository.EventRepository;
 import hu.bmiklos.bc.repository.VoteRepository;
 import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
-import hu.bmiklos.bc.service.dto.BookDto;
-import hu.bmiklos.bc.service.mapper.BookMapper;
+import hu.bmiklos.bc.service.mapper.BookToBookAndSuggesterDtoConverter;
 
 @Service
 public class BookSortingService {
@@ -56,7 +55,7 @@ public class BookSortingService {
         Stream<Book> sortedBooks = preSortedBooks
                 .stream()
                 .sorted(new RecommendationBenchComparator(preSortedBooks));
-        return sortedBooks.map(BookMapper::mapToDto)
+        return sortedBooks.map(new BookToBookAndSuggesterDtoConverter()::convert)
                 .toList();
     }
 
