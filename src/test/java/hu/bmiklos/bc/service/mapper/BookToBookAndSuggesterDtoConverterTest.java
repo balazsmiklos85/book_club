@@ -115,6 +115,7 @@ class BookToBookAndSuggesterDtoConverterTest {
         suggester.setId(suggesterId);
         suggester.setExternalId(-2);
         when(suggestion.getSuggester()).thenReturn(suggester);
+        when(suggestion.getUserId()).thenReturn(suggesterId);
         book.setSuggestions(Set.of(suggestion));
         book.setRecommender(suggester);
 
