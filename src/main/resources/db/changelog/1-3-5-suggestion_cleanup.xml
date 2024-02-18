@@ -1,0 +1,25 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+	<changeSet author="Miklós Balázs" id="1.3.5">
+		<preConditions>
+			<and>
+				<tableExists tableName="suggestions"/>
+				<tableExists tableName="events"/>
+			</and>
+		</preConditions>
+		<delete tableName="suggestions">
+			<where>
+				book_id in (select book_id from events)
+			</where>
+		</delete>
+		<update tableName="books">
+			<column value="null" name="recommender_external_id"/>
+			<column value="null" name="recommended_at"/>
+			<where>
+				id in (select book_id from events)
+			</where>			
+		</update>
+	</changeSet>
+</databaseChangeLog>

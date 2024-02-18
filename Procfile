@@ -1,1 +1,1 @@
-web: java -jar build/libs/BookClub-1.3.4.jar
+web: java -jar build/libs/BookClub-1.3.5.jar

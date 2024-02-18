@@ -9,7 +9,6 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import hu.bmiklos.bc.model.Event;
-import hu.bmiklos.bc.repository.BookRepository;
 import hu.bmiklos.bc.repository.EventRepository;
 import hu.bmiklos.bc.service.dto.CreateEventDto;
 import hu.bmiklos.bc.service.dto.EditEventDto;
@@ -19,12 +18,12 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class EventService {
-    private final BookRepository bookRepository;
     private final EventRepository eventRepository;
+    private final SuggestionService suggestionService;
 
-    public EventService(BookRepository bookRepository, EventRepository eventRepository) {
-        this.bookRepository = bookRepository;
+    public EventService(EventRepository eventRepository, SuggestionService suggestionService) {
         this.eventRepository = eventRepository;
+        this.suggestionService = suggestionService;
     }
 
     @Transactional
@@ -34,6 +33,9 @@ public class EventService {
 
         var toCreate = new Event(event.getBookId(), event.getTime(), hostId);
         Event saved = eventRepository.saveAndFlush(toCreate);
+
+        suggestionService.removeForBook(event.getBookId());
+
         return saved.getId();
     }
 

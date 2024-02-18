@@ -15,5 +15,8 @@ public interface SuggestionService {
 
     BookAndSuggesterDto getBookBySuggestionId(UUID id);
 
-    void updateSuggestion(UUID id, SuggestionFormData suggestionData);    
+    void updateSuggestion(UUID id, SuggestionFormData suggestionData);
+
+    void removeForBook(UUID bookId);
 }
+
