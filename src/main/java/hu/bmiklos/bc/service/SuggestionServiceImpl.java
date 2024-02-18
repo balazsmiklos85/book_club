@@ -108,4 +108,17 @@ public class SuggestionServiceImpl extends AuthenticatedService implements Sugge
             }
         }
     }
+
+    @Override
+    public void removeForBook(UUID bookId) {
+        suggestionRepository.deleteByBookId(bookId);
+
+        Optional<Book> book = bookRepository.findById(bookId);
+        if (book.isPresent()) {
+            Book persistedBook = book.get();
+            persistedBook.setRecommenderExternalId(null);
+            persistedBook.setRecommendedAt(null);
+            bookRepository.save(persistedBook);
+        }
+    }
 }
