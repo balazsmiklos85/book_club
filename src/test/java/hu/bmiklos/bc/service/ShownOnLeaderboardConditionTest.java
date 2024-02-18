@@ -65,5 +65,13 @@ class ShownOnLeaderboardConditionTest {
         assertFalse(result, "The suggested book with an event should not be shown on the leaderboard.");
     }
 
+    @Test
+    void cleanWithEventDoesNotShowOnLeaderboard() {
+        var book = new Book();
+        book.setEvent(List.of(new Event()));
 
+        boolean result = condition.test(book);
+
+        assertFalse(result, "The clean scheduled book should not be shown on the leaderboard.");
+    }
 }
