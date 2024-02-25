@@ -3,7 +3,6 @@ package hu.bmiklos.bc.service;
 import static hu.bmiklos.bc.service.security.BookClubAuthority.BOOKCLUB_ADMIN;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.lang.Nullable;
@@ -15,7 +14,6 @@ import hu.bmiklos.bc.repository.UserRepository;
 import hu.bmiklos.bc.service.dto.UserDto;
 import hu.bmiklos.bc.service.mapper.UserMapper;
 import hu.bmiklos.bc.service.security.EmailPrincipal;
-import jakarta.transaction.Transactional;
 
 @Service
 public class ActiveUserService extends AuthenticatedService {
