@@ -91,8 +91,7 @@ public class SuggestionServiceImpl extends AuthenticatedService implements Sugge
             if (storedBook.isPresent()) {
                 Book book = storedBook.get();
                 User bookRecommender = book.getRecommender();
-                if (activeUserService.isCurrentUser(bookRecommender.getId())
-                        || activeUserService.isCurrentUser(bookRecommender.getExternalId())) {
+                if (activeUserService.isCurrentUser(bookRecommender) || activeUserService.isCurrentUser(book.getRecommenderExternalId())) {
                     var suggestion = new Suggestion(bookId, getUserId(), book.getRecommendedAt(),
                             suggestionData.getDescription());
                     suggestionRepository.saveAndFlush(suggestion);

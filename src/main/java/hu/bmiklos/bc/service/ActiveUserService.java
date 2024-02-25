@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import hu.bmiklos.bc.exception.NotAuthenticatedException;
@@ -46,5 +47,12 @@ public class ActiveUserService extends AuthenticatedService {
 
     public boolean isCurrentUser(UUID userId) {
         return Objects.equals(getUserId(), userId);
+    }
+
+    public boolean isCurrentUser(@Nullable User user) {
+        if (user == null) {
+            return false;
+        }
+        return isCurrentUser(user.getId()) || isCurrentUser(user.getExternalId());
     }
 }
