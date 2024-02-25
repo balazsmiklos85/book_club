@@ -49,6 +49,12 @@ public class ActiveUserService extends AuthenticatedService {
         return userId != null && Objects.equals(getUserId(), userId);
     }
 
+    /**
+     * Checks if the given user is the currently logged in user.
+     *
+     * @param  user  the user to be checked.
+     * @return       true if the given user is the current user, false otherwise.
+     */
     public boolean isCurrentUser(@Nullable User user) {
         if (user == null) {
             return false;
