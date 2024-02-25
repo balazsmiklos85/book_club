@@ -1,9 +1,11 @@
 package hu.bmiklos.bc.service;
 
 import java.util.UUID;
+import java.util.function.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +19,8 @@ import hu.bmiklos.bc.service.security.EmailPrincipal;
  */
 @Deprecated
 public abstract class AuthenticatedService {
+
+    protected Supplier<SecurityContext> securityContext = SecurityContextHolder::getContext;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -32,7 +36,7 @@ public abstract class AuthenticatedService {
     }
 
     protected EmailPrincipal getPrincipal() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = securityContext.get().getAuthentication();
         if (authentication == null) {
             throw new NotAuthenticatedException();
         }

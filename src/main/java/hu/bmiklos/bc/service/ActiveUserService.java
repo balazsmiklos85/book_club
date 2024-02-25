@@ -42,11 +42,11 @@ public class ActiveUserService extends AuthenticatedService {
     }
 
     public boolean isCurrentUser(Integer externalId) {
-        return Objects.equals(getExternalUserId(), externalId);
+        return externalId != null && Objects.equals(getExternalUserId(), externalId);
     }
 
     public boolean isCurrentUser(UUID userId) {
-        return Objects.equals(getUserId(), userId);
+        return userId != null && Objects.equals(getUserId(), userId);
     }
 
     public boolean isCurrentUser(@Nullable User user) {
