@@ -16,7 +16,8 @@ public class GetEventDto {
     private final Integer hostExternalId;
     private final List<UserDto> participants;
 
-    public GetEventDto(UUID id, Instant time, BookAndSuggesterDto book, UserDto host, Integer hostExternalId, List<UserDto> participants) {
+    public GetEventDto(UUID id, Instant time, BookAndSuggesterDto book,
+            UserDto host, Integer hostExternalId, List<UserDto> participants) {
         this.id = id;
         this.time = time;
         this.book = book;
@@ -34,7 +35,7 @@ public class GetEventDto {
     }
 
     public BookDto getBook() {
-        return book.getBook();
+        return book.book();
     }
 
     @Nullable

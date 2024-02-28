@@ -73,9 +73,11 @@ public class SuggestionController {
     }
 
     private Optional<SuggestionDto> getSuggestion(BookAndSuggesterDto bookAndSuggestion, UUID id) {
-        return bookAndSuggestion.getSuggesters()
+        return bookAndSuggestion.suggestions()
                 .stream()
-                .filter(suggestion -> id.equals(suggestion.getId()) || suggestion.getId() == null && id.equals(bookAndSuggestion.getBook().getId()))
+                .filter(suggestion -> id.equals(suggestion.getId())
+                        || suggestion.getId() == null
+                            && id.equals(bookAndSuggestion.book().getId()))
                 .findFirst();
     }
 }

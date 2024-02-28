@@ -54,7 +54,7 @@ public class SuggestionServiceImpl extends AuthenticatedService implements Sugge
         }
         Optional<Book> book = bookRepository.findById(id);
         return book.map(SuggestionMapper::mapToDto)
-                .map(BookAndSuggesterDto::getSuggesters)
+                .map(BookAndSuggesterDto::suggestions)
                 .map(Collection::stream)
                 .map(Stream::findFirst)
                 .map(Optional::get)

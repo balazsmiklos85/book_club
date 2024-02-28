@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
+import hu.bmiklos.bc.service.dto.BookDto;
 import hu.bmiklos.bc.service.dto.SuggestionDto;
 import hu.bmiklos.bc.service.dto.UserDto;
 
@@ -35,8 +36,10 @@ class SuggestionDtoToSuggestionFormDataConverterTest {
             suggestions.add(suggestion);
         }
         suggestions.add(new SuggestionDto(targetSuggestionId, Instant.now(), mock(UserDto.class), "Test description"));
-        BookAndSuggesterDto bookAndSuggestions = new BookAndSuggesterDto(UUID.randomUUID(), "Test Author",
-                "Test Title", "http://test.url/for/book", suggestions);
+        var bookAndSuggestions = new BookAndSuggesterDto(
+                new BookDto(UUID.randomUUID(), "Test Author", "Test Title",
+                    "http://test.url/for/book"),
+                suggestions);
 
         var result = converter.convert(bookAndSuggestions);
 

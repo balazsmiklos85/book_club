@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import hu.bmiklos.bc.service.ActiveUserService;
 import hu.bmiklos.bc.service.SuggestionService;
 import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
+import hu.bmiklos.bc.service.dto.BookDto;
 import hu.bmiklos.bc.service.dto.SuggestionDto;
 import hu.bmiklos.bc.service.dto.UserDto;
 
@@ -37,7 +38,9 @@ class SuggestionControllerTest {
         var testUserId = UUID.randomUUID();
         var suggester = new UserDto(testUserId, "User", -1);
         var suggestion = new SuggestionDto(testSuggestionId, Instant.now(), suggester, "Description");
-        var book = new BookAndSuggesterDto(UUID.randomUUID(), "Author", "Title", "url://", Set.of(suggestion));
+        var book = new BookAndSuggesterDto(
+                new BookDto(UUID.randomUUID(), "Author", "Title", "url://"),
+                Set.of(suggestion));
         when(suggestionService.getBookBySuggestionId(testSuggestionId)).thenReturn(book);
         when(activeUserService.isCurrentUser(testUserId)).thenReturn(true);
 
@@ -52,7 +55,9 @@ class SuggestionControllerTest {
         var testUserId = UUID.randomUUID();
         var suggester = new UserDto(testUserId, "User", -1);
         var suggestion = new SuggestionDto(testSuggestionId, Instant.now(), suggester, "Description");
-        var book = new BookAndSuggesterDto(UUID.randomUUID(), "Author", "Title", "url://", Set.of(suggestion));
+        var book = new BookAndSuggesterDto(
+                new BookDto(UUID.randomUUID(), "Author", "Title", "url://"),
+                Set.of(suggestion));
         when(suggestionService.getBookBySuggestionId(testSuggestionId)).thenReturn(book);
         when(activeUserService.isCurrentUser(testUserId)).thenReturn(false);
 

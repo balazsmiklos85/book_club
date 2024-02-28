@@ -59,14 +59,15 @@ public class EventController {
         List<UserDto> users = userService.getUsers();
 
         ModelAndView modelAndView = new ModelAndView("event/new");
-        modelAndView.addObject("author", bookAndSuggester.getBook().getAuthor());
-        modelAndView.addObject("title", bookAndSuggester.getBook().getTitle());
+        modelAndView.addObject("author", bookAndSuggester.book().getAuthor());
+        modelAndView.addObject("title", bookAndSuggester.book().getTitle());
         modelAndView.addObject("bookId", bookId);
         if (proposedDateTime.isPresent()) {
             modelAndView.addObject("proposedDate", DateTimeMapper.toLocalDateString(proposedDateTime.get()));
             modelAndView.addObject("proposedTime", DateTimeMapper.toLocalTimeString(proposedDateTime.get()));
         }
-        Optional<UUID> host = bookAndSuggester.getSuggesters().stream()
+        Optional<UUID> host = bookAndSuggester.suggestions()
+            .stream()
             .min((a, b) -> a.getSuggestedAt().compareTo(b.getSuggestedAt()))
             .map(SuggestionDto::getSuggester)
             .map(UserDto::getId);

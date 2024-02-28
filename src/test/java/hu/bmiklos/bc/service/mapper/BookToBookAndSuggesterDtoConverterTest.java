@@ -32,7 +32,7 @@ class BookToBookAndSuggesterDtoConverterTest {
 
         BookAndSuggesterDto result = converter.convert(book);
 
-        Set<SuggestionDto> suggestions = result.getSuggesters();
+        Set<SuggestionDto> suggestions = result.suggestions();
         assertEquals(1, suggestions.size(), "There should be just the historic suggester.");
         suggestions.stream()
             .map(SuggestionDto::getSuggester)
@@ -50,7 +50,7 @@ class BookToBookAndSuggesterDtoConverterTest {
 
         BookAndSuggesterDto result = converter.convert(book);
 
-        Set<SuggestionDto> suggestions = result.getSuggesters();
+        Set<SuggestionDto> suggestions = result.suggestions();
         assertEquals(1, suggestions.size(), "There should be just the historic suggester.");
         suggestions.stream()
             .map(SuggestionDto::getSuggester)
@@ -72,7 +72,7 @@ class BookToBookAndSuggesterDtoConverterTest {
 
         BookAndSuggesterDto result = converter.convert(book);
 
-        Set<SuggestionDto> suggestions = result.getSuggesters();
+        Set<SuggestionDto> suggestions = result.suggestions();
         assertEquals(1, suggestions.size(), "There should be just the suggester.");
         suggestions.stream()
             .map(SuggestionDto::getSuggester)
@@ -96,7 +96,7 @@ class BookToBookAndSuggesterDtoConverterTest {
 
         BookAndSuggesterDto result = converter.convert(book);
 
-        Set<SuggestionDto> suggestions = result.getSuggesters();
+        Set<SuggestionDto> suggestions = result.suggestions();
         assertEquals(1, suggestions.size(), "There should be just the suggester.");
         suggestions.stream()
             .map(SuggestionDto::getSuggester)
@@ -121,7 +121,7 @@ class BookToBookAndSuggesterDtoConverterTest {
 
         BookAndSuggesterDto result = converter.convert(book);
 
-        Set<SuggestionDto> suggestions = result.getSuggesters();
+        Set<SuggestionDto> suggestions = result.suggestions();
         assertEquals(1, suggestions.size(), "There should be just the suggester.");
         suggestions.stream()
             .map(SuggestionDto::getSuggester)

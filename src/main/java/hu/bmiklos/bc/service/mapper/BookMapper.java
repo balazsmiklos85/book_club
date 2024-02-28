@@ -18,7 +18,7 @@ public class BookMapper {
 
     public static List<LeaderboardBookData> mapToLeaderboardBookData(List<BookAndSuggesterDto> books, List<BookAndSuggesterDto> userVotedBooks) {
         List<UUID> userVotedBookIds = userVotedBooks.stream()
-            .map(book -> book.getBook())
+            .map(BookAndSuggesterDto::book)
             .map(BookDto::getId)
             .toList();
         return books.stream()
@@ -27,8 +27,8 @@ public class BookMapper {
     }
 
     private static LeaderboardBookData mapToLeaderboardBookData(BookAndSuggesterDto bookAndSuggester, List<UUID> userVotedBooks) {
-        BookDto book = bookAndSuggester.getBook();
-        List<SuggestionReference> suggestions = bookAndSuggester.getSuggesters()
+        BookDto book = bookAndSuggester.book();
+        List<SuggestionReference> suggestions = bookAndSuggester.suggestions()
             .stream()
             .map(SuggestionMapper::mapToReference)
             .toList();
