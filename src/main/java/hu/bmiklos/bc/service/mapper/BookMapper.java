@@ -33,8 +33,8 @@ public class BookMapper {
             .map(SuggestionMapper::mapToReference)
             .toList();
         boolean userVoted = userVotedBooks.contains(book.getId());
-        LeaderboardBookData result = new LeaderboardBookData(book.getId(), book.getAuthor(), book.getTitle(), book.getUrl(), suggestions, userVoted);
-        result.setNew(new BookAgeDeterminator(bookAndSuggester).isFromTheLastMonth());
-        return result;
+        return new LeaderboardBookData(book.getId(), book.getAuthor(),
+                book.getTitle(), book.getUrl(), suggestions, userVoted,
+                new BookAgeDeterminator(bookAndSuggester).isFromTheLastMonth());
     }
 }
