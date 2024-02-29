@@ -1,13 +1,18 @@
 package hu.bmiklos.bc.service.mapper;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+
+import org.apache.commons.collections4.CollectionUtils;
 
 import hu.bmiklos.bc.controller.dto.LeaderboardBookData;
 import hu.bmiklos.bc.controller.dto.SuggestionReference;
 import hu.bmiklos.bc.service.BookAgeDeterminator;
 import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
 import hu.bmiklos.bc.service.dto.BookDto;
+import hu.bmiklos.bc.service.dto.SuggestionDto;
+import hu.bmiklos.bc.service.dto.UserDto;
 
 /**
  * @deprecated This file should be moved to the controller level.
@@ -32,9 +37,23 @@ public class BookMapper {
             .stream()
             .map(SuggestionMapper::mapToReference)
             .toList();
+        var hasher = new SHA256HashGenerator();
+        List<String> voters = bookAndSuggester.suggestions()
+            .stream()
+            .map(SuggestionDto::getSuggester)
+            .map(UserDto::getEmails)
+            .filter(CollectionUtils::isNotEmpty)
+            .map(emails -> emails.stream()
+                    .map(hasher::apply)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .findFirst())
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .toList();
         boolean userVoted = userVotedBooks.contains(book.getId());
         return new LeaderboardBookData(book.getId(), book.getAuthor(),
-                book.getTitle(), book.getUrl(), suggestions, userVoted,
+                book.getTitle(), book.getUrl(), suggestions, voters, userVoted,
                 new BookAgeDeterminator(bookAndSuggester).isFromTheLastMonth());
     }
 }

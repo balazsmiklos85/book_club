@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import hu.bmiklos.bc.controller.dto.LeaderboardBookData;
@@ -32,15 +33,20 @@ class LeaderboardViewTests {
 
     @Test
     void leaderboardViewRendersVotersAsGravatars() {
-        var book = new LeaderboardBookData(UUID.randomUUID(), "Test Author", "Test Title", "test://url.hu", List.of(), false);
+        var book = new LeaderboardBookData(UUID.randomUUID(), "Test Author",
+                "Test Title", "test://url.hu", List.of(),
+                List.of("2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae"),
+                false, false);
         List<LeaderboardBookData> books = List.of(book);
 
-        var context = new TestContext();
+        var context = new Context();
         context.setVariable("books", books);
 
         String html = templateEngine.process("leaderboard", context);
 
-        assertThat(html, containsString("<img src=\"https://www.gravatar.com/avatar/"));
+        assertThat(html, containsString("<img src=" + '"'
+                    + "https://gravatar.com/avatar/"
+                    + "2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae"));
     }
 }
 
