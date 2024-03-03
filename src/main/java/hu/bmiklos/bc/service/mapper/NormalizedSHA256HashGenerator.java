@@ -21,6 +21,24 @@ import java.util.stream.Stream;
 public class NormalizedSHA256HashGenerator implements Function<String,
        Optional<String>> {
 
+    private final MessageDigest messageDigest;
+
+    public NormalizedSHA256HashGenerator() {
+        this("SHA-256");
+    }
+
+
+    public NormalizedSHA256HashGenerator(String string) {
+        MessageDigest messageDigest;
+        try {
+            messageDigest = MessageDigest.getInstance(string);
+        } catch (NoSuchAlgorithmException e) {
+            messageDigest = null;
+        }
+        this.messageDigest = messageDigest;
+    }
+
+
     /**
      * Applies this function to the given input string.
      *
@@ -31,19 +49,13 @@ public class NormalizedSHA256HashGenerator implements Function<String,
      */
     @Override
     public Optional<String> apply(String message) {
-        if (message == null) {
+        if (message == null || messageDigest == null) {
             return Optional.empty();
         }
         var preparedMessage = message.trim()
             .toLowerCase(Locale.getDefault())
             .getBytes();
 
-        MessageDigest messageDigest;
-        try {
-            messageDigest = MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException e) {
-            return Optional.empty();
-        }
         messageDigest.update(preparedMessage);
         byte[] digest = messageDigest.digest();
         return Optional.of(convertBytesToHex(digest));
