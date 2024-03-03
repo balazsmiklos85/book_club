@@ -40,15 +40,17 @@ public class NormalizedHashGenerator implements Function<String,
      *        available, the message digest will not be initialized, and
      *        subsequent attempts to use this instance will not give results.
      */
-    public NormalizedHashGenerator(String string) {
-        MessageDigest messageDigest;
-        try {
-            messageDigest = MessageDigest.getInstance(string);
-        } catch (NoSuchAlgorithmException e) {
-            messageDigest = null;
-        }
-        this.messageDigest = messageDigest;
-    }
+    public NormalizedHashGenerator(String algorithm) {
+        messageDigest = Optional.ofNullable(algorithm)
+            .map(algorithmName -> {
+                try {
+                    return MessageDigest.getInstance(algorithmName);
+                } catch (NoSuchAlgorithmException e) {
+                    return null;
+                }
+            })
+            .orElse(null);
+       }
 
     /**
      * Applies this function to the given input string.
