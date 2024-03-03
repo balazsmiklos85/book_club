@@ -8,12 +8,12 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class NormalizedSHA256HashGeneratorTest {
-    private NormalizedSHA256HashGenerator hasher;
+class NormalizedHashGeneratorTest {
+    private NormalizedHashGenerator hasher;
 
     @BeforeEach
     void setup() {
-        hasher = new NormalizedSHA256HashGenerator();
+        hasher = new NormalizedHashGenerator();
     }
 
     @Test
@@ -49,7 +49,7 @@ class NormalizedSHA256HashGeneratorTest {
 
     @Test
     void handlesNonExistingAlgorithm() {
-        hasher = new NormalizedSHA256HashGenerator("non-existing algorithm");
+        hasher = new NormalizedHashGenerator("non-existing algorithm");
 
         Optional<String> hash = hasher.apply("input string");
 

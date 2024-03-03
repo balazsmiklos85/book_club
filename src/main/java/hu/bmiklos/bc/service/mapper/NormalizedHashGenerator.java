@@ -10,25 +10,37 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Generates a SHA-256 hash of a provided String. This class performs
- * additional processing on the input string before hashing:
+ * Generates a hash of a provided String. This class performs additional
+ * processing on the input string before hashing:
  * - Trims leading and trailing whitespace characters.
  * - Converts the String to lowercase using the default Locale.
  *
  * The resulting hash is represented as a lowercase hexadecimal String.
  * If the input String is null, an empty {@link Optional} is returned.
  */
-public class NormalizedSHA256HashGenerator implements Function<String,
+public class NormalizedHashGenerator implements Function<String,
        Optional<String>> {
 
     private final MessageDigest messageDigest;
 
-    public NormalizedSHA256HashGenerator() {
+    /**
+     * Constructs a new NormalizedHashGenerator instance. This constructor
+     * initializes the message digest algorithm to "SHA-256".
+     */
+    public NormalizedHashGenerator() {
         this("SHA-256");
     }
 
-
-    public NormalizedSHA256HashGenerator(String string) {
+    /**
+     * Constructs a new NormalizedHashGenerator instance using the provided
+     * message digest algorithm.
+     *
+     * @param algorithm the name of the message digest algorithm to use.
+     *        For example, "SHA-256". If the specified algorithm is not
+     *        available, the message digest will not be initialized, and
+     *        subsequent attempts to use this instance will not give results.
+     */
+    public NormalizedHashGenerator(String string) {
         MessageDigest messageDigest;
         try {
             messageDigest = MessageDigest.getInstance(string);
@@ -37,7 +49,6 @@ public class NormalizedSHA256HashGenerator implements Function<String,
         }
         this.messageDigest = messageDigest;
     }
-
 
     /**
      * Applies this function to the given input string.
@@ -66,7 +77,7 @@ public class NormalizedSHA256HashGenerator implements Function<String,
         var buffer = ByteBuffer.wrap(data);
         return Stream.generate(buffer::get).
                         limit(buffer.capacity()).
-                        map(NormalizedSHA256HashGenerator::convertByteToHex).
+                        map(NormalizedHashGenerator::convertByteToHex).
                         collect(Collectors.joining());
     }
 
