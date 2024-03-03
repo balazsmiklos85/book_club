@@ -6,7 +6,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class SHA256HashGenerator implements Function<String, Optional<String>> {
+public class NormalizedSHA256HashGenerator implements Function<String, Optional<String>> {
 
     @Override
     public Optional<String> apply(String message) {

@@ -37,7 +37,7 @@ public class BookMapper {
             .stream()
             .map(SuggestionMapper::mapToReference)
             .toList();
-        var hasher = new SHA256HashGenerator();
+        var hasher = new NormalizedSHA256HashGenerator();
         List<String> voters = bookAndSuggester.suggestions()
             .stream()
             .map(SuggestionDto::getSuggester)
