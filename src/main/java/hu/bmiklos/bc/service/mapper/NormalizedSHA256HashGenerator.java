@@ -1,10 +1,13 @@
 package hu.bmiklos.bc.service.mapper;
 
+import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Generates a SHA-256 hash of a provided String. This class performs
@@ -43,14 +46,20 @@ public class NormalizedSHA256HashGenerator implements Function<String,
         }
         messageDigest.update(preparedMessage);
         byte[] digest = messageDigest.digest();
-        return Optional.of(convertByteToHex(digest));
+        return Optional.of(convertBytesToHex(digest));
     }
 
-    private static String convertByteToHex(byte[] data) {
-        StringBuffer hexString = new StringBuffer();
-        for (int i = 0; i < data.length; i++) {
-            hexString.append(Integer.toHexString(0xFF & data[i]));
-        }
-        return hexString.toString();
+
+    private static String convertBytesToHex(byte[] data) {
+        var buffer = ByteBuffer.wrap(data);
+        return Stream.generate(buffer::get).
+                        limit(buffer.capacity()).
+                        map(NormalizedSHA256HashGenerator::convertByteToHex).
+                        collect(Collectors.joining());
+    }
+
+    private static String convertByteToHex(Byte data) {
+        return String.format("%02x", 0xFF & data);
     }
 }
+
