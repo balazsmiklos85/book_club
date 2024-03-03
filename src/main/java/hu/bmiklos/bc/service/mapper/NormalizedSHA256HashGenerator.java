@@ -6,8 +6,26 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class NormalizedSHA256HashGenerator implements Function<String, Optional<String>> {
+/**
+ * Generates a SHA-256 hash of a provided String. This class performs
+ * additional processing on the input string before hashing:
+ * - Trims leading and trailing whitespace characters.
+ * - Converts the String to lowercase using the default Locale.
+ *
+ * The resulting hash is represented as a lowercase hexadecimal String.
+ * If the input String is null, an empty {@link Optional} is returned.
+ */
+public class NormalizedSHA256HashGenerator implements Function<String,
+       Optional<String>> {
 
+    /**
+     * Applies this function to the given input string.
+     *
+     * @param message the input String to be hashed.
+     * @return an {@link Optional} containing the lowercase hexadecimal
+     *         SHA-256 hash of the input string, or an empty {@link Optional}
+     *         if the input is null or there's an error during hashing.
+     */
     @Override
     public Optional<String> apply(String message) {
         if (message == null) {
