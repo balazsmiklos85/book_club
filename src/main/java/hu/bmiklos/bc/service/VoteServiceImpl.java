@@ -182,21 +182,6 @@ public class VoteServiceImpl extends AuthenticatedService implements VoteService
     public Map<UUID, Collection<UserDto>> getAllVotersByBooks() {
         List<Vote> votes = voteRepository.findAll();
         return votes.stream()
-            .collect(Collectors.groupingBy(
-                        Vote::getBookId,
-                        Collectors.mapping(vote -> vote.getUserById() == null
-                                ? vote.getUserByExternalId()
-                                : vote.getUserById(),
-                            Collectors.toList())
-                        ))
-            .entrySet()
-            .stream()
-            .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey(),
-                        entry.getValue()
-                            .stream()
-                            .filter(Objects::nonNull)
-                            .map(UserMapper::mapToDto)
-                            .toList()))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            .collect(new VoteByBookCollector());
     }
 }
