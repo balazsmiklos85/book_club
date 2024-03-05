@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import hu.bmiklos.bc.controller.dto.LeaderboardBookData;
-import hu.bmiklos.bc.controller.mapper.LeaderboardBookElementsConverter;
+import hu.bmiklos.bc.controller.mapper.LeaderboardElementsConverter;
 import hu.bmiklos.bc.service.ActiveUserService;
 import hu.bmiklos.bc.service.BookSortingService;
 import hu.bmiklos.bc.service.VoteService;
@@ -35,7 +35,7 @@ public class LeaderboardController {
         List<BookAndSuggesterDto> userVotedBooks = voteService.getVotedBooks();
         Map<UUID, Collection<UserDto>> votersByBooks = voteService.getAllVotersByBooks();
 
-        var booksConverter = new LeaderboardBookElementsConverter(userVotedBooks, votersByBooks);
+        var booksConverter = new LeaderboardElementsConverter(userVotedBooks, votersByBooks);
         Collection<LeaderboardBookData> bookData = booksConverter.convert(books);
         ModelAndView modelAndView = new ModelAndView("leaderboard");
         modelAndView.addObject("books", bookData);

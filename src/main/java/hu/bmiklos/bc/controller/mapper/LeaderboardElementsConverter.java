@@ -14,24 +14,26 @@ import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
 import hu.bmiklos.bc.service.dto.BookDto;
 import hu.bmiklos.bc.service.dto.UserDto;
 
-public class LeaderboardBookElementsConverter implements
-    Converter<Collection<BookAndSuggesterDto>, Collection<LeaderboardBookData>> {
+public class LeaderboardElementsConverter implements
+    Converter<Collection<BookAndSuggesterDto>,
+        Collection<LeaderboardBookData>> {
 
-    private final Set<UUID> userVotedBookIds;
-    private final Map<UUID, Collection<UserDto>> votersByBooks;
+    private final LeaderboardElementConverter bookConverter;
 
-    public LeaderboardBookElementsConverter(final Collection<BookAndSuggesterDto> userVotedBooks, final Map<UUID, Collection<UserDto>> votersByBooks) {
-        this.userVotedBookIds = userVotedBooks.stream()
+    public LeaderboardElementsConverter(
+            final Collection<BookAndSuggesterDto> userVotedBooks,
+            final Map<UUID, Collection<UserDto>> votersByBooks) {
+       Set<UUID> userVotedBookIds = userVotedBooks.stream()
             .map(BookAndSuggesterDto::book)
             .map(BookDto::getId)
             .collect(Collectors.toSet());
-        this.votersByBooks = votersByBooks;
+       this.bookConverter = new LeaderboardElementConverter(userVotedBookIds,
+                votersByBooks);
     }
 
     @Override
     @NonNull
     public Collection<LeaderboardBookData> convert(final Collection<BookAndSuggesterDto> source) {
-        final var bookConverter = new LeaderboardElementConverter(userVotedBookIds, votersByBooks);
         return source.stream()
             .map(bookConverter::convert)
             .toList();
