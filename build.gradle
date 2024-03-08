@@ -32,10 +32,10 @@ dependencies {
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '3.1.2'
 	implementation group: 'org.liquibase', name: 'liquibase-core', version: '4.20.0'
 	implementation group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity6', version: '3.1.1.RELEASE'
+	runtimeOnly group: 'com.h2database', name: 'h2', version: '2.1.214'
 	runtimeOnly group: 'org.postgresql', name: 'postgresql', version: '42.6.0'
 	testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '3.1.2'
 	testImplementation group: 'org.springframework.security', name: 'spring-security-test', version: '6.2.2'
-	testImplementation group: 'com.h2database', name: 'h2', version: '2.1.214'
 }
 
 configurations {
@@ -72,6 +72,15 @@ test {
 	useJUnitPlatform()
 	finalizedBy jacocoTestReport
 }
+
+task devRun {
+	bootRun.configure {
+		systemProperty "spring.profiles.active", 'dev'
+		environment 'PORT', 8080
+	}
+	finalizedBy 'bootRun'
+}
+
 
 task integrationTest(type: Test) {
 	description = "Run integration tests"
