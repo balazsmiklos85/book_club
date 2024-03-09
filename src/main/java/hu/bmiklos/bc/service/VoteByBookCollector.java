@@ -46,16 +46,14 @@ public class VoteByBookCollector implements Collector<Vote, Map<UUID, Collection
         return (map1, map2) -> {
             Map<UUID, Collection<UserDto>> result = supplier().get();
             Stream.of(map1, map2)
-                .forEach(map -> {
-                    map.entrySet()
+                .forEach(map -> map.entrySet()
                         .stream()
                         .forEach(entry -> {
                             Collection<UserDto> voters = result.getOrDefault(
                                     entry.getKey(), new ArrayList<>());
                             voters.addAll(entry.getValue());
                             result.put(entry.getKey(), voters);
-                    });
-                });
+                    }));
             return result;
         };
     }
