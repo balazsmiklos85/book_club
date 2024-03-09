@@ -1,6 +1,5 @@
 package hu.bmiklos.bc.service;
 
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -26,7 +25,6 @@ import hu.bmiklos.bc.repository.VoteRepository;
 import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
 import hu.bmiklos.bc.service.dto.UserDto;
 import hu.bmiklos.bc.service.mapper.BookToBookAndSuggesterDtoConverter;
-import hu.bmiklos.bc.service.mapper.UserMapper;
 import jakarta.transaction.Transactional;
 
 @Service
