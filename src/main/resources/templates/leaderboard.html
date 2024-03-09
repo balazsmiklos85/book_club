@@ -25,8 +25,10 @@
 						<a th:text="${suggestion.name}" th:href="@{'/suggestion/' + ${suggestion.id}}"></a>
 					</span>
 				</div>
-				<div th:each="vote : ${book.voterHashes}">
-					<img th:src="'https://gravatar.com/avatar/' + ${vote} + '?s=16&d=identicon'" alt="voter avatar" />
+				<div>
+					<span th:each="vote : ${book.voterHashes}">
+						<img th:src="'https://gravatar.com/avatar/' + ${vote} + '?s=16&d=identicon'" alt="voter avatar" />
+					</span>
 				</div>
 			</span>
 			<form th:action="@{/vote}" method="post" style="display: inline;" th:if="${!book.userVoted}">
