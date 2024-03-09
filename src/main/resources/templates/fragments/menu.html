@@ -18,7 +18,7 @@
             <li style="display: inline;">
                 <a href="/profile" th:text="'👤' + #{user.profile}"></a>
             </li>
-            <li style="display: inline;">
+            <li style="display: inline;" th:if="${isAdmin}">
                 <a href="/vote/matrix" th:text="'🔧' + #{matrix}"></a>
             <li style="display: inline;">
                 <a href="/logout" th:text="'🚪' + #{logout}"></a>

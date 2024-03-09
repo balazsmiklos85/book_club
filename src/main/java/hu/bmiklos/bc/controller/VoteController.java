@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import hu.bmiklos.bc.controller.dto.VoteRequest;
+import hu.bmiklos.bc.service.ActiveUserService;
 import hu.bmiklos.bc.service.VoteService;
 
 @Controller
@@ -20,6 +21,8 @@ import hu.bmiklos.bc.service.VoteService;
 public class VoteController {
     @Autowired
     private VoteService voteService;
+
+    private ActiveUserService activeUserService;
 
     @PostMapping
     public ModelAndView handleVote(@ModelAttribute VoteRequest voteRequest) {
@@ -51,6 +54,10 @@ public class VoteController {
 
     @GetMapping("/matrix")
     public ModelAndView getVoteMatrix() {
+        if (!activeUserService.isAdmin()) {
+            return new ModelAndView("redirect:/");
+        }
+
         ModelAndView modelAndView = new ModelAndView("matrix");
         modelAndView.addObject("matrix", voteService.getMatrix());
         return modelAndView;

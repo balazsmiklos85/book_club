@@ -8,6 +8,7 @@ import org.springframework.lang.NonNull;
 
 import hu.bmiklos.bc.controller.dto.SuggestionFormData;
 import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
+import hu.bmiklos.bc.service.dto.BookDto;
 import hu.bmiklos.bc.service.dto.SuggestionDto;
 
 public class SuggestionDtoToSuggestionFormDataConverter implements Converter<BookAndSuggesterDto, SuggestionFormData> {
@@ -21,14 +22,17 @@ public class SuggestionDtoToSuggestionFormDataConverter implements Converter<Boo
     @Override
     @NonNull
     public SuggestionFormData convert(BookAndSuggesterDto source) {
-        String bookId = source.getBook().getId().toString();
+        BookDto book = source.book();
+        String bookId = book
+            .getId()
+            .toString();
         String suggestionId = getSuggester(source)
             .map(SuggestionDto::getId)
             .map(Object::toString)
             .orElse(bookId);
-        String author = source.getBook().getAuthor();
-        String title = source.getBook().getTitle();
-        String url = source.getBook().getUrl();
+        String author = source.book().getAuthor();
+        String title = source.book().getTitle();
+        String url = source.book().getUrl();
         String description = getSuggester(source)
             .map(SuggestionDto::getDescription)
             .orElse("");
@@ -36,7 +40,7 @@ public class SuggestionDtoToSuggestionFormDataConverter implements Converter<Boo
     }
 
     private Optional<SuggestionDto> getSuggester(BookAndSuggesterDto source) {
-        return source.getSuggesters()
+        return source.suggestions()
             .stream()
             .filter(suggestion -> {
                 UUID suggesterUserId = Optional.ofNullable(suggestion)

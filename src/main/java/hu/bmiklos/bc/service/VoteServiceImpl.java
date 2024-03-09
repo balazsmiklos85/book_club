@@ -3,6 +3,7 @@ package hu.bmiklos.bc.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -22,6 +23,7 @@ import hu.bmiklos.bc.repository.EventRepository;
 import hu.bmiklos.bc.repository.UserRepository;
 import hu.bmiklos.bc.repository.VoteRepository;
 import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
+import hu.bmiklos.bc.service.dto.UserDto;
 import hu.bmiklos.bc.service.mapper.BookToBookAndSuggesterDtoConverter;
 import jakarta.transaction.Transactional;
 
@@ -172,5 +174,12 @@ public class VoteServiceImpl extends AuthenticatedService implements VoteService
                 .map(Object::toString)
                 .findFirst()
                 .orElse("");
+    }
+
+    @Override
+    public Map<UUID, Collection<UserDto>> getAllVotersByBooks() {
+        List<Vote> votes = voteRepository.findAll();
+        return votes.stream()
+            .collect(new VoteByBookCollector());
     }
 }

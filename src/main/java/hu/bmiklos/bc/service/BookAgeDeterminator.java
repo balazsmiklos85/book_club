@@ -12,7 +12,7 @@ public class BookAgeDeterminator {
     private Set<SuggestionDto> suggesters;
 
     public BookAgeDeterminator(BookAndSuggesterDto book) {
-        this.suggesters = Set.copyOf(book.getSuggesters());
+        this.suggesters = Set.copyOf(book.suggestions());
     }
 
     public boolean isFromTheLastMonth() {
