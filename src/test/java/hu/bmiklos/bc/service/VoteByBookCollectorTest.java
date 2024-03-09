@@ -21,7 +21,7 @@ import hu.bmiklos.bc.model.User;
 import hu.bmiklos.bc.model.Vote;
 import hu.bmiklos.bc.service.dto.UserDto;
 
-public class VoteByBookCollectorTest {
+class VoteByBookCollectorTest {
 
     private VoteByBookCollector collector;
 
