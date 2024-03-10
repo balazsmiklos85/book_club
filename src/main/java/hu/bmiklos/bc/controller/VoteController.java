@@ -2,7 +2,6 @@ package hu.bmiklos.bc.controller;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,14 +18,19 @@ import hu.bmiklos.bc.service.VoteService;
 @Controller
 @RequestMapping("/vote")
 public class VoteController {
-    @Autowired
-    private VoteService voteService;
+    private final VoteService voteService;
 
-    private ActiveUserService activeUserService;
+    private final ActiveUserService activeUserService;
+
+    public VoteController(final VoteService voteService,
+            final ActiveUserService activeUserService) {
+        this.voteService = voteService;
+        this.activeUserService = activeUserService;
+    }
 
     @PostMapping
-    public ModelAndView handleVote(@ModelAttribute VoteRequest voteRequest) {
-        String requestMethod = voteRequest.getMethod()
+    public ModelAndView handleVote(@ModelAttribute final VoteRequest voteRequest) {
+        final String requestMethod = voteRequest.getMethod()
             .toUpperCase();
         switch (requestMethod) {
             case "PUT":
@@ -39,15 +43,15 @@ public class VoteController {
     }
 
     @PutMapping
-    public ModelAndView vote(@ModelAttribute VoteRequest voteRequest) {
-        UUID bookId = UUID.fromString(voteRequest.getBookId());
+    public ModelAndView vote(@ModelAttribute final VoteRequest voteRequest) {
+        final UUID bookId = UUID.fromString(voteRequest.getBookId());
         voteService.vote(bookId);
         return new ModelAndView("redirect:/");
     }
 
     @DeleteMapping
-    public ModelAndView unvote(@ModelAttribute VoteRequest voteRequest) {
-        UUID bookId = UUID.fromString(voteRequest.getBookId());
+    public ModelAndView unvote(@ModelAttribute final VoteRequest voteRequest) {
+        final UUID bookId = UUID.fromString(voteRequest.getBookId());
         voteService.unvote(bookId);
         return new ModelAndView("redirect:/");
     }
@@ -58,7 +62,7 @@ public class VoteController {
             return new ModelAndView("redirect:/");
         }
 
-        ModelAndView modelAndView = new ModelAndView("matrix");
+        final ModelAndView modelAndView = new ModelAndView("matrix");
         modelAndView.addObject("matrix", voteService.getMatrix());
         return modelAndView;
     }
