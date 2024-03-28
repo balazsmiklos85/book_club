@@ -1,34 +1,22 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
-
-<head>
-	<title th:text="#{events.new}"></title>
-</head>
-
-<body>
-	<div th:replace="fragments/menu :: menu"></div>
-	<h2 th:text="#{events.new}"></h2>
-	<form action="/event" method="post">
+<form action="/login" id="login" method="post" data-no-partial-refresh="">
+	<input type="hidden" name="csrfmiddlewaretoken"
+		value="itFLclmQtLbtPqCVch0ersmbS6G58AwbT0ZMg34TesGzqhDQroIqOF6SOCV4CgtU">
+	<input type="hidden" name="next" value="/user/_">
+	<div>
+		<label for="id_username_or_email">Username or Email</label>
 		<div>
-			<label for="book" th:text="#{field.book}"></label>
-			<input type="text" name="book" th:value="${title} + ': ' + ${author}" disabled="disabled" />
-			<input type="hidden" name="bookId" th:value="${bookId}" />
+			<input type="text" name="username_or_email" required="" id="id_username_or_email">
 		</div>
+	</div>
+	<div>
+		<label for="id_password">Password</label>
 		<div>
-			<label for="date" th:text="#{field.date}"></label>
-			<input type="date" name="date" th:value="${proposedDate}" />
+			<input type="password" name="password" required="" id="id_password">
 		</div>
+	</div>
+	<div>
 		<div>
-			<label for="time" th:text="#{field.time}"></label>
-			<input type="time" name="time" th:value="${proposedTime}" />
+			<button type="submit" name="submit">me in!</button>
 		</div>
-		<div>
-			<label for="host" th:text="#{field.host}"></label>
-			<select name="host" th:value="${host}">
-				<option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}" th:selected="${host} == ${user.id}"></option>
-			</select>
-			<button type="submit" th:text="#{events.new}"></button>
-	</form>
-</body>
-
-</html>
+	</div>
+</form>
