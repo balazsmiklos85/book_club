@@ -18,7 +18,7 @@ jobs:
       - name: Assemble with Gradle
         run: ./gradlew assemble
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: jar
           path: build/libs/*.jar
@@ -40,7 +40,7 @@ jobs:
           distribution: 'liberica'
           java-version: '21'
       - name: Download artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: jar
           path: build/libs/
@@ -50,7 +50,7 @@ jobs:
           DATABASE_URL: 'jdbc:h2:mem:testdb'
           PORT: '8080'
       - name: Upload Test Report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: test-report
