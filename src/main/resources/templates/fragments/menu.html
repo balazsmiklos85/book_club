@@ -1,33 +1,33 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
+  <head>
     <title>Menu</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <div th:fragment="menu">
-        <h1 th:text="#{book_club}"></h1>
-        <ul>
-            <li style="display: inline;">
-                <a href="/leaderboard" th:text="'📊' + #{leaderboard}"></a>
-            </li>
-            <li style="display: inline;">
-                <a href="/events" th:text="'📆' + #{events}"></a>
-            </li>
-            <li style="display: inline;">
-                <a href="/profile" th:text="'👤' + #{user.profile}"></a>
-            </li>
-            <li style="display: inline;">
-                <a href="/users" th:text="'📋' + #{users}"></a>
-            </li>
-            <li style="display: inline;" th:if="${isAdmin}">
-                <a href="/vote/matrix" th:text="'🔧' + #{matrix}"></a>
-            <li style="display: inline;">
-                <a href="/logout" th:text="'🚪' + #{logout}"></a>
-            </li>
-        </ul>
-    </div>
-</body>
+      <h1 th:text="#{book_club}"></h1>
+      <ul>
+        <li style="display: inline">
+          <a href="/leaderboard" th:text="'📊' + #{leaderboard}"></a>
+        </li>
+        <li style="display: inline">
+          <a href="/events" th:text="'📆' + #{events}"></a>
+        </li>
+        <li style="display: inline">
+          <a href="/profile" th:text="'👤' + #{user.profile}"></a>
+        </li>
+        <li style="display: inline">
+          <a href="/users" th:text="'📋' + #{users}"></a>
+        </li>
+        <li style="display: inline" th:if="${isAdmin}">
+          <a href="/vote/matrix" th:text="'🔧' + #{matrix}"></a>
+        </li>
 
+        <li style="display: inline">
+          <a href="/logout" th:text="'🚪' + #{logout}"></a>
+        </li>
+      </ul>
+    </div>
+  </body>
 </html>
