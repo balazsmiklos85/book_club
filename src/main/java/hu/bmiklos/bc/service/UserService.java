@@ -82,6 +82,10 @@ public class UserService {
             .toList();
     }
 
+    public List<User> findAll() {
+	return userRepository.findAll();	
+    }
+
 
     @Transactional
     public Email registerUser(String externalId, String name, String email, String confirmEmail, String password, String confirmPassword) {
@@ -117,7 +121,7 @@ public class UserService {
         var email = new Email(emailAddress, user);
         return emailRepository.save(email);
     }
-
+ 
     private void createPassword(User user, String password) {
         var salt = new SaltGenerator().generateSalt();
         var passwordHash = new SaltedPasswordEncoder("bcrypt", salt)

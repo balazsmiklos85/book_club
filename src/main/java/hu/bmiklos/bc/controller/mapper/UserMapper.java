@@ -1,5 +1,6 @@
 package hu.bmiklos.bc.controller.mapper;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -8,6 +9,8 @@ import hu.bmiklos.bc.controller.dto.ExternalId;
 import hu.bmiklos.bc.controller.dto.HostData;
 import hu.bmiklos.bc.controller.dto.ParticipantData;
 import hu.bmiklos.bc.controller.dto.ProfileInformation;
+import hu.bmiklos.bc.model.Email;
+import hu.bmiklos.bc.model.User;
 import hu.bmiklos.bc.service.dto.GetEventDto;
 import hu.bmiklos.bc.service.dto.UserDto;
 
@@ -17,6 +20,15 @@ public class UserMapper {
 
     public static ProfileInformation mapToProfileInformation(UserDto user) {
         return new ProfileInformation(user.getName(), user.getExternalId(), user.getEmails());
+    }
+
+    public static UserDto mapToUserDto(User user) {
+	List<String> userEmails = user.getEmails().stream().map(Email::getEmailAddress).toList();
+	return new UserDto(user.getId(), user.getName(), user.getExternalId(), userEmails);
+    }
+
+    public static List<UserDto> mapToUserDtos(Collection<User> users) {
+	return users.stream().map(UserMapper::mapToUserDto).toList();
     }
 
     public static List<HostData> mapToHostData(List<UserDto> users) {
