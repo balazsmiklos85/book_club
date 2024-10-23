@@ -17,6 +17,7 @@
           style="display: inline"
           th:if="${isAdmin}"
         >
+          <input type="hidden" name="user_id" th:value="${user.id}" />
           <button type="submit" th:text="'🔓' + #{password.reset}"></button>
         </form>
       </li>

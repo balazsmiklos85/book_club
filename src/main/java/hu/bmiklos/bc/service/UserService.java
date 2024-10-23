@@ -68,6 +68,15 @@ public class UserService {
   }
 
   @Transactional
+  public void changePassword(String userId) {
+    User user = userRepository.findById(UUID.fromString(userId)).orElseThrow();
+    Password storedPassword = user.getPassword();
+    passwordRepository.delete(storedPassword);
+    passwordRepository.flush();
+    createPassword(user, "12345678");
+  }
+
+  @Transactional
   public void deleteEmail(String email) {
     Integer userEmailCount = emailRepository.countByUserId(activeUserService.getUserId());
     if (userEmailCount <= 1) {

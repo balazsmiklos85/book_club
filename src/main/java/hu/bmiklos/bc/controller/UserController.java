@@ -1,5 +1,6 @@
 package hu.bmiklos.bc.controller;
 
+import hu.bmiklos.bc.controller.dto.PasswordResetRequest;
 import hu.bmiklos.bc.controller.mapper.UserMapper;
 import hu.bmiklos.bc.model.User;
 import hu.bmiklos.bc.service.ActiveUserService;
@@ -8,6 +9,7 @@ import hu.bmiklos.bc.service.dto.UserDto;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -20,6 +22,12 @@ public class UserController {
   public UserController(ActiveUserService activeUserService, UserService userService) {
     this.activeUserService = activeUserService;
     this.userService = userService;
+  }
+
+  @PostMapping("/user/password/new")
+  public ModelAndView passwordReset(@ModelAttribute PasswordResetRequest passwordResetRequest) {
+    userService.changePassword(passwordResetRequest.getUser_id());
+    return new ModelAndView("redirect:/users");
   }
 
   @GetMapping("/registration")
