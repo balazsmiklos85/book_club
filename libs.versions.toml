@@ -1,0 +1,32 @@
+[versions]
+commons-collections4 = "4.4"
+spring-boot = "3.3.4"
+liquibase-core = "4.29.2"
+thymeleaf-extras-springsecurity6 = "3.1.2.RELEASE"
+h2 = "2.3.232"
+postgresql = "42.7.4"
+spring-security-test = "6.3.3"
+dependency-management = "1.1.6"
+liquibase-gradle = "2.2.0"
+sonarqube = "5.1.0.4882"
+
+[libraries]
+commons-collections4 = { module = "org.apache.commons:commons-collections4", version.ref = "commons-collections4" }
+spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "spring-boot" }
+spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "spring-boot" }
+spring-boot-starter-thymeleaf = { module = "org.springframework.boot:spring-boot-starter-thymeleaf", version.ref = "spring-boot" }
+spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring-boot" }
+liquibase-core = { module = "org.liquibase:liquibase-core", version.ref = "liquibase-core" }
+thymeleaf-extras-springsecurity6 = { module = "org.thymeleaf.extras:thymeleaf-extras-springsecurity6", version.ref = "thymeleaf-extras-springsecurity6" }
+h2-runtime = { module = "com.h2database:h2", version.ref = "h2" }
+postgresql-runtime = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
+spring-security-test = { module = "org.springframework.security:spring-security-test", version.ref = "spring-security-test" }
+
+[plugins]
+spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "dependency-management" }
+jacoco = { id = "jacoco" }
+java = { id = "java" }
+liquibase-gradle = { id = "org.liquibase.gradle", version.ref = "liquibase-gradle" }
+sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
