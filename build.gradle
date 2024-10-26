@@ -1,6 +1,7 @@
 plugins {
 	alias(libs.plugins.spring.dependency.management)
 	alias(libs.plugins.jacoco)
+	alias(libs.plugins.jacoco.report.aggregation)
 	alias(libs.plugins.java)
 	alias(libs.plugins.liquibase.gradle)
 	alias(libs.plugins.sonarqube)
@@ -11,7 +12,8 @@ group = 'hu.bmiklos'
 version = '1.5.0.0'
 
 java {
-	sourceCompatibility = '17'
+	sourceCompatibility = '21'
+	targetCompatibility = '21'
 }
 
 configurations {
@@ -25,6 +27,7 @@ repositories {
 }
 
 dependencies {
+    implementation project(':core')
     implementation libs.commons.collections4
     implementation libs.spring.boot.starter.data.jpa
     implementation libs.spring.boot.starter.security
@@ -52,6 +55,10 @@ jacocoTestReport {
 	}
 }
 
+testCodeCoverageReport {
+	dependsOn jacocoTestReport
+}
+
 sonar {
 	properties {
 		property 'sonar.projectKey', 'balazsmiklos85_book_club'
@@ -59,7 +66,19 @@ sonar {
 		property 'sonar.host.url', 'https://sonarcloud.io'
 		property 'sonar.token', System.env.SONARCLOUD_TOKEN
 		property 'sonar.branch.name', System.env.GITHUB_HEAD_REF ?: (System.env.GITHUB_REF_NAME ?: 'local_build')
+		property "sonar.coverage.jacoco.xmlReportPaths", file("build/reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.xml")
 	}
+}
+
+subprojects {
+	sonar {
+		properties {
+			property "sonar.sources", "src/main"
+			property "sonar.tests", "src/test"
+			property "sonar.coverage.jacoco.xmlReportPaths", "../build/reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.xml"
+			property 'sonar.host.url', 'https://sonarcloud.io'
+        }
+    }
 }
 
 sourceSets {
@@ -71,7 +90,7 @@ sourceSets {
 
 test {
 	useJUnitPlatform()
-	finalizedBy jacocoTestReport
+	finalizedBy testCodeCoverageReport
 }
 
 task devRun {
