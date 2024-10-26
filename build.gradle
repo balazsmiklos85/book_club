@@ -96,5 +96,7 @@ task integrationTest(type: Test) {
 	}
 }
 
-task stage(dependsOn: ['build', 'clean'])
+task stage {
+	finalizedBy 'build'
+}
 
