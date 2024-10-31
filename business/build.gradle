@@ -1,0 +1,10 @@
+plugins {
+	alias(libs.plugins.spring.dependency.management)
+	alias(libs.plugins.jacoco)
+	alias(libs.plugins.java)
+}
+
+dependencies {
+	implementation project(':core')
+}
+

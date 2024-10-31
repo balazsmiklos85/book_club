@@ -8,5 +8,8 @@ dependencyResolutionManagement {
     }
 }
 
+include 'adapter-jpa'
+include 'adapter-web-thymeleaf'
+include 'business'
 include 'core'
 
