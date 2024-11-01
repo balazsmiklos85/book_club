@@ -9,6 +9,7 @@ postgresql = "42.7.4"
 spring-security-test = "6.3.3"
 dependency-management = "1.1.6"
 liquibase-gradle = "2.2.0"
+lombok = "1.18.34"
 sonarqube = "5.1.0.4882"
 
 [libraries]
@@ -18,6 +19,7 @@ spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-
 spring-boot-starter-thymeleaf = { module = "org.springframework.boot:spring-boot-starter-thymeleaf", version.ref = "spring-boot" }
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring-boot" }
 liquibase-core = { module = "org.liquibase:liquibase-core", version.ref = "liquibase-core" }
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 thymeleaf-extras-springsecurity6 = { module = "org.thymeleaf.extras:thymeleaf-extras-springsecurity6", version.ref = "thymeleaf-extras-springsecurity6" }
 h2-runtime = { module = "com.h2database:h2", version.ref = "h2" }
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }

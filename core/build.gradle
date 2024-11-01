@@ -5,8 +5,10 @@ plugins {
 }
 
 dependencies {
-    testImplementation libs.junit.api
-    testRuntimeOnly libs.junit.engine
+	annotationProcessor libs.lombok
+	implementation libs.lombok
+	testImplementation libs.junit.api
+	testRuntimeOnly libs.junit.engine
 }
 
 sourceSets {
@@ -20,6 +22,10 @@ sourceSets {
             srcDirs = ['src/test/java']
         }
     }
+}
+
+tasks.withType(JavaCompile) {
+	options.annotationProcessorPath = configurations.annotationProcessor
 }
 
 test {
