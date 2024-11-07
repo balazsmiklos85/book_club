@@ -1,5 +1,6 @@
 package hu.bmiklos.bc.service;
 
+import hu.bmiklos.bc.business.security.EmailPrincipal;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -12,7 +13,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import hu.bmiklos.bc.exception.NotAuthenticatedException;
-import hu.bmiklos.bc.service.security.EmailPrincipal;
 
 /**
  * @deprecated The functionality is to be moved to {@link ActiveUserService}. Then include that class in other services instead of extending this one. Composition over inheritance.

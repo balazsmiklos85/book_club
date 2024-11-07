@@ -5,6 +5,10 @@ plugins {
 }
 
 dependencies {
+	annotationProcessor libs.lombok
 	implementation project(':core')
+	implementation libs.lombok
+	implementation libs.spring.boot.starter.security
+	implementation libs.spring.boot.starter.web
 }
 

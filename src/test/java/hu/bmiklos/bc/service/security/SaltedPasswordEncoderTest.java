@@ -3,6 +3,7 @@ package hu.bmiklos.bc.service.security;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import hu.bmiklos.bc.business.security.SaltedPasswordEncoder;
 import org.junit.jupiter.api.Test;
 
 class SaltedPasswordEncoderTest {

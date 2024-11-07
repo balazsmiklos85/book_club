@@ -1,24 +1,21 @@
-package hu.bmiklos.bc.service.security;
+package hu.bmiklos.bc.business.security;
 
-import static hu.bmiklos.bc.service.security.BookClubAuthority.BOOKCLUB_ADMIN;
-import static hu.bmiklos.bc.service.security.BookClubAuthority.BOOKCLUB_USER;
+import static hu.bmiklos.bc.business.security.BookClubAuthority.BOOKCLUB_ADMIN;
+import static hu.bmiklos.bc.business.security.BookClubAuthority.BOOKCLUB_USER;
 
+import hu.bmiklos.bc.domain.entities.Email;
+import hu.bmiklos.bc.domain.entities.Password;
+import hu.bmiklos.bc.domain.entities.User;
 import java.util.ArrayList;
 import java.util.Collection;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import hu.bmiklos.bc.model.Email;
-import hu.bmiklos.bc.model.Password;
-import hu.bmiklos.bc.model.User;
-
+@RequiredArgsConstructor
 public class EmailPrincipal implements UserDetails {
 
-    private Email email;
-
-    public EmailPrincipal(Email email) {
-        this.email = email;
-    }
+    private final Email email;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

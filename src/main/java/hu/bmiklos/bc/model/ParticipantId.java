@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
+@Deprecated
 public class ParticipantId implements Serializable {
     private static final long serialVersionUID = -2456832834651093519L;
 

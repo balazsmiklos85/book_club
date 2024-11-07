@@ -1,27 +1,26 @@
-package hu.bmiklos.bc.service.security;
+package hu.bmiklos.bc.business.usecase;
 
+import hu.bmiklos.bc.business.exception.EmailAddressNotFoundException;
+import hu.bmiklos.bc.business.exception.WrongPasswordException;
+import hu.bmiklos.bc.business.repository.EmailRepository;
+import hu.bmiklos.bc.business.security.EmailPrincipal;
+import hu.bmiklos.bc.business.security.SaltedPasswordEncoder;
+import hu.bmiklos.bc.domain.entities.Email;
+import hu.bmiklos.bc.domain.entities.Password;
+import hu.bmiklos.bc.domain.entities.User;
 import java.util.Optional;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
-import hu.bmiklos.bc.exception.EmailAddressNotFoundException;
-import hu.bmiklos.bc.exception.WrongPasswordException;
-import hu.bmiklos.bc.model.Email;
-import hu.bmiklos.bc.model.Password;
-import hu.bmiklos.bc.model.User;
-import hu.bmiklos.bc.repository.EmailRepository;
-
 @Component
-public class AlgorithmDependentAuthenticationProvider implements AuthenticationProvider {
-    private EmailRepository emailRepository;
-
-    public AlgorithmDependentAuthenticationProvider(EmailRepository emailRepository) {
-        this.emailRepository = emailRepository;
-    }
+@RequiredArgsConstructor
+public class LoginService implements AuthenticationProvider {
+    private final EmailRepository emailRepository;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {

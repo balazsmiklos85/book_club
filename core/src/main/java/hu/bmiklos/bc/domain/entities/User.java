@@ -12,6 +12,6 @@ public class User {
   private final String name;
   private final boolean isAdmin;
   private final int externalId;
-  private final Password password;
-  private final List<Email> emails;
+  private Password password;
+  private List<Email> emails;
 }

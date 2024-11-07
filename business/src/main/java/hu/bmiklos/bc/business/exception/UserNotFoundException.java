@@ -1,4 +1,4 @@
-package hu.bmiklos.bc.exception;
+package hu.bmiklos.bc.business.exception;
 
 public class UserNotFoundException extends RuntimeException {
 

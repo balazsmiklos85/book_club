@@ -1,4 +1,4 @@
-package hu.bmiklos.bc.service.security;
+package hu.bmiklos.bc.business.security;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;

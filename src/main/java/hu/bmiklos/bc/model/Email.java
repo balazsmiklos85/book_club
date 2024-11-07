@@ -11,6 +11,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "emails")
+@Deprecated
 public class Email implements Serializable {
     private static final long serialVersionUID = 4126957909483700948L;
 

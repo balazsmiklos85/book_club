@@ -17,6 +17,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
+@Deprecated
 public class User implements Serializable {
 
     private static final long serialVersionUID = -688746974752178530L;
