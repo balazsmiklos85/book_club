@@ -1,5 +1,6 @@
-package hu.bmiklos.bc.controller;
+package hu.bmiklos.bc.web.controller;
 
+import hu.bmiklos.bc.web.dto.LoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,8 +12,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-
-import hu.bmiklos.bc.controller.dto.LoginRequest;
 
 @Controller
 @RequestMapping("/login")

@@ -1,6 +1,6 @@
-package hu.bmiklos.bc.controller.dto;
+package hu.bmiklos.bc.web.dto;
 
-public class LoginRequest {
+public class LoginRequest { //TODO could be a record?
     private String username;
     private String password;
 
