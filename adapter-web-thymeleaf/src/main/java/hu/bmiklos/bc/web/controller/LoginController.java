@@ -1,7 +1,7 @@
 package hu.bmiklos.bc.web.controller;
 
 import hu.bmiklos.bc.web.dto.LoginRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,9 +15,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/login")
+@RequiredArgsConstructor
 public class LoginController {
-    @Autowired
-    private AuthenticationProvider authenticationProvider;
+    private final AuthenticationProvider authenticationProvider;
 
     @GetMapping
     public ModelAndView loginForm() {

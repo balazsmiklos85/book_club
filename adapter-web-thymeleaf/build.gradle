@@ -5,7 +5,9 @@ plugins {
 }
 
 dependencies {
+	annotationProcessor libs.lombok
 	implementation project(':business')
+	implementation libs.lombok
 	implementation libs.spring.boot.starter.security
 	implementation libs.spring.boot.starter.web
 }
