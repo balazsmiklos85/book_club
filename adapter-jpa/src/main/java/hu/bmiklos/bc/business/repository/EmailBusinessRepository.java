@@ -5,9 +5,9 @@ import hu.bmiklos.bc.domain.entities.Email;
 import hu.bmiklos.bc.model.repository.EmailJpaRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class EmailBusinessRepository implements EmailRepository {
 
@@ -18,3 +18,4 @@ public class EmailBusinessRepository implements EmailRepository {
     return emailJpaRepository.findById(username).map(email -> new EmailEntityMapper().convert(email));
   }
 }
+

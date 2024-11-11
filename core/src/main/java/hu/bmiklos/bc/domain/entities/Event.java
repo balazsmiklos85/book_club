@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 public class Event {
   private UUID id;
   private UUID bookId;
-  private Instant time;
+  private EventTime time;
   private User host;
   private Book book;
   private List<User> participants;

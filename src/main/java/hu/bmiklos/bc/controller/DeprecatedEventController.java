@@ -1,8 +1,6 @@
 package hu.bmiklos.bc.controller;
 
-import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +17,6 @@ import hu.bmiklos.bc.controller.dto.EditEventRequest;
 import hu.bmiklos.bc.controller.dto.EventData;
 import hu.bmiklos.bc.controller.dto.HostData;
 import hu.bmiklos.bc.controller.dto.ParticipantData;
-import hu.bmiklos.bc.controller.mapper.DateTimeMapper;
 import hu.bmiklos.bc.controller.mapper.EventMapper;
 import hu.bmiklos.bc.controller.mapper.UserMapper;
 import hu.bmiklos.bc.service.ActiveUserService;
@@ -27,21 +24,20 @@ import hu.bmiklos.bc.service.BookService;
 import hu.bmiklos.bc.service.EventService;
 import hu.bmiklos.bc.service.ParticipantService;
 import hu.bmiklos.bc.service.UserService;
-import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
-import hu.bmiklos.bc.service.dto.BookDto;
 import hu.bmiklos.bc.service.dto.CreateEventDto;
 import hu.bmiklos.bc.service.dto.GetEventDto;
-import hu.bmiklos.bc.service.dto.SuggestionDto;
 import hu.bmiklos.bc.service.dto.UserDto;
+import hu.bmiklos.bc.web.controller.EventController;
 
+/**
+ * @deprecated Use {@link EventController} instead and move functionality there.
+ */ 
 @Controller
 @RequestMapping("/event")
-public class EventController {
+@Deprecated
+public class DeprecatedEventController {
     @Autowired
     private ActiveUserService activeUserService;
-
-    @Autowired
-    private BookService bookService;
 
     @Autowired
     private EventService eventService;
@@ -51,30 +47,6 @@ public class EventController {
 
     @Autowired
     private UserService userService;
-
-    @GetMapping("/new")
-    public ModelAndView newBookForm(@RequestParam String bookId) {
-        BookAndSuggesterDto bookAndSuggester = bookService.getBookById(bookId);
-        Optional<Instant> proposedDateTime = eventService.proposeNewTime();
-        List<UserDto> users = userService.getUsers();
-
-        ModelAndView modelAndView = new ModelAndView("event/new");
-        modelAndView.addObject("author", bookAndSuggester.book().getAuthor());
-        modelAndView.addObject("title", bookAndSuggester.book().getTitle());
-        modelAndView.addObject("bookId", bookId);
-        if (proposedDateTime.isPresent()) {
-            modelAndView.addObject("proposedDate", DateTimeMapper.toLocalDateString(proposedDateTime.get()));
-            modelAndView.addObject("proposedTime", DateTimeMapper.toLocalTimeString(proposedDateTime.get()));
-        }
-        Optional<UUID> host = bookAndSuggester.suggestions()
-            .stream()
-            .min((a, b) -> a.getSuggestedAt().compareTo(b.getSuggestedAt()))
-            .map(SuggestionDto::getSuggester)
-            .map(UserDto::getId);
-        host.ifPresent(h -> modelAndView.addObject("host", h));
-        modelAndView.addObject("users", users);
-        return modelAndView;
-    }
 
     @GetMapping("/{eventId}")
     public ModelAndView showEvent(@PathVariable String eventId) {
