@@ -22,6 +22,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "books")
 @NamedEntityGraph(name = "Book.recommenderInfo", attributeNodes = @NamedAttributeNode("recommender"))
+@Deprecated
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

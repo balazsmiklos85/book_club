@@ -21,6 +21,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "events")
+@Deprecated
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

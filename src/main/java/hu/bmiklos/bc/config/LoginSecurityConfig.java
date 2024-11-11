@@ -1,7 +1,8 @@
 package hu.bmiklos.bc.config;
 
-import static hu.bmiklos.bc.service.security.BookClubAuthority.BOOKCLUB_ADMIN;
-import static hu.bmiklos.bc.service.security.BookClubAuthority.BOOKCLUB_USER;
+import static hu.bmiklos.bc.business.security.BookClubAuthority.BOOKCLUB_ADMIN;
+import static hu.bmiklos.bc.business.security.BookClubAuthority.BOOKCLUB_USER;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "votes")
+@Deprecated
 public class Vote {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -12,6 +12,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "user_password")
+@Deprecated
 public class Password implements Serializable {
 
     private static final long serialVersionUID = -2679510096228680927L;

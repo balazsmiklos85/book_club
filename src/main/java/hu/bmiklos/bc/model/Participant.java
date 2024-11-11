@@ -14,6 +14,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "participants")
 @IdClass(ParticipantId.class)
+@Deprecated
 public class Participant {
     
     @Id

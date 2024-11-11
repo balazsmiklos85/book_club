@@ -6,6 +6,7 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import hu.bmiklos.bc.business.security.EmailPrincipal;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -19,7 +20,6 @@ import org.springframework.security.core.context.SecurityContext;
 
 import hu.bmiklos.bc.model.User;
 import hu.bmiklos.bc.repository.UserRepository;
-import hu.bmiklos.bc.service.security.EmailPrincipal;
 
 @ExtendWith(MockitoExtension.class)
 class ActiveUserServiceTest {
@@ -55,12 +55,11 @@ class ActiveUserServiceTest {
 
     @Test
     void userIsCurrentUserById() {
-        var user = new User();
-        var userId = UUID.randomUUID();
-        user.setId(userId);
-        when(emailPrincipal.getUser()).thenReturn(user);
+        UUID expectedUserId = UUID.randomUUID();
+        hu.bmiklos.bc.domain.entities.User loggedInUser = new hu.bmiklos.bc.domain.entities.User(expectedUserId, "ignored user name", false, -1);
+        when(emailPrincipal.getUser()).thenReturn(loggedInUser);
         var toCheck = new User();
-        toCheck.setId(userId);
+        toCheck.setId(expectedUserId);
 
         boolean result = activeUserService.isCurrentUser(toCheck);
 
@@ -81,9 +80,9 @@ class ActiveUserServiceTest {
 
     @Test
     void differentUsersAreNotTheSame() {
-        var user = new User();
-        user.setId(UUID.randomUUID());
-        when(emailPrincipal.getUser()).thenReturn(user);
+        UUID expectedUserId = UUID.randomUUID();
+        hu.bmiklos.bc.domain.entities.User loggedInUser = new hu.bmiklos.bc.domain.entities.User(expectedUserId, "ignored user name", false, -1);
+        when(emailPrincipal.getUser()).thenReturn(loggedInUser);
         when(emailPrincipal.getExternalId()).thenReturn(-1);
         var toCheck = new User();
         toCheck.setExternalId(-2);

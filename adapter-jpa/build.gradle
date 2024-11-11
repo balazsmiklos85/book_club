@@ -1,0 +1,16 @@
+plugins {
+	alias(libs.plugins.spring.dependency.management)
+	alias(libs.plugins.jacoco)
+	alias(libs.plugins.java)
+}
+
+dependencies {
+	annotationProcessor libs.lombok
+	implementation project(':business')
+	implementation project(':core')
+	implementation libs.commons.collections4
+	implementation libs.lombok
+	implementation libs.spring.boot.starter.data.jpa
+	implementation libs.spring.boot.starter.web
+}
+

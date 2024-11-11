@@ -1,7 +1,8 @@
 package hu.bmiklos.bc.service;
 
-import static hu.bmiklos.bc.service.security.BookClubAuthority.BOOKCLUB_ADMIN;
+import static hu.bmiklos.bc.business.security.BookClubAuthority.BOOKCLUB_ADMIN;
 
+import hu.bmiklos.bc.business.security.EmailPrincipal;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -13,7 +14,6 @@ import hu.bmiklos.bc.model.User;
 import hu.bmiklos.bc.repository.UserRepository;
 import hu.bmiklos.bc.service.dto.UserDto;
 import hu.bmiklos.bc.service.mapper.UserMapper;
-import hu.bmiklos.bc.service.security.EmailPrincipal;
 
 @Service
 public class ActiveUserService extends AuthenticatedService {
