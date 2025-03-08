@@ -10,7 +10,7 @@ import hu.bmiklos.bc.repository.PasswordRepository;
 import hu.bmiklos.bc.repository.UserRepository;
 import hu.bmiklos.bc.service.dto.UserDto;
 import hu.bmiklos.bc.service.mapper.UserMapper;
-import hu.bmiklos.bc.service.security.SaltedPasswordEncoder;
+import hu.bmiklos.bc.business.security.SaltedPasswordEncoder;
 import hu.bmiklos.bc.util.SaltGenerator;
 import jakarta.transaction.Transactional;
 import java.util.List;
