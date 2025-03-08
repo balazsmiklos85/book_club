@@ -1,4 +1,5 @@
 plugins {
+<<<<<<< HEAD
 	alias(libs.plugins.spring.dependency.management)
 	alias(libs.plugins.jacoco)
 	alias(libs.plugins.java)
@@ -13,3 +14,18 @@ dependencies {
 	implementation libs.spring.boot.starter.web
 }
 
+=======
+    id 'java'
+    id 'org.springframework.boot' apply false
+    id 'io.spring.dependency-management'
+}
+
+java {
+    sourceCompatibility = '17'
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+}
+>>>>>>> 76211cb (🏗️ moving the Leaderboard template to its new module.)
