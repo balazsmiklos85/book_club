@@ -9,4 +9,6 @@ dependencyResolutionManagement {
 }
 
 include 'adapter-web-thymeleaf'
+include 'business'
+include 'core'
 

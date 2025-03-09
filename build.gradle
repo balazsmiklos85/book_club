@@ -26,6 +26,8 @@ repositories {
 
 dependencies {
     implementation project(':adapter-web-thymeleaf')
+    implementation project(':business')
+    implementation project(':core')
     implementation libs.commons.collections4
     implementation libs.spring.boot.starter.data.jpa
     implementation libs.spring.boot.starter.security

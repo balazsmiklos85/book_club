@@ -13,10 +13,8 @@ repositories {
 }
 
 dependencies {
-	implementation project(':business')
-	implementation project(':core')
 	implementation libs.commons.collections4
-	implementation libs.spring.boot.starter.thymeleaf
-	implementation libs.spring.boot.starter.web
+	implementation libs.spring.boot.starter.security
+	testImplementation libs.spring.security.test
 }
 

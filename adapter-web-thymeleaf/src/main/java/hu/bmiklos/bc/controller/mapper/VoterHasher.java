@@ -6,7 +6,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.NonNull;
 
 import hu.bmiklos.bc.service.dto.UserDto;
-import hu.bmiklos.bc.service.mapper.NormalizedHashGenerator;
+import hu.bmiklos.bc.controller.mapper.NormalizedHashGenerator;
 
 public class VoterHasher implements Converter<UserDto, Optional<String>> {
 
