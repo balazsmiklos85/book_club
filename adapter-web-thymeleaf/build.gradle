@@ -16,12 +16,16 @@ dependencies {
 
 =======
     id 'java'
-    id 'org.springframework.boot' apply false
+    id 'org.springframework.boot'
     id 'io.spring.dependency-management'
 }
 
 java {
     sourceCompatibility = '17'
+}
+
+repositories {
+	mavenCentral()
 }
 
 dependencies {

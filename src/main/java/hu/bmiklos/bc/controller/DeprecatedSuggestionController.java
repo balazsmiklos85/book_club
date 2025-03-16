@@ -22,13 +22,17 @@ import hu.bmiklos.bc.service.dto.SuggestionDto;
 import hu.bmiklos.bc.service.dto.UserDto;
 import hu.bmiklos.bc.service.mapper.SuggestionDtoToSuggestionFormDataConverter;
 
+/**
+ * @deprecated Methods should be moved eventually to SuggestionController in adapter-web-thymeleaf
+ */
 @Controller
 @RequestMapping("/suggestion")
-public class SuggestionController {
+@Deprecated
+public class DeprecatedSuggestionController {
     private final ActiveUserService activeUserService;
     private final SuggestionService suggestionService;
 
-    public SuggestionController(ActiveUserService activeUserService, SuggestionService suggestionService) {
+    public DeprecatedSuggestionController(ActiveUserService activeUserService, SuggestionService suggestionService) {
         this.activeUserService = activeUserService;
         this.suggestionService = suggestionService;
     }
