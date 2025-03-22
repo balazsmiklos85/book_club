@@ -1,9 +1,11 @@
 package hu.bmiklos.bc.business.repository;
 
-import hu.bmiklos.bc.business.mapper.UserEntitiesMapper;
+import hu.bmiklos.bc.business.mapper.UserEntityMapper;
 import hu.bmiklos.bc.domain.entities.User;
 import hu.bmiklos.bc.model.repository.UserJpaRepository;
 import java.util.Collection;
+import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +16,13 @@ public class UserBusinessRepository implements UserRepository {
 
   @Override
   public Collection<User> findAll() {
-    UserEntitiesMapper mapper = new UserEntitiesMapper();
-    return mapper.convert(userJpaRepository.findAll());
+    UserEntityMapper mapper = new UserEntityMapper();
+    return userJpaRepository.findAll().stream().map(mapper::convert).toList();
+  }
+
+  @Override
+  public Optional<User> findById(UUID id) {
+    UserEntityMapper mapper = new UserEntityMapper();
+    return userJpaRepository.findById(id).map(mapper::convert);
   }
 }

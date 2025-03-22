@@ -1,4 +1,4 @@
-package hu.bmiklos.bc.controller.dto;
+package hu.bmiklos.bc.web.dto;
 
 import java.util.Collection;
 import java.util.UUID;

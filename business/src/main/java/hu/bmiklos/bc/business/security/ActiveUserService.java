@@ -1,28 +1,22 @@
-package hu.bmiklos.bc.service;
+package hu.bmiklos.bc.business.security;
 
 import static hu.bmiklos.bc.business.security.BookClubAuthority.BOOKCLUB_ADMIN;
 
-import hu.bmiklos.bc.business.security.EmailPrincipal;
 import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-import hu.bmiklos.bc.exception.NotAuthenticatedException;
-import hu.bmiklos.bc.model.User;
-import hu.bmiklos.bc.repository.UserRepository;
-import hu.bmiklos.bc.service.dto.UserDto;
-import hu.bmiklos.bc.service.mapper.UserMapper;
+import hu.bmiklos.bc.business.repository.UserRepository;
+import hu.bmiklos.bc.domain.entities.User;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class ActiveUserService extends AuthenticatedService {
 
     private final UserRepository userRepository;
-
-    public ActiveUserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     public boolean isAdmin() {
         try {
@@ -33,9 +27,8 @@ public class ActiveUserService extends AuthenticatedService {
         }
     }
 
-    public UserDto getUser() {
+    public User getUser() {
         return userRepository.findById(getUserId())
-            .map(UserMapper::mapToDto)
             .orElseThrow(NotAuthenticatedException::new);
     }
 
