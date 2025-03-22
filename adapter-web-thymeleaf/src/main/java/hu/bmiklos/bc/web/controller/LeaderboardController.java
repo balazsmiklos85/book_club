@@ -1,4 +1,4 @@
-package hu.bmiklos.bc.controller;
+package hu.bmiklos.bc.web.controller;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,8 +15,8 @@ import hu.bmiklos.bc.controller.mapper.LeaderboardElementsConverter;
 import hu.bmiklos.bc.service.ActiveUserService;
 import hu.bmiklos.bc.service.BookSortingService;
 import hu.bmiklos.bc.service.VoteService;
-import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
-import hu.bmiklos.bc.service.dto.UserDto;
+import hu.bmiklos.bc.web.dto.BookAndSuggesterDto;
+import hu.bmiklos.bc.web.dto.UserDto;
 
 @Controller
 public class LeaderboardController {

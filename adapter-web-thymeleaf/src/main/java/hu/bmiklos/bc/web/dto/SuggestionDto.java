@@ -1,4 +1,4 @@
-package hu.bmiklos.bc.service.dto;
+package hu.bmiklos.bc.web.dto;
 
 import java.time.Instant;
 import java.util.UUID;
