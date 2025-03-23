@@ -1,50 +1,38 @@
 package hu.bmiklos.bc.web.controller;
 
-import java.util.Collection;
+import hu.bmiklos.bc.business.security.ActiveUserService;
+import hu.bmiklos.bc.business.usecase.SortedBookQueryService;
+import hu.bmiklos.bc.domain.entities.User;
+import hu.bmiklos.bc.web.dto.LeaderboardBookData;
+import hu.bmiklos.bc.web.mapper.LeaderboardElementConverter;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import hu.bmiklos.bc.controller.dto.LeaderboardBookData;
-import hu.bmiklos.bc.controller.mapper.LeaderboardElementsConverter;
-import hu.bmiklos.bc.service.ActiveUserService;
-import hu.bmiklos.bc.service.BookSortingService;
-import hu.bmiklos.bc.service.VoteService;
-import hu.bmiklos.bc.web.dto.BookAndSuggesterDto;
-import hu.bmiklos.bc.web.dto.UserDto;
-
 @Controller
+@RequiredArgsConstructor
 public class LeaderboardController {
-    @Autowired
-    private ActiveUserService activeUserService;
+  private final ActiveUserService activeUserService;
 
-    @Autowired
-    private BookSortingService bookSortingService;
+  private final SortedBookQueryService bookService;
 
-    @Autowired
-    private VoteService voteService;
+  @GetMapping("/")
+  public ModelAndView getRoot() {
+    final User user = activeUserService.getUser();
+    final var booksConverter = new LeaderboardElementConverter(user);
+    final List<LeaderboardBookData> books =
+        bookService.getAll().stream().map(booksConverter::convert).toList();
 
-    @GetMapping("/")
-    public ModelAndView getRoot() {
-        List<BookAndSuggesterDto> books = bookSortingService.getAll();
-        List<BookAndSuggesterDto> userVotedBooks = voteService.getVotedBooks();
-        Map<UUID, Collection<UserDto>> votersByBooks = voteService.getAllVotersByBooks();
+    final ModelAndView modelAndView = new ModelAndView("leaderboard");
+    modelAndView.addObject("books", books);
+    modelAndView.addObject("isAdmin", user.isAdmin());
+    return modelAndView;
+  }
 
-        var booksConverter = new LeaderboardElementsConverter(userVotedBooks, votersByBooks);
-        Collection<LeaderboardBookData> bookData = booksConverter.convert(books);
-        ModelAndView modelAndView = new ModelAndView("leaderboard");
-        modelAndView.addObject("books", bookData);
-        modelAndView.addObject("isAdmin", activeUserService.isAdmin());
-        return modelAndView;
-    }
-
-    @GetMapping("/leaderboard")
-    public ModelAndView getLeaderboard() {
-        return getRoot();
-    }
+  @GetMapping("/leaderboard")
+  public ModelAndView getLeaderboard() {
+    return getRoot();
+  }
 }

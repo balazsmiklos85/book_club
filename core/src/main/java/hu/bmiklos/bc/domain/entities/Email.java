@@ -6,6 +6,11 @@ import lombok.RequiredArgsConstructor;
 @Data
 @RequiredArgsConstructor
 public class Email {
-    private final String emailAddress;
-    private User user;
+  private final String emailAddress;
+  private User user;
+
+  @Override
+  public String toString() {
+    return emailAddress;
+  }
 }

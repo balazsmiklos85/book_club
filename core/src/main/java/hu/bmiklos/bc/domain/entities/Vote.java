@@ -10,5 +10,5 @@ import lombok.RequiredArgsConstructor;
 public class Vote {
     private final UUID id;
     private final Book book;
-    private final User user;
+    private final ShallowUser user;
 }

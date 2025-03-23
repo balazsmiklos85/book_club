@@ -74,6 +74,11 @@ public class BookEntity {
     @Nullable
     private Set<SuggestionEntity> suggestions;
 
+    @OneToMany
+    @JoinColumn(name = "bookId", referencedColumnName = "id", insertable = false, updatable = false)
+    @Nullable
+    private Set<VoteEntity> votes;
+
     /**
      * @deprecated Use {@link SuggestionEntity} to store information about who suggested the book.
      */
