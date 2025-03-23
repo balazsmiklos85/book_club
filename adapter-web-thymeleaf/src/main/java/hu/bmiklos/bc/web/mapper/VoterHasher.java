@@ -17,7 +17,7 @@ public class VoterHasher implements Converter<Vote, Optional<String>> {
   @Override
   @NonNull
   public Optional<String> convert(final Vote source) {
-    return source.getUser().getEmails().stream()
+    return source.getUser().emails().stream()
         .map(Email::toString)
         .map(hasher::apply)
         .filter(Optional::isPresent)

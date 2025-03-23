@@ -2,6 +2,7 @@ package hu.bmiklos.bc.web.controller;
 
 import hu.bmiklos.bc.business.usecase.EventCreationService;
 import hu.bmiklos.bc.business.usecase.SuggestionDetailsService;
+import hu.bmiklos.bc.domain.entities.ShallowUser;
 import hu.bmiklos.bc.domain.entities.Suggestion;
 import hu.bmiklos.bc.domain.entities.User;
 import hu.bmiklos.bc.web.mapper.DateFormatter;
@@ -53,7 +54,7 @@ public class EventController {
     }
     Optional.of(suggestion)
         .map(Suggestion::getSuggester)
-        .map(User::getId)
+        .map(ShallowUser::id)
         .ifPresent(hostId -> modelAndView.addObject("host", hostId));
     modelAndView.addObject("users", users);
     return modelAndView;

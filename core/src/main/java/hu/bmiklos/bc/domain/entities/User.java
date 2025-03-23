@@ -2,6 +2,7 @@ package hu.bmiklos.bc.domain.entities;
 
 import static java.lang.Boolean.TRUE;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.Data;
@@ -22,6 +23,6 @@ public class User {
   }
 
   public ShallowUser shallow() {
-    return new ShallowUser(id, name, isAdmin, externalId);
+    return new ShallowUser(id, name, isAdmin, externalId, new ArrayList<Email>(emails));
   }
 }

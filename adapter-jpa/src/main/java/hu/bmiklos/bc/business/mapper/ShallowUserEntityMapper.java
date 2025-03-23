@@ -8,6 +8,11 @@ public class ShallowUserEntityMapper implements Converter<UserEntity, ShallowUse
 
   @Override
   public ShallowUser convert(UserEntity source) {
-    return new ShallowUser(source.getId(), source.getName(), source.isAdmin(), source.getExternalId());
+    return new ShallowUser(
+        source.getId(),
+        source.getName(),
+        source.isAdmin(),
+        source.getExternalId(),
+        source.getEmails().stream().map(new EmailEntityMapper()::convert).toList());
   }
 }

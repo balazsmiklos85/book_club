@@ -1,4 +1,4 @@
-package hu.bmiklos.bc.service.mapper;
+package hu.bmiklos.bc.web.mapper;
 
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
