@@ -8,6 +8,7 @@ dependencies {
 	annotationProcessor libs.lombok
 	implementation libs.commons.collections4;
 	implementation libs.lombok
+	implementation libs.slf4j.api
 	testImplementation libs.junit.api
 	testRuntimeOnly libs.junit.engine
 }

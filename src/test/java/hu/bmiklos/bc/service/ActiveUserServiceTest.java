@@ -47,9 +47,9 @@ class ActiveUserServiceTest {
 
     @Test
     void isCurrentUserIsNullSafe() {
-        User toCheck = null;
+        UUID toCheck = null;
 
-        boolean result = activeUserService.isCurrentUser(toCheck.getId());
+        boolean result = activeUserService.isCurrentUser(toCheck);
 
         assertFalse(result, "A null user cannot be the currently logged in user.");
     }
@@ -70,11 +70,10 @@ class ActiveUserServiceTest {
     @Test
     void userIsCurrentUserByExternalId() {
         var userId = -1;
-        when(emailPrincipal.getExternalId()).thenReturn(userId);
-        var toCheck = new User();
-        toCheck.setExternalId(userId);
+        when(emailPrincipal.externalId()).thenReturn(userId);
+        var toCheck = new hu.bmiklos.bc.domain.entities.User(null, null, null, userId);
 
-        boolean result = activeUserService.isCurrentUser(toCheck.getId());
+        boolean result = activeUserService.isCurrentUser(toCheck);
 
         assertTrue(result, "User objects with the same external ID should be considered the same user.");
     }
@@ -84,7 +83,7 @@ class ActiveUserServiceTest {
         UUID expectedUserId = UUID.randomUUID();
         hu.bmiklos.bc.domain.entities.User loggedInUser = new hu.bmiklos.bc.domain.entities.User(expectedUserId, "ignored user name", false, -1);
         when(emailPrincipal.getUser()).thenReturn(loggedInUser);
-        when(emailPrincipal.getExternalId()).thenReturn(-1);
+
         var toCheck = new User();
         toCheck.setExternalId(-2);
         toCheck.setId(UUID.randomUUID());

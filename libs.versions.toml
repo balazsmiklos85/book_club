@@ -1,30 +1,33 @@
 [versions]
 commons-collections4 = "4.4"
-spring-boot = "3.3.4"
-liquibase-core = "4.29.2"
-thymeleaf-extras-springsecurity6 = "3.1.2.RELEASE"
+dependency-management = "1.1.6"
 h2 = "2.3.232"
 junit = "5.8.2"
-postgresql = "42.7.4"
-spring-security-test = "6.3.3"
-dependency-management = "1.1.6"
+liquibase-core = "4.29.2"
 liquibase-gradle = "2.2.0"
 lombok = "1.18.34"
+postgresql = "42.7.4"
+slf4j = "2.0.17"
 sonarqube = "5.1.0.4882"
+spring-boot = "3.3.4"
+spring-security-test = "6.3.3"
+thymeleaf-extras-springsecurity6 = "3.1.2.RELEASE"
 
 [libraries]
 commons-collections4 = { module = "org.apache.commons:commons-collections4", version.ref = "commons-collections4" }
+liquibase-core = { module = "org.liquibase:liquibase-core", version.ref = "liquibase-core" }
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
+postgresql-runtime = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "spring-boot" }
 spring-boot-starter-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "spring-boot" }
 spring-boot-starter-thymeleaf = { module = "org.springframework.boot:spring-boot-starter-thymeleaf", version.ref = "spring-boot" }
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring-boot" }
-liquibase-core = { module = "org.liquibase:liquibase-core", version.ref = "liquibase-core" }
-lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
 thymeleaf-extras-springsecurity6 = { module = "org.thymeleaf.extras:thymeleaf-extras-springsecurity6", version.ref = "thymeleaf-extras-springsecurity6" }
+
 h2-runtime = { module = "com.h2database:h2", version.ref = "h2" }
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
-postgresql-runtime = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
 spring-security-test = { module = "org.springframework.security:spring-security-test", version.ref = "spring-security-test" }
 

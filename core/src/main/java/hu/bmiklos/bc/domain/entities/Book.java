@@ -1,9 +1,9 @@
 package hu.bmiklos.bc.domain.entities;
 
-import static java.util.Objects.isNull;
-
+import hu.bmiklos.bc.domain.functions.ExternalIdFilter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import lombok.Data;
@@ -38,15 +38,11 @@ public class Book {
     this.voters = new ArrayList<>(CollectionUtils.emptyIfNull(voteProvider.apply(this)));
   }
 
-  public boolean isFromTheLastMonth() {
-    return suggestions.stream().anyMatch(Suggestion::isFromTheLastMonth);
-  }
-
   public boolean isUserVoted(Member member) {
-    if (isNull(member)) {
-      return false;
-    }
-    Integer memberId = member.externalId();
-    return voters.stream().map(Vote::getUser).map(Member::externalId).anyMatch(memberId::equals);
+    return Optional.ofNullable(member)
+        .map(Member::externalId)
+        .map(ExternalIdFilter::new)
+        .map(voters.stream().map(Vote::getUser).map(Member::externalId)::anyMatch)
+        .orElse(false);
   }
 }

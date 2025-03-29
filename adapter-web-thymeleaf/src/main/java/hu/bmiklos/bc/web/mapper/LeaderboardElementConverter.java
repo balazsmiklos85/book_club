@@ -1,6 +1,7 @@
 package hu.bmiklos.bc.web.mapper;
 
 import hu.bmiklos.bc.domain.entities.Book;
+import hu.bmiklos.bc.domain.entities.Suggestion;
 import hu.bmiklos.bc.domain.entities.User;
 import hu.bmiklos.bc.web.dto.LeaderboardBookData;
 import hu.bmiklos.bc.web.dto.SuggestionReference;
@@ -33,6 +34,6 @@ public class LeaderboardElementConverter implements Converter<Book, LeaderboardB
         suggestions,
         voterHashes,
         source.isUserVoted(user),
-        source.isFromTheLastMonth());
+        source.getSuggestions().stream().anyMatch(Suggestion::isFromTheLastMonth));
   }
 }

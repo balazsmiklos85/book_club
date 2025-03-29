@@ -24,7 +24,7 @@ public abstract class AuthenticatedService {
 
     public int getExternalUserId() {
         EmailPrincipal principal = getPrincipal();
-        return principal.getExternalId();
+        return principal.externalId();
     }
 
     public UUID getUserId() {

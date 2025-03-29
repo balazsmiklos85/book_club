@@ -19,6 +19,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 class LeaderboardElementConverterTest {
+
   @Test
   void mapsBookFields() {
     var user = new User(null, null, null, null);

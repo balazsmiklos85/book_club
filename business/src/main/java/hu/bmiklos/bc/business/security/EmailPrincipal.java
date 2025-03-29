@@ -4,6 +4,7 @@ import static hu.bmiklos.bc.business.security.BookClubAuthority.BOOKCLUB_ADMIN;
 import static hu.bmiklos.bc.business.security.BookClubAuthority.BOOKCLUB_USER;
 
 import hu.bmiklos.bc.domain.entities.Email;
+import hu.bmiklos.bc.domain.entities.Member;
 import hu.bmiklos.bc.domain.entities.Password;
 import hu.bmiklos.bc.domain.entities.User;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @RequiredArgsConstructor
-public class EmailPrincipal implements UserDetails {
+public class EmailPrincipal implements UserDetails, Member {
 
     private final Email email;
 
@@ -28,7 +29,8 @@ public class EmailPrincipal implements UserDetails {
         return result;
     }
 
-    public int getExternalId() {
+    @Override
+    public Integer externalId() {
         return email.getUser().getExternalId();
     }
 
