@@ -2,11 +2,12 @@ package hu.bmiklos.bc.domain.entities;
 
 import static java.util.Objects.isNull;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.function.Function;
-
 import lombok.Data;
+import org.apache.commons.collections4.CollectionUtils;
 
 @Data
 public class Book {
@@ -14,11 +15,12 @@ public class Book {
   private final String author;
   private final String title;
   private final String url;
+
   /**
    * @deprecated There should be no circular dependencies in the domain layer.
    */
-  @Deprecated
-  private final Collection<Suggestion> suggestions;
+  @Deprecated private final Collection<Suggestion> suggestions;
+
   private final Collection<Vote> voters;
 
   public Book(
@@ -32,19 +34,19 @@ public class Book {
     this.author = author;
     this.title = title;
     this.url = url;
-    this.suggestions = suggestionProvider.apply(this);
-    this.voters = voteProvider.apply(this);
+    this.suggestions = new ArrayList<>(CollectionUtils.emptyIfNull(suggestionProvider.apply(this)));
+    this.voters = new ArrayList<>(CollectionUtils.emptyIfNull(voteProvider.apply(this)));
   }
 
-public boolean isFromTheLastMonth() {
+  public boolean isFromTheLastMonth() {
     return suggestions.stream().anyMatch(Suggestion::isFromTheLastMonth);
   }
 
-  public boolean isUserVoted(User user) {
-    if (isNull(user)) {
+  public boolean isUserVoted(Member member) {
+    if (isNull(member)) {
       return false;
     }
-    ShallowUser userToCheck = user.shallow();
-    return voters.stream().map(Vote::getUser).anyMatch(userToCheck::equals);
+    Integer memberId = member.externalId();
+    return voters.stream().map(Vote::getUser).map(Member::externalId).anyMatch(memberId::equals);
   }
 }

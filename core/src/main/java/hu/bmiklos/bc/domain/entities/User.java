@@ -7,10 +7,11 @@ import java.util.List;
 import java.util.UUID;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 
 @Data
 @RequiredArgsConstructor
-public class User {
+public class User implements Member {
   private final UUID id;
   private final String name;
   private final Boolean isAdmin;
@@ -23,6 +24,12 @@ public class User {
   }
 
   public ShallowUser shallow() {
-    return new ShallowUser(id, name, isAdmin, externalId, new ArrayList<Email>(emails));
+    return new ShallowUser(
+        id, name, isAdmin, externalId, new ArrayList<Email>(CollectionUtils.emptyIfNull(emails)));
+  }
+
+  @Override
+  public Integer externalId() {
+    return externalId;
   }
 }

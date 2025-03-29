@@ -6,6 +6,7 @@ plugins {
 
 dependencies {
 	annotationProcessor libs.lombok
+	implementation libs.commons.collections4;
 	implementation libs.lombok
 	testImplementation libs.junit.api
 	testRuntimeOnly libs.junit.engine
