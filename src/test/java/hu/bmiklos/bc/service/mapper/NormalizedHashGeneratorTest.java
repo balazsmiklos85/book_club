@@ -8,6 +8,8 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import hu.bmiklos.bc.web.mapper.NormalizedHashGenerator;
+
 class NormalizedHashGeneratorTest {
     private NormalizedHashGenerator hasher;
 

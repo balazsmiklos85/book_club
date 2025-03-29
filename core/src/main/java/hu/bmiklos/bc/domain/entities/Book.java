@@ -14,6 +14,10 @@ public class Book {
   private final String author;
   private final String title;
   private final String url;
+  /**
+   * @deprecated There should be no circular dependencies in the domain layer.
+   */
+  @Deprecated
   private final Collection<Suggestion> suggestions;
   private final Collection<Vote> voters;
 

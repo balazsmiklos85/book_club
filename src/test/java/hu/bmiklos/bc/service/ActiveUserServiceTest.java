@@ -6,6 +6,8 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import hu.bmiklos.bc.business.repository.UserRepository;
+import hu.bmiklos.bc.business.security.ActiveUserService;
 import hu.bmiklos.bc.business.security.EmailPrincipal;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -19,7 +21,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 
 import hu.bmiklos.bc.model.User;
-import hu.bmiklos.bc.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
 class ActiveUserServiceTest {
@@ -48,7 +49,7 @@ class ActiveUserServiceTest {
     void isCurrentUserIsNullSafe() {
         User toCheck = null;
 
-        boolean result = activeUserService.isCurrentUser(toCheck);
+        boolean result = activeUserService.isCurrentUser(toCheck.getId());
 
         assertFalse(result, "A null user cannot be the currently logged in user.");
     }
@@ -61,7 +62,7 @@ class ActiveUserServiceTest {
         var toCheck = new User();
         toCheck.setId(expectedUserId);
 
-        boolean result = activeUserService.isCurrentUser(toCheck);
+        boolean result = activeUserService.isCurrentUser(toCheck.getId());
 
         assertTrue(result, "User objects with the same ID should be considered the same user.");
     }
@@ -73,7 +74,7 @@ class ActiveUserServiceTest {
         var toCheck = new User();
         toCheck.setExternalId(userId);
 
-        boolean result = activeUserService.isCurrentUser(toCheck);
+        boolean result = activeUserService.isCurrentUser(toCheck.getId());
 
         assertTrue(result, "User objects with the same external ID should be considered the same user.");
     }
@@ -88,7 +89,7 @@ class ActiveUserServiceTest {
         toCheck.setExternalId(-2);
         toCheck.setId(UUID.randomUUID());
 
-        boolean result = activeUserService.isCurrentUser(toCheck);
+        boolean result = activeUserService.isCurrentUser(toCheck.getId());
 
         assertFalse(result, "User objects with the different IDs should be considered different.");
 

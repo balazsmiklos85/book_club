@@ -2,119 +2,127 @@ package hu.bmiklos.bc.controller.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
+import hu.bmiklos.bc.domain.entities.Book;
+import hu.bmiklos.bc.domain.entities.Email;
+import hu.bmiklos.bc.domain.entities.ShallowUser;
+import hu.bmiklos.bc.domain.entities.Suggestion;
+import hu.bmiklos.bc.domain.entities.User;
+import hu.bmiklos.bc.domain.entities.Vote;
+import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
+import hu.bmiklos.bc.service.dto.BookDto;
+import hu.bmiklos.bc.service.dto.SuggestionDto;
+import hu.bmiklos.bc.service.dto.UserDto;
+import hu.bmiklos.bc.web.dto.LeaderboardBookData;
+import hu.bmiklos.bc.web.dto.SuggestionReference;
+import hu.bmiklos.bc.web.mapper.LeaderboardElementConverter;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
 import org.junit.jupiter.api.Test;
 
-import hu.bmiklos.bc.controller.dto.LeaderboardBookData;
-import hu.bmiklos.bc.controller.dto.SuggestionReference;
-import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
-import hu.bmiklos.bc.service.dto.BookDto;
-import hu.bmiklos.bc.service.dto.SuggestionDto;
-import hu.bmiklos.bc.service.dto.UserDto;
-
 class LeaderboardElementConverterTest {
-    @Test
-    void mapsBookFields() {
-        var converter = new LeaderboardElementConverter(List.of(), Map.of());
-        var bookId = UUID.randomUUID();
-        BookDto book = new BookDto(bookId, "Test Author", "Test Title",
-                "test://url.hu");
-        var source = new BookAndSuggesterDto(book, Set.of());
+  @Test
+  void mapsBookFields() {
+    var user = new User(null, null, null, null);
+    var converter = new LeaderboardElementConverter(user);
+    var bookId = UUID.randomUUID();
+    var book =
+        new Book(
+            bookId, "Test Author", "Test Title", "test://url.hu", ignored -> null, ignored -> null);
 
-        LeaderboardBookData result = converter.convert(source);
+    LeaderboardBookData result = converter.convert(book);
 
-        assertEquals(bookId, result.id(),
-                "The book ID should have been mapped.");
-        assertEquals("Test Author", result.author(),
-                "The author should have been mapped.");
-        assertEquals("Test Title", result.title(),
-                "The title should have been mapped.");
-        assertEquals("test://url.hu", result.url(),
-                "The URL should have been mapped.");
-    }
+    assertEquals(bookId, result.id(), "The book ID should have been mapped.");
+    assertEquals("Test Author", result.author(), "The author should have been mapped.");
+    assertEquals("Test Title", result.title(), "The title should have been mapped.");
+    assertEquals("test://url.hu", result.url(), "The URL should have been mapped.");
+  }
 
-    @Test
-    void mapsSuggestions() {
-        var converter = new LeaderboardElementConverter(List.of(), Map.of());
-        var bookId = UUID.randomUUID();
-        BookDto book = new BookDto(bookId, "Test Author", "Test Title",
-                "test://url.hu");
-        var suggester = new UserDto(UUID.randomUUID(), "Test User", -1);
-        var suggestionId = UUID.randomUUID();
-        var now = Instant.now();
-        var suggestion = new SuggestionDto(suggestionId, now, suggester,
-                "Test description");
-        var source = new BookAndSuggesterDto(book, Set.of(suggestion));
+  @Test
+  void mapsSuggestions() {
 
-        SuggestionReference result = converter.convert(source)
-            .suggestions()
-            .iterator()
-            .next();
+    var user = new User(null, null, null, null);
+    var converter = new LeaderboardElementConverter(user);
+    var bookId = UUID.randomUUID();
+    var suggestionId = UUID.randomUUID();
+    var suggester = new ShallowUser(UUID.randomUUID(), "Test User", false, -1, List.of());
+    var suggestion =
+        new Suggestion(
+            suggestionId, Instant.now(), "Test description", suggester, mock(Book.class));
+    var book =
+        new Book(
+            bookId,
+            "Test Author",
+            "Test Title",
+            "test://url.hu",
+            b -> List.of(suggestion),
+            ignored -> null);
+    var now = Instant.now();
 
-        assertEquals(suggestionId, result.getId(),
-                "The suggestion ID should have been mapped.");
-        assertEquals("Test User", result.getName(),
-                "The suggester name should have been mapped.");
-    }
+    SuggestionReference result = converter.convert(book).suggestions().iterator().next();
 
-    @Test
-    void mapsVoters() {
-        var bookId = UUID.randomUUID();
-        var voter = new UserDto(UUID.randomUUID(), "Test User", -1,
-                List.of("user@test.hu"));
-        var converter = new LeaderboardElementConverter(List.of(),
-                Map.of(bookId, List.of(voter)));
-        BookDto book = new BookDto(bookId, "Test Author", "Test Title",
-                "test://url.hu");
-        var source = new BookAndSuggesterDto(book, Set.of());
+    assertEquals(suggestionId, result.getId(), "The suggestion ID should have been mapped.");
+    assertEquals("Test User", result.getName(), "The suggester name should have been mapped.");
+  }
 
-        String result = converter.convert(source)
-            .voterHashes()
-            .iterator()
-            .next();
+  @Test
+  void mapsVoters() {
+    var bookId = UUID.randomUUID();
+    var voter =
+        new ShallowUser(
+            UUID.randomUUID(), "Test User", false, -1, List.of(new Email("user@test.hu")));
+    var user = new User(null, null, null, null);
+    var converter = new LeaderboardElementConverter(user);
+    var vote = new Vote(UUID.randomUUID(), mock(Book.class), voter);
+    var book =
+        new Book(
+            bookId,
+            "Test Author",
+            "Test Title",
+            "test://url.hu",
+            ignored -> null,
+            b -> List.of(vote));
 
-        assertEquals(
-                "f88054c4794146f676dc7d326d8cdd917d17782b625996a4c1c37a1211900427",
-                result, "The voter should have been mapped.");
-    }
+    String result = converter.convert(book).voterHashes().iterator().next();
 
-    @Test
-    void mapsUserVote() {
-        var bookId = UUID.randomUUID();
-        var converter = new LeaderboardElementConverter(List.of(bookId),
-                Map.of());
-        BookDto book = new BookDto(bookId, "Test Author", "Test Title",
-                "test://url.hu");
-        var source = new BookAndSuggesterDto(book, Set.of());
+    assertEquals(
+        "f88054c4794146f676dc7d326d8cdd917d17782b625996a4c1c37a1211900427",
+        result,
+        "The voter should have been mapped.");
+  }
 
-        LeaderboardBookData result = converter.convert(source);
+  @Test
+  void mapsUserVote() {
+    var bookId = UUID.randomUUID();
+    var voterId = UUID.randomUUID();
+    var user = new User(voterId, null, null, null);
+    var converter = new LeaderboardElementConverter(user);
+    var voter = new ShallowUser(voterId, "Test User", false, -1, List.of());
+    var vote = new Vote(UUID.randomUUID(), mock(Book.class), voter);
+    var book = new Book(bookId, "Test Author", "Test Title", "test://url.hu", ignored -> null, b -> List.of(vote));
 
-        assertTrue(result.userVoted(),
-                "The vote of the user should have been mapped.");
-    }
+    LeaderboardBookData result = converter.convert(book);
 
-    @Test
-    void mapsNewSuggestionFlag() {
-        var converter = new LeaderboardElementConverter(List.of(), Map.of());
-        var bookId = UUID.randomUUID();
-        BookDto book = new BookDto(bookId, "Test Author", "Test Title",
-                "test://url.hu");
-        var suggester = new UserDto(UUID.randomUUID(), "Test User", -1);
-        var suggestionId = UUID.randomUUID();
-        var now = Instant.now();
-        var suggestion = new SuggestionDto(suggestionId, now, suggester,
-                "Test description");
-        var source = new BookAndSuggesterDto(book, Set.of(suggestion));
+    assertTrue(result.userVoted(), "The vote of the user should have been mapped.");
+  }
 
-        LeaderboardBookData result = converter.convert(source);
+  @Test
+  void mapsNewSuggestionFlag() {
+    var user = new User(null, null, null, null);
+    var converter = new LeaderboardElementConverter(user);
+    var bookId = UUID.randomUUID();
+    var suggester = new ShallowUser(UUID.randomUUID(), "Test User", false, -1, List.of());
+    var suggestionId = UUID.randomUUID();
+    var now = Instant.now();
+    var suggestion = new Suggestion(suggestionId, now, null, suggester, mock(Book.class));
+    var book = new Book(bookId, "Test Author", "Test Title", "test://url.hu", b -> List.of(suggestion), ignored -> null);
 
-        assertTrue(result.isNew(), "The 'new' flag should have been mapped.");
-    }
+    LeaderboardBookData result = converter.convert(book);
+
+    assertTrue(result.isNew(), "The 'new' flag should have been mapped.");
+  }
 }
-

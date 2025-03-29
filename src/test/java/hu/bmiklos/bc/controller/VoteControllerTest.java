@@ -10,7 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.servlet.ModelAndView;
 
-import hu.bmiklos.bc.service.ActiveUserService;
+import hu.bmiklos.bc.business.security.ActiveUserService;
 
 @ExtendWith(MockitoExtension.class)
 public class VoteControllerTest {

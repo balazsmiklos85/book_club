@@ -9,6 +9,10 @@ import org.springframework.stereotype.Repository;
 
 import hu.bmiklos.bc.model.User;
 
+/**
+ * @deprecated Use {@link UserBusinessRepository} in the business layer, and {@link UserJpaRepository} in the JPA adapter.
+ */
+@Deprecated
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
 
