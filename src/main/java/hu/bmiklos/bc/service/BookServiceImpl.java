@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import hu.bmiklos.bc.business.security.AuthenticatedService;
 import hu.bmiklos.bc.controller.dto.CreateBookRequest;
 import hu.bmiklos.bc.model.Book;
 import hu.bmiklos.bc.repository.BookRepository;

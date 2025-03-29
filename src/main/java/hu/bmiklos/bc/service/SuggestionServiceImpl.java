@@ -9,6 +9,8 @@ import java.util.stream.Stream;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
+import hu.bmiklos.bc.business.security.ActiveUserService;
+import hu.bmiklos.bc.business.security.AuthenticatedService;
 import hu.bmiklos.bc.controller.dto.CreateBookRequest;
 import hu.bmiklos.bc.controller.dto.SuggestionFormData;
 import hu.bmiklos.bc.model.Book;
@@ -91,7 +93,7 @@ public class SuggestionServiceImpl extends AuthenticatedService implements Sugge
             if (storedBook.isPresent()) {
                 Book book = storedBook.get();
                 User bookRecommender = book.getRecommender();
-                if (activeUserService.isCurrentUser(bookRecommender) || activeUserService.isCurrentUser(book.getRecommenderExternalId())) {
+                if (activeUserService.isCurrentUser(bookRecommender.getId()) || activeUserService.isCurrentUser(book.getRecommenderExternalId())) {
                     var suggestion = new Suggestion(bookId, getUserId(), book.getRecommendedAt(),
                             suggestionData.getDescription());
                     suggestionRepository.saveAndFlush(suggestion);

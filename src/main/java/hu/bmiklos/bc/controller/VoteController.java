@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import hu.bmiklos.bc.business.security.ActiveUserService;
 import hu.bmiklos.bc.controller.dto.VoteRequest;
-import hu.bmiklos.bc.service.ActiveUserService;
 import hu.bmiklos.bc.service.VoteService;
 
 @Controller

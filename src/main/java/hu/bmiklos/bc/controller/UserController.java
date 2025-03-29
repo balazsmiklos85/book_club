@@ -1,9 +1,9 @@
 package hu.bmiklos.bc.controller;
 
+import hu.bmiklos.bc.business.security.ActiveUserService;
 import hu.bmiklos.bc.controller.dto.PasswordResetRequest;
 import hu.bmiklos.bc.controller.mapper.UserMapper;
 import hu.bmiklos.bc.model.User;
-import hu.bmiklos.bc.service.ActiveUserService;
 import hu.bmiklos.bc.service.UserService;
 import hu.bmiklos.bc.service.dto.UserDto;
 import java.util.List;

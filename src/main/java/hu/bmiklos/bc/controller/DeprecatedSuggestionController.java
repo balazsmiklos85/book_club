@@ -1,6 +1,5 @@
 package hu.bmiklos.bc.controller;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -12,10 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import hu.bmiklos.bc.business.security.ActiveUserService;
 import hu.bmiklos.bc.controller.dto.CreateBookRequest;
 import hu.bmiklos.bc.controller.dto.SuggestionFormData;
-import hu.bmiklos.bc.service.ActiveUserService;
-import hu.bmiklos.bc.service.BookService;
 import hu.bmiklos.bc.service.SuggestionService;
 import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
 import hu.bmiklos.bc.service.dto.SuggestionDto;

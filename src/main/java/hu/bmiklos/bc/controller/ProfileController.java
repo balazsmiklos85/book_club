@@ -10,9 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import hu.bmiklos.bc.business.security.ActiveUserService;
 import hu.bmiklos.bc.controller.dto.ProfileInformation;
 import hu.bmiklos.bc.controller.mapper.UserMapper;
-import hu.bmiklos.bc.service.ActiveUserService;
+import hu.bmiklos.bc.domain.entities.User;
 import hu.bmiklos.bc.service.UserService;
 import hu.bmiklos.bc.service.dto.UserDto;
 
@@ -28,7 +29,7 @@ public class ProfileController {
     @GetMapping
     // TODO add integration test
     public ModelAndView profile() {
-        UserDto user = activeUserService.getUser();
+        User user = activeUserService.getUser();
         ProfileInformation userData = UserMapper.mapToProfileInformation(user);
 
         ModelAndView modelAndView = new ModelAndView("profile");

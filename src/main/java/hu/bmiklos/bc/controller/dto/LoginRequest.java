@@ -1,9 +1,7 @@
 package hu.bmiklos.bc.controller.dto;
 
-import hu.bmiklos.bc.web.dto.LoginRequest;
-
 /**
- * @deprecated Use {@link LoginRequest} from the Thymeleaf module instead.
+ * @deprecated Use {@link hu.bmiklos.bc.web.dto.LoginRequest} from the Thymeleaf module instead.
  */
 @Deprecated
 public class LoginRequest {

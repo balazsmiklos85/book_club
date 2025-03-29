@@ -14,6 +14,8 @@ import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import hu.bmiklos.bc.business.security.ActiveUserService;
+import hu.bmiklos.bc.business.security.AuthenticatedService;
 import hu.bmiklos.bc.model.Book;
 import hu.bmiklos.bc.model.Event;
 import hu.bmiklos.bc.model.User;

@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import hu.bmiklos.bc.business.security.ActiveUserService;
 import hu.bmiklos.bc.controller.dto.EventData;
 import hu.bmiklos.bc.controller.mapper.EventMapper;
-import hu.bmiklos.bc.service.ActiveUserService;
 import hu.bmiklos.bc.service.EventService;
 import hu.bmiklos.bc.service.dto.GetEventDto;
 

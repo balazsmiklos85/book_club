@@ -13,14 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import hu.bmiklos.bc.business.security.ActiveUserService;
 import hu.bmiklos.bc.controller.dto.EditEventRequest;
 import hu.bmiklos.bc.controller.dto.EventData;
 import hu.bmiklos.bc.controller.dto.HostData;
 import hu.bmiklos.bc.controller.dto.ParticipantData;
 import hu.bmiklos.bc.controller.mapper.EventMapper;
 import hu.bmiklos.bc.controller.mapper.UserMapper;
-import hu.bmiklos.bc.service.ActiveUserService;
-import hu.bmiklos.bc.service.BookService;
 import hu.bmiklos.bc.service.EventService;
 import hu.bmiklos.bc.service.ParticipantService;
 import hu.bmiklos.bc.service.UserService;
