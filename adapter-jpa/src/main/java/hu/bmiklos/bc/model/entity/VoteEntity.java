@@ -10,9 +10,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.ToString;
 
 @Entity
 @Table(name = "votes")
+@ToString
 public class VoteEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
