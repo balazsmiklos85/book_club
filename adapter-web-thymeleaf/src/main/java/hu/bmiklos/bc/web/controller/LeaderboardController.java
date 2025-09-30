@@ -23,7 +23,7 @@ public class LeaderboardController {
     final User user = activeUserService.getUser();
     final var booksConverter = new LeaderboardElementConverter(user);
     final List<LeaderboardBookData> books =
-        bookService.getAll().stream().map(booksConverter::convert).toList();
+        bookService.getLeaderboardBooks().stream().map(booksConverter::convert).toList();
 
     final ModelAndView modelAndView = new ModelAndView("leaderboard");
     modelAndView.addObject("books", books);
