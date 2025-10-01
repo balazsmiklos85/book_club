@@ -5,6 +5,7 @@ plugins {
 	alias(libs.plugins.java)
 	alias(libs.plugins.liquibase.gradle)
 	alias(libs.plugins.sonarqube)
+	alias(libs.plugins.spotless)
 	alias(libs.plugins.spring.boot)
 }
 
@@ -71,6 +72,13 @@ sonar {
 		property 'sonar.branch.name', System.env.GITHUB_HEAD_REF ?: (System.env.GITHUB_REF_NAME ?: 'local_build')
 		property "sonar.coverage.jacoco.xmlReportPaths", file("build/reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.xml")
 	}
+}
+
+spotless {
+    java {
+        target("**/*.java")
+        googleJavaFormat()
+    }
 }
 
 subprojects {
