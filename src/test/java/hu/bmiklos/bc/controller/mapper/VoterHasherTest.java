@@ -9,7 +9,6 @@ import hu.bmiklos.bc.domain.entities.Email;
 import hu.bmiklos.bc.domain.entities.ShallowUser;
 import hu.bmiklos.bc.domain.entities.Vote;
 import hu.bmiklos.bc.web.mapper.VoterHasher;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

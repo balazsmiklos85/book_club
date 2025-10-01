@@ -7,7 +7,6 @@ public interface Member {
 
   default boolean isSameAs(Member member) {
     return nonNull(externalId())
-      
         && nonNull(member)
         && nonNull(member.externalId())
         && externalId().equals(member.externalId());

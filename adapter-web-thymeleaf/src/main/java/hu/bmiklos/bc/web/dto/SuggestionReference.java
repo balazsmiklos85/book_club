@@ -27,4 +27,3 @@ public class SuggestionReference {
     return name;
   }
 }
-

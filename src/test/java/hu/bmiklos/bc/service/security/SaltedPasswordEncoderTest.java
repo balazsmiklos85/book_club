@@ -7,21 +7,21 @@ import hu.bmiklos.bc.business.security.SaltedPasswordEncoder;
 import org.junit.jupiter.api.Test;
 
 class SaltedPasswordEncoderTest {
-    @Test
-    void encodeSaltsBeforeHashing() {
-        var encoder = new SaltedPasswordEncoder("plaintext", "salt");
-        
-        String hash = encoder.encode("password");
-        
-        assertEquals("passwordsalt", hash, "The password should be salted before hashing.");
-    }
+  @Test
+  void encodeSaltsBeforeHashing() {
+    var encoder = new SaltedPasswordEncoder("plaintext", "salt");
 
-    @Test
-    void matchesSaltsBeforeChecking() {
-        var encoder = new SaltedPasswordEncoder("plaintext", "salt");
-        
-        boolean matches = encoder.matches("password", "passwordsalt");
-        
-        assertTrue(matches, "The password should be salted before checking.");
-    }
+    String hash = encoder.encode("password");
+
+    assertEquals("passwordsalt", hash, "The password should be salted before hashing.");
+  }
+
+  @Test
+  void matchesSaltsBeforeChecking() {
+    var encoder = new SaltedPasswordEncoder("plaintext", "salt");
+
+    boolean matches = encoder.matches("password", "passwordsalt");
+
+    assertTrue(matches, "The password should be salted before checking.");
+  }
 }

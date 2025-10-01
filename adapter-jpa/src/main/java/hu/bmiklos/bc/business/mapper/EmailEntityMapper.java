@@ -19,8 +19,9 @@ public class EmailEntityMapper implements Converter<EmailEntity, Email> {
   @Override
   public Email convert(EmailEntity source) {
     Email result = new Email(source.getEmailAddress());
-    User user = Optional.ofNullable(this.targetUser)
-        .orElseGet(() -> new UserEntityMapper().convert(source.getUser()));
+    User user =
+        Optional.ofNullable(this.targetUser)
+            .orElseGet(() -> new UserEntityMapper().convert(source.getUser()));
     result.setUser(user);
     return result;
   }

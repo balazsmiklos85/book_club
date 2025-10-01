@@ -9,7 +9,8 @@ public class UserEntityMapper implements Converter<UserEntity, User> {
 
   @Override
   public User convert(UserEntity source) {
-    User result = new User(source.getId(), source.getName(), source.isAdmin(), source.getExternalId());
+    User result =
+        new User(source.getId(), source.getName(), source.isAdmin(), source.getExternalId());
     Password password = new PasswordEntityMapper(result).convert(source.getPassword());
     result.setPassword(password);
     EmailEntityMapper emailEntityMapper = new EmailEntityMapper(result);

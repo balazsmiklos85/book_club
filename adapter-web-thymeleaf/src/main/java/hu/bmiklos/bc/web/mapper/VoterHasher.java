@@ -3,11 +3,9 @@ package hu.bmiklos.bc.web.mapper;
 import hu.bmiklos.bc.domain.entities.Email;
 import hu.bmiklos.bc.domain.entities.ShallowUser;
 import hu.bmiklos.bc.domain.entities.Vote;
-
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;
-
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.NonNull;
 

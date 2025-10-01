@@ -14,20 +14,27 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class LoginSecurityConfig {
 
-    @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(CsrfConfigurer::disable)
-                .authorizeHttpRequests(
-                        authorizeHttpRequests -> authorizeHttpRequests.requestMatchers("/login*").permitAll()
-                                .requestMatchers("/registration*").permitAll()
-                                .requestMatchers("/admin/**").hasAuthority(BOOKCLUB_ADMIN.getAuthority())
-                                .anyRequest().hasAnyAuthority(BOOKCLUB_USER.getAuthority()))
-                .formLogin(login -> login.loginPage("/login")
-                        .defaultSuccessUrl("/", true)
-                        .failureUrl("/login?error=true"))
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .deleteCookies("JSESSIONID"));
-        return http.build();
-    }
+  @Bean
+  SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.csrf(CsrfConfigurer::disable)
+        .authorizeHttpRequests(
+            authorizeHttpRequests ->
+                authorizeHttpRequests
+                    .requestMatchers("/login*")
+                    .permitAll()
+                    .requestMatchers("/registration*")
+                    .permitAll()
+                    .requestMatchers("/admin/**")
+                    .hasAuthority(BOOKCLUB_ADMIN.getAuthority())
+                    .anyRequest()
+                    .hasAnyAuthority(BOOKCLUB_USER.getAuthority()))
+        .formLogin(
+            login ->
+                login
+                    .loginPage("/login")
+                    .defaultSuccessUrl("/", true)
+                    .failureUrl("/login?error=true"))
+        .logout(logout -> logout.logoutUrl("/logout").deleteCookies("JSESSIONID"));
+    return http.build();
+  }
 }

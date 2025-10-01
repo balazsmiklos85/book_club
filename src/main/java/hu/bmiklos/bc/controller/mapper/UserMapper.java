@@ -17,17 +17,18 @@ public class UserMapper {
   private UserMapper() {}
 
   /**
-   * @deprecated Quickly added for backward compatibility, but this should be moved to its own mapper class in the business layer.
+   * @deprecated Quickly added for backward compatibility, but this should be moved to its own
+   *     mapper class in the business layer.
    */
   @Deprecated
-  public static ProfileInformation mapToProfileInformation(hu.bmiklos.bc.domain.entities.User user) {
+  public static ProfileInformation mapToProfileInformation(
+      hu.bmiklos.bc.domain.entities.User user) {
     return new ProfileInformation(
-		    user.getName(),
-		    user.getExternalId(),
-		    user.getEmails()
-		    	.stream()
-			.map(hu.bmiklos.bc.domain.entities.Email::getEmailAddress)
-			.toList());
+        user.getName(),
+        user.getExternalId(),
+        user.getEmails().stream()
+            .map(hu.bmiklos.bc.domain.entities.Email::getEmailAddress)
+            .toList());
   }
 
   public static ProfileInformation mapToProfileInformation(UserDto user) {

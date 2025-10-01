@@ -1,19 +1,18 @@
 package hu.bmiklos.bc.model.repository;
 
 import hu.bmiklos.bc.model.entity.BookEntity;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-
-import hu.bmiklos.bc.model.entity.BookWeight;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface BookJpaRepository extends JpaRepository<BookEntity, UUID> {
-    Collection<BookEntity> findByEventsIsEmpty();
+  Collection<BookEntity> findByEventsIsEmpty();
 
-    @Query(value = """
+  @Query(
+      value =
+          """
             select book_id, sum(user_weight)
             from (select p.participant_external_id as user_external_id, vote_union.book_id, count(p.participant_external_id) as user_weight
             	  from participants p
@@ -36,6 +35,7 @@ public interface BookJpaRepository extends JpaRepository<BookEntity, UUID> {
             	  group by p.participant_external_id, vote_union.book_id)
             group by book_id
             order by sum(user_weight) desc
-            """, nativeQuery = true)
-    List<Object[]> findBookWeights();
+            """,
+      nativeQuery = true)
+  List<Object[]> findBookWeights();
 }

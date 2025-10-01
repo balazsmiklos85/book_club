@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class SuggestionBusinessRepository implements SuggestionDetailsService, SuggestionRepository {
+public class SuggestionBusinessRepository
+    implements SuggestionDetailsService, SuggestionRepository {
 
   private final SuggestionJpaRepository suggestionRepository;
-
 
   @Override
   public Optional<Suggestion> findById(UUID suggestionId) {

@@ -16,58 +16,57 @@ import org.springframework.security.core.userdetails.UserDetails;
 @RequiredArgsConstructor
 public class EmailPrincipal implements UserDetails, Member {
 
-    private final Email email;
+  private final Email email;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        var result = new ArrayList<GrantedAuthority>(2);
-        result.add(BOOKCLUB_USER);
-        User user = email.getUser();
-        if (user.isAdmin()) {
-            result.add(BOOKCLUB_ADMIN);
-        }
-        return result;
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    var result = new ArrayList<GrantedAuthority>(2);
+    result.add(BOOKCLUB_USER);
+    User user = email.getUser();
+    if (user.isAdmin()) {
+      result.add(BOOKCLUB_ADMIN);
     }
+    return result;
+  }
 
-    @Override
-    public Integer externalId() {
-        return email.getUser().getExternalId();
-    }
+  @Override
+  public Integer externalId() {
+    return email.getUser().getExternalId();
+  }
 
-    @Override
-    public String getPassword() {
-        User user = email.getUser();
-        Password password = user.getPassword();
-        return password.getPasswordHash();
-    }
+  @Override
+  public String getPassword() {
+    User user = email.getUser();
+    Password password = user.getPassword();
+    return password.getPasswordHash();
+  }
 
-    @Override
-    public String getUsername() {
-        return email.getEmailAddress();
-    }
+  @Override
+  public String getUsername() {
+    return email.getEmailAddress();
+  }
 
-    public User getUser() {
-        return email.getUser();
-    }
+  public User getUser() {
+    return email.getUser();
+  }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
 
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
 
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-    
+  @Override
+  public boolean isEnabled() {
+    return true;
+  }
 }

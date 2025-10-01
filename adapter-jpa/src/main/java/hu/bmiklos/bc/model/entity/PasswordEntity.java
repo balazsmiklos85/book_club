@@ -22,22 +22,22 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PasswordEntity implements Serializable {
-    private static final long serialVersionUID = -2679510096228680927L;
+  private static final long serialVersionUID = -2679510096228680927L;
 
-    @Id
-    @Column(name = "user_id")
-    private UUID userId;
+  @Id
+  @Column(name = "user_id")
+  private UUID userId;
 
-    @Column(name = "password_hash")
-    private String passwordHash;
+  @Column(name = "password_hash")
+  private String passwordHash;
 
-    @Column(name = "salt")
-    private String salt;
+  @Column(name = "salt")
+  private String salt;
 
-    @Column(name = "hash_algorithm")
-    private String hashAlgorithm;
+  @Column(name = "hash_algorithm")
+  private String hashAlgorithm;
 
-	  @OneToOne(fetch = EAGER)
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
+  @OneToOne(fetch = EAGER)
+  @JoinColumn(name = "user_id")
+  private UserEntity user;
 }

@@ -13,23 +13,22 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ParticipantId implements Serializable {
-    private static final long serialVersionUID = -2456832834651093519L;
+  private static final long serialVersionUID = -2456832834651093519L;
 
-    private UUID eventId;   
-    private int participantExternalId;
+  private UUID eventId;
+  private int participantExternalId;
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(eventId, participantExternalId);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(eventId, participantExternalId);
+  }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!(obj instanceof ParticipantId))
-            return false;
-        ParticipantId other = (ParticipantId) obj;
-        return Objects.equals(eventId, other.eventId) && participantExternalId == other.participantExternalId;
-    }    
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (!(obj instanceof ParticipantId)) return false;
+    ParticipantId other = (ParticipantId) obj;
+    return Objects.equals(eventId, other.eventId)
+        && participantExternalId == other.participantExternalId;
+  }
 }

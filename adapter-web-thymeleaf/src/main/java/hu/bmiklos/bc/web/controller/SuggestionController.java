@@ -3,7 +3,6 @@ package hu.bmiklos.bc.web.controller;
 import hu.bmiklos.bc.business.security.ActiveUserService;
 import hu.bmiklos.bc.business.usecase.SuggestionRemovalService;
 import hu.bmiklos.bc.domain.entities.User;
-
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -24,6 +23,6 @@ public class SuggestionController {
   public ModelAndView deleteSuggestion(@PathVariable UUID id) {
     User user = activeUserService.getUser();
     suggestionRemovalService.removeSuggestion(user, id);
-    return new ModelAndView("redirect:/");    
+    return new ModelAndView("redirect:/");
   }
 }

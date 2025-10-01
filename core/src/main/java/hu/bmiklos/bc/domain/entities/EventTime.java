@@ -3,7 +3,6 @@ package hu.bmiklos.bc.domain.entities;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 import java.time.Instant;
-
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 

@@ -1,13 +1,8 @@
 package hu.bmiklos.bc.domain.entities;
 
 import hu.bmiklos.bc.domain.functions.ExternalIdFilter;
-
-import java.text.MessageFormat;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import lombok.*;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -15,10 +10,8 @@ import org.apache.commons.collections4.CollectionUtils;
 @ToString(onlyExplicitlyIncluded = true)
 public class Book {
   private final UUID id;
-  @ToString.Include
-  private final String author;
-  @ToString.Include
-  private final String title;
+  @ToString.Include private final String author;
+  @ToString.Include private final String title;
   private final String url;
 
   /**
@@ -26,9 +19,9 @@ public class Book {
    */
   @Deprecated private final Collection<Suggestion> suggestions;
 
-    /**
-     * @deprecated There should be no circular dependencies in the domain layer.
-     */
+  /**
+   * @deprecated There should be no circular dependencies in the domain layer.
+   */
   @Deprecated private final Collection<Vote> voters;
 
   public Book(
@@ -46,7 +39,7 @@ public class Book {
     this.voters = new ArrayList<>(CollectionUtils.emptyIfNull(voteProvider.apply(this)));
   }
 
-    public boolean isUserVoted(Member member) {
+  public boolean isUserVoted(Member member) {
     return Optional.ofNullable(member)
         .map(Member::externalId)
         .map(ExternalIdFilter::new)
@@ -54,4 +47,3 @@ public class Book {
         .orElse(false);
   }
 }
-

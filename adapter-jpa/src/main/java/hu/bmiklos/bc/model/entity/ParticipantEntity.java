@@ -23,35 +23,38 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ParticipantEntity {
 
-    @Id
-    @Column(nullable = false)
-    private UUID eventId;
+  @Id
+  @Column(nullable = false)
+  private UUID eventId;
 
-    @Id
-    @Column(nullable = false)
-    private int participantExternalId;
+  @Id
+  @Column(nullable = false)
+  private int participantExternalId;
 
-    @OneToOne
-    @JoinColumn(name = "participantExternalId", referencedColumnName = "externalId", insertable = false, updatable = false)
-    private UserEntity user;
+  @OneToOne
+  @JoinColumn(
+      name = "participantExternalId",
+      referencedColumnName = "externalId",
+      insertable = false,
+      updatable = false)
+  private UserEntity user;
 
-    public ParticipantEntity(UUID eventId, int participantExternalId) {
-        this.eventId = eventId;
-        this.participantExternalId = participantExternalId;
-    }
+  public ParticipantEntity(UUID eventId, int participantExternalId) {
+    this.eventId = eventId;
+    this.participantExternalId = participantExternalId;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(eventId, participantExternalId);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(eventId, participantExternalId);
+  }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!(obj instanceof ParticipantEntity))
-            return false;
-        ParticipantEntity other = (ParticipantEntity) obj;
-        return Objects.equals(eventId, other.eventId) && participantExternalId == other.participantExternalId;
-    }
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (!(obj instanceof ParticipantEntity)) return false;
+    ParticipantEntity other = (ParticipantEntity) obj;
+    return Objects.equals(eventId, other.eventId)
+        && participantExternalId == other.participantExternalId;
+  }
 }

@@ -17,21 +17,24 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/login")
 @RequiredArgsConstructor
 public class LoginController {
-    private final AuthenticationProvider authenticationProvider;
+  private final AuthenticationProvider authenticationProvider;
 
-    @GetMapping
-    public ModelAndView loginForm() {
-        return new ModelAndView("login");
-    }
+  @GetMapping
+  public ModelAndView loginForm() {
+    return new ModelAndView("login");
+  }
 
-    @PostMapping
-    public ModelAndView login(@ModelAttribute LoginRequest loginRequest) {
-        Authentication authentication = authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-        if (authentication.isAuthenticated()) {
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            return new ModelAndView("redirect:/");
-        } else {
-            return new ModelAndView("login");
-        }
+  @PostMapping
+  public ModelAndView login(@ModelAttribute LoginRequest loginRequest) {
+    Authentication authentication =
+        authenticationProvider.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                loginRequest.getUsername(), loginRequest.getPassword()));
+    if (authentication.isAuthenticated()) {
+      SecurityContextHolder.getContext().setAuthentication(authentication);
+      return new ModelAndView("redirect:/");
+    } else {
+      return new ModelAndView("login");
     }
+  }
 }

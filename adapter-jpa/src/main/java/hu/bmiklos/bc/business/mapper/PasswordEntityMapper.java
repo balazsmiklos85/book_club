@@ -13,8 +13,11 @@ public class PasswordEntityMapper implements Converter<PasswordEntity, Password>
 
   @Override
   public Password convert(PasswordEntity source) {
-    Password result = new Password(source.getPasswordHash(), source.getSalt(), source.getHashAlgorithm());
-    User user = Optional.ofNullable(targetUser).orElseGet(() -> new UserEntityMapper().convert(source.getUser()));
+    Password result =
+        new Password(source.getPasswordHash(), source.getSalt(), source.getHashAlgorithm());
+    User user =
+        Optional.ofNullable(targetUser)
+            .orElseGet(() -> new UserEntityMapper().convert(source.getUser()));
     result.setUser(user);
     return result;
   }

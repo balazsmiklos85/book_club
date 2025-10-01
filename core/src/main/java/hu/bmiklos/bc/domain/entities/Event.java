@@ -1,6 +1,5 @@
 package hu.bmiklos.bc.domain.entities;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import lombok.Data;
@@ -16,4 +15,3 @@ public class Event {
   private Book book;
   private List<User> participants;
 }
-

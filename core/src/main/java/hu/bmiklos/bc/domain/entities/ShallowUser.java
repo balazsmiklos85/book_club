@@ -1,6 +1,5 @@
 package hu.bmiklos.bc.domain.entities;
 
-
 import java.util.Collection;
 import java.util.UUID;
 

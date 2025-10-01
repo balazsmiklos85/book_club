@@ -23,75 +23,86 @@ import org.springframework.lang.Nullable;
 
 @Entity
 @Table(name = "books")
-@NamedEntityGraph(name = "BookEntity.recommenderInfo", attributeNodes = @NamedAttributeNode("recommender"))
+@NamedEntityGraph(
+    name = "BookEntity.recommenderInfo",
+    attributeNodes = @NamedAttributeNode("recommender"))
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private UUID id;
 
-    @Column(nullable = false)
-    private String author;
+  @Column(nullable = false)
+  private String author;
 
-    @Column(nullable = false)
-    private String title;
+  @Column(nullable = false)
+  private String title;
 
-    @Column(nullable = false, unique = true)
-    private String url;
+  @Column(nullable = false, unique = true)
+  private String url;
 
-    /**
-     * @deprecated Use {@link SuggestionEntity} to get information about the recommender.
-     */
-    @Deprecated
-    @Column(nullable = true)
-    private Integer recommenderExternalId;
+  /**
+   * @deprecated Use {@link SuggestionEntity} to get information about the recommender.
+   */
+  @Deprecated
+  @Column(nullable = true)
+  private Integer recommenderExternalId;
 
-    /**
-     * @deprecated Use {@link SuggestionEntity} to get information about the recommender.
-     */
-    @Deprecated
-    @Column(nullable = true)
-    private Instant recommendedAt;
+  /**
+   * @deprecated Use {@link SuggestionEntity} to get information about the recommender.
+   */
+  @Deprecated
+  @Column(nullable = true)
+  private Instant recommendedAt;
 
-    @OneToMany
-    @JoinColumn(name = "bookId", referencedColumnName = "id", insertable = false, updatable = false)
-    private List<EventEntity> events;
+  @OneToMany
+  @JoinColumn(name = "bookId", referencedColumnName = "id", insertable = false, updatable = false)
+  private List<EventEntity> events;
 
-    /**
-     * @deprecated Use {@link SuggestionEntity} to get information about the recommender.
-     */
-    @Deprecated
-    @OneToOne
-    @JoinColumn(name = "recommenderExternalId", referencedColumnName = "externalId", insertable = false, updatable = false)
-    @Nullable
-    private UserEntity recommender;
+  /**
+   * @deprecated Use {@link SuggestionEntity} to get information about the recommender.
+   */
+  @Deprecated
+  @OneToOne
+  @JoinColumn(
+      name = "recommenderExternalId",
+      referencedColumnName = "externalId",
+      insertable = false,
+      updatable = false)
+  @Nullable
+  private UserEntity recommender;
 
-    @OneToMany
-    @JoinColumn(name = "bookId", referencedColumnName = "id", insertable = false, updatable = false)
-    @Nullable
-    private Set<SuggestionEntity> suggestions;
+  @OneToMany
+  @JoinColumn(name = "bookId", referencedColumnName = "id", insertable = false, updatable = false)
+  @Nullable
+  private Set<SuggestionEntity> suggestions;
 
-    @OneToMany
-    @JoinColumn(name = "bookId", referencedColumnName = "id", insertable = false, updatable = false)
-    @Nullable
-    private Set<VoteEntity> votes;
+  @OneToMany
+  @JoinColumn(name = "bookId", referencedColumnName = "id", insertable = false, updatable = false)
+  @Nullable
+  private Set<VoteEntity> votes;
 
-    /**
-     * @deprecated Use {@link SuggestionEntity} to store information about who suggested the book.
-     */
-    @Deprecated
-    public BookEntity(String author, String title, String url, Integer recommenderExternalId, Instant recommendedAt) {
-        this.author = author;
-        this.title = title;
-        this.url = url;
-        this.recommenderExternalId = recommenderExternalId;
-        this.recommendedAt = recommendedAt;
-    }
+  /**
+   * @deprecated Use {@link SuggestionEntity} to store information about who suggested the book.
+   */
+  @Deprecated
+  public BookEntity(
+      String author,
+      String title,
+      String url,
+      Integer recommenderExternalId,
+      Instant recommendedAt) {
+    this.author = author;
+    this.title = title;
+    this.url = url;
+    this.recommenderExternalId = recommenderExternalId;
+    this.recommendedAt = recommendedAt;
+  }
 
-    public BookEntity(String author, String title, String url) {
-        this(author, title, url, null, null);
-    }
+  public BookEntity(String author, String title, String url) {
+    this(author, title, url, null, null);
+  }
 }
