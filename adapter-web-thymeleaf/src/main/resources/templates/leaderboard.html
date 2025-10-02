@@ -24,6 +24,10 @@
 						<span th:text="#{field.recommender} + ': '"></span>
 						<a th:text="${suggestion.name}" th:href="@{'/suggestion/' + ${suggestion.id}}"></a>
 					</span>
+					<form th:action="@{'/suggestion/' + ${suggestion.id} + '/deletion'}" method="post" style="display: inline;" th:if="${suggestion.isOfUser}">
+						<input type="hidden" name="method" value="delete" />
+						<button type="submit" th:text="'🗑️' + #{suggestion.delete}"></button>
+					</form>
 				</div>
 				<div>
 					<span th:each="vote : ${book.voterHashes}">

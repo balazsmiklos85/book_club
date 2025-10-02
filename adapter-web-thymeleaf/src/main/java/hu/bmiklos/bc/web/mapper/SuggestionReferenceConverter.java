@@ -2,11 +2,15 @@ package hu.bmiklos.bc.web.mapper;
 
 import hu.bmiklos.bc.domain.entities.ShallowUser;
 import hu.bmiklos.bc.domain.entities.Suggestion;
+import hu.bmiklos.bc.domain.entities.User;
 import hu.bmiklos.bc.web.dto.SuggestionReference;
 import java.text.MessageFormat;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 
+@RequiredArgsConstructor
 public class SuggestionReferenceConverter implements Converter<Suggestion, SuggestionReference> {
+  private final User caller;
 
   @Override
   public SuggestionReference convert(Suggestion source) {
@@ -19,6 +23,6 @@ public class SuggestionReferenceConverter implements Converter<Suggestion, Sugge
     } else {
       suggesterName = "[N/A]";
     }
-    return new SuggestionReference(source.getId(), suggesterName);
+    return new SuggestionReference(source.getId(), suggesterName, suggester.isSameAs(caller));
   }
 }

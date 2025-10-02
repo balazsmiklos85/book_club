@@ -16,7 +16,7 @@ public class LeaderboardElementConverter implements Converter<Book, LeaderboardB
 
   @Override
   public LeaderboardBookData convert(final Book source) {
-    final var suggestionConverter = new SuggestionReferenceConverter();
+    final var suggestionConverter = new SuggestionReferenceConverter(user);
     final Collection<SuggestionReference> suggestions =
         source.getSuggestions().stream().map(suggestionConverter::convert).toList();
     final var voterHasher = new VoterHasher();

@@ -1,29 +1,14 @@
 package hu.bmiklos.bc.web.dto;
 
 import java.util.UUID;
-import org.springframework.lang.NonNull;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.lang.Nullable;
 
+@Data
+@RequiredArgsConstructor
 public class SuggestionReference {
-  private final UUID id;
-  private final String name;
-
-  public SuggestionReference(@Nullable UUID id, @Nullable String name) {
-    this.id = id;
-    this.name = name;
-  }
-
-  public SuggestionReference(@NonNull String name) {
-    this(null, name);
-  }
-
-  @Nullable
-  public UUID getId() {
-    return id;
-  }
-
-  @Nullable
-  public String getName() {
-    return name;
-  }
+  @Nullable private final UUID id;
+  @Nullable private final String name;
+  private final boolean isOfUser;
 }
