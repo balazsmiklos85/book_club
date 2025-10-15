@@ -67,7 +67,8 @@ public class DeprecatedEventController {
     } else {
       if (activeUserService.isAdmin()) {
         eventService.editEvent(EventMapper.mapToEditDto(event));
-        return new ModelAndView("redirect:/event/" + event.getId());
+        UUID eventUuid = UUID.fromString(event.getId());
+        return new ModelAndView("redirect:/event/" + eventUuid);
       }
     }
     return new ModelAndView("redirect:/");
