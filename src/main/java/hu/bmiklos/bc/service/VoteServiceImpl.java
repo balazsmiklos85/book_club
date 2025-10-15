@@ -140,7 +140,7 @@ public class VoteServiceImpl extends AuthenticatedService implements VoteService
       UserWeights userWeights) {
     var result = new ArrayList<String>();
     result.add(book.getTitle());
-    int sum = 0;
+    long sum = 0;
     for (User user : allUsers) {
       boolean voted =
           allVotes.stream().anyMatch(vote -> isVoteForBook(vote, book) && isVoteOfUser(vote, user));
