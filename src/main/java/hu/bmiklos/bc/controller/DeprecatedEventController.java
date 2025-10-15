@@ -76,10 +76,10 @@ public class DeprecatedEventController {
   @PostMapping("/{eventId}/participant/")
   public ModelAndView addParticipant(
       @PathVariable String eventId, @RequestParam String participant) {
+    UUID eventUuid = UUID.fromString(eventId);
     if (activeUserService.isAdmin()) {
-      UUID eventUuid = UUID.fromString(eventId);
       participantService.addParticipant(eventUuid, participant);
     }
-    return new ModelAndView("redirect:/event/" + eventId);
+    return new ModelAndView("redirect:/event/" + eventUuid);
   }
 }
