@@ -1,5 +1,8 @@
 package hu.bmiklos.bc.business.repository;
 
+import static java.util.Objects.nonNull;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
+
 import hu.bmiklos.bc.business.mapper.BookEntityMapper;
 import hu.bmiklos.bc.domain.entities.Book;
 import hu.bmiklos.bc.model.entity.BookWeight;
@@ -21,7 +24,14 @@ public class BookBusinessRepository implements BookRepository {
   @Override
   public List<Book> findAllWithoutEvents() {
     var bookMapper = new BookEntityMapper();
-    return bookRepository.findByEventsIsEmpty().stream().map(bookMapper::convert).toList();
+    return bookRepository.findByEventsIsEmpty().stream()
+        .filter(
+            b ->
+                isNotEmpty(b.getSuggestions())
+                    || nonNull(b.getRecommender())
+                    || nonNull(b.getRecommenderExternalId()))
+        .map(bookMapper::convert)
+        .toList();
   }
 
   @Override
