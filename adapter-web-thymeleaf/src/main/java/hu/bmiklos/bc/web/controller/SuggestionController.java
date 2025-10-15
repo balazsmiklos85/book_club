@@ -20,7 +20,7 @@ public class SuggestionController {
   private final SuggestionRemovalService suggestionRemovalService;
 
   @PostMapping("/{id}/deletion")
-  public ModelAndView deleteSuggestion(@PathVariable UUID id) {
+  public ModelAndView deleteSuggestion(@PathVariable("id") UUID id) {
     User user = activeUserService.getUser();
     suggestionRemovalService.removeSuggestion(user, id);
     return new ModelAndView("redirect:/");
