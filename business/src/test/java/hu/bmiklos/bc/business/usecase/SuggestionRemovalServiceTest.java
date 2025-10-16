@@ -95,7 +95,7 @@ class SuggestionRemovalServiceTest {
     var suggestionId = UUID.randomUUID();
     var userId = UUID.randomUUID();
     var otherUserId = UUID.randomUUID();
-    var suggester = new ShallowUser(userId, "Suggestion from another user", false, -1, List.of());
+    var suggester = new ShallowUser(userId, "Suggestion from another user", false, -2, List.of());
     var book =
         new Book(
             UUID.randomUUID(),
