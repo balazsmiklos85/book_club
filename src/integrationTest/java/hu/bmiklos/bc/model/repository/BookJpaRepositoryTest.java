@@ -30,7 +30,7 @@ public class BookJpaRepositoryTest {
   @Autowired private UserJpaRepository userRepository;
 
   @Test
-  void testFindBookWeights() {
+  void findBookWeightsCountsUsersByParticipationOnlyOnBooksWithoutEvents() {
     UserEntity user1 = persistUser(-1);
     UserEntity user2 = persistUser(-2);
     BookEntity book1 = persistBook("Book 1", "Author 1", "Book URL 1");
