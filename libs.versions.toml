@@ -1,4 +1,5 @@
 [versions]
+assertj = "3.27.6"
 commons-collections4 = "4.4"
 dependency-management = "1.1.6"
 h2 = "2.3.232"
@@ -6,6 +7,7 @@ junit = "5.8.2"
 liquibase-core = "4.29.2"
 liquibase-gradle = "2.2.0"
 lombok = "1.18.34"
+mockito = "5.11.0"
 postgresql = "42.7.4"
 slf4j = "2.0.17"
 sonarqube = "6.3.1.5724"
@@ -26,9 +28,12 @@ spring-boot-starter-thymeleaf = { module = "org.springframework.boot:spring-boot
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring-boot" }
 thymeleaf-extras-springsecurity6 = { module = "org.thymeleaf.extras:thymeleaf-extras-springsecurity6", version.ref = "thymeleaf-extras-springsecurity6" }
 
+assertj-core = { group = "org.assertj", name = "assertj-core", version.ref = "assertj" }
 h2-runtime = { module = "com.h2database:h2", version.ref = "h2" }
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
+mockito-junit = { group = "org.mockito", name = "mockito-junit-jupiter", version.ref = "mockito" }
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
 spring-security-test = { module = "org.springframework.security:spring-security-test", version.ref = "spring-security-test" }
 
