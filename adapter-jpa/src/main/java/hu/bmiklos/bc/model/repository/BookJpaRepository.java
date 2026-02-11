@@ -31,7 +31,7 @@ public interface BookJpaRepository extends JpaRepository<BookEntity, UUID> {
                                              inner join participants p
                                                on p.event_id = e.id
                                              order by e.time desc
-                                             limit 12))
+                                             limit 12) as recent_events)
                   group by p.participant_external_id, vote_union.book_id)
             group by book_id
             order by sum(user_weight) desc
