@@ -32,7 +32,7 @@ public interface BookJpaRepository extends JpaRepository<BookEntity, UUID> {
                                                on p.event_id = e.id
                                              order by e.time desc
                                              limit 12) as recent_events)
-                  group by p.participant_external_id, vote_union.book_id)
+                  group by p.participant_external_id, vote_union.book_id) as weighted_votes
             group by book_id
             order by sum(user_weight) desc
             """,
