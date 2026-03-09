@@ -52,10 +52,12 @@ public class EventController {
       modelAndView.addObject("proposedDate", dateFormatter.convert(proposedDateTime.get()));
       modelAndView.addObject("proposedTime", timeFormatter.convert(proposedDateTime.get()));
     }
-    Optional.of(suggestion)
-        .map(Suggestion::getSuggester)
-        .map(ShallowUser::id)
-        .ifPresent(hostId -> modelAndView.addObject("host", hostId));
+    UUID hostId =
+        Optional.of(suggestion)
+            .map(Suggestion::getSuggester)
+            .map(ShallowUser::id)
+            .orElseGet(() -> eventCreationService.getCurrentUser().getId());
+    modelAndView.addObject("host", hostId);
     modelAndView.addObject("users", users);
     return modelAndView;
   }
