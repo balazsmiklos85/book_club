@@ -43,4 +43,17 @@ public class BookBusinessRepository implements BookRepository {
                 BookWeight::bookId,
                 Collectors.summingInt(weight -> -1 * weight.weight().intValue())));
   }
+
+  @Override
+  public Book findById(UUID id) {
+    var bookMapper = new BookEntityMapper();
+    return bookRepository.findById(id)
+      .stream()
+      .filter(b -> isNotEmpty(b.getSuggestions())
+          || nonNull(b.getRecommender())
+          || nonNull(b.getRecommenderExternalId()))
+      .map(bookMapper::convert)
+      .findFirst()
+      .orElseThrow(() -> new RuntimeException("Could not find book " + id + ". No suggester maybe?"));
+  }
 }

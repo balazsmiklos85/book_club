@@ -9,4 +9,6 @@ public interface BookRepository {
   List<Book> findAllWithoutEvents();
 
   Map<UUID, Integer> getBookWeights();
+
+  Book findById(UUID fromString);
 }
