@@ -27,7 +27,7 @@ public class EventController {
   private final EventCreationService eventCreationService;
 
   @GetMapping("/new")
-  public ModelAndView newBookForm(@RequestParam String bookId) {
+  public ModelAndView newBookForm(@RequestParam("bookId") String bookId) {
     Suggestion suggestion =
         suggestionService
             .findOldestByBookId(UUID.fromString(bookId))
