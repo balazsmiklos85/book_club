@@ -2,6 +2,8 @@ package hu.bmiklos.bc.business.repository;
 
 import hu.bmiklos.bc.domain.entities.Event;
 import hu.bmiklos.bc.model.repository.EventJpaRepository;
+
+import java.time.Instant;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -12,7 +14,7 @@ public class EventBusinessRepository implements EventRepository {
   private final EventJpaRepository eventJpaRepository;
 
   @Override
-  public Optional<Event> findTopByOrderByTimeDesc() {
-    return eventJpaRepository.findTopByOrderByTimeDesc();
+  public Optional<Instant> findLastEventTime() {
+    return eventJpaRepository.findTopByOrderByTimeDesc().map(e -> e.getTime());
   }
 }

@@ -37,8 +37,7 @@ public class EventController {
                         "Suggestion not found.")); // FIXME rename //TODO create dedicated exception
     Optional<Instant> proposedDateTime =
         eventCreationService
-            .findLastEvent()
-            .map(event -> event.getTime())
+            .findLastEventTime()
             .map(lastTime -> lastTime.proposeNewDate());
     Collection<User> users = eventCreationService.getAllUsers();
     ModelAndView modelAndView = new ModelAndView("event/new");
