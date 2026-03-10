@@ -1,7 +1,6 @@
 package hu.bmiklos.bc.model.repository;
 
 import hu.bmiklos.bc.model.entity.SuggestionEntity;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

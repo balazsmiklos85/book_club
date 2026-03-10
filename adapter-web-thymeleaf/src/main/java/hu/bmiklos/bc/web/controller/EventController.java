@@ -34,9 +34,7 @@ public class EventController {
     Optional<Suggestion> suggestion = suggestionService.findOldestByBookId(UUID.fromString(bookId));
     Book book = bookRepository.findById(UUID.fromString(bookId));
     Optional<Instant> proposedDateTime =
-        eventCreationService
-            .findLastEventTime()
-            .map(lastTime -> lastTime.proposeNewDate());
+        eventCreationService.findLastEventTime().map(lastTime -> lastTime.proposeNewDate());
     Collection<User> users = eventCreationService.getAllUsers();
     ModelAndView modelAndView = new ModelAndView("event/new");
     modelAndView.addObject("author", book.getAuthor());
@@ -49,7 +47,8 @@ public class EventController {
       modelAndView.addObject("proposedDate", dateFormatter.convert(proposedDateTime.get()));
       modelAndView.addObject("proposedTime", timeFormatter.convert(proposedDateTime.get()));
     }
-    UUID hostId = suggestion
+    UUID hostId =
+        suggestion
             .map(Suggestion::getSuggester)
             .map(ShallowUser::id)
             .orElseGet(() -> eventCreationService.getCurrentUser().getId());

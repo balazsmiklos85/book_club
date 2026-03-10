@@ -5,7 +5,6 @@ import hu.bmiklos.bc.business.repository.UserRepository;
 import hu.bmiklos.bc.business.security.ActiveUserService;
 import hu.bmiklos.bc.domain.entities.EventTime;
 import hu.bmiklos.bc.domain.entities.User;
-
 import java.util.Collection;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +18,7 @@ public class EventCreationService {
   private final ActiveUserService activeUserService;
 
   public Optional<EventTime> findLastEventTime() {
-    return eventRepository.findLastEventTime()
-      .map(EventTime::new);
+    return eventRepository.findLastEventTime().map(EventTime::new);
   }
 
   public Collection<User> getAllUsers() {

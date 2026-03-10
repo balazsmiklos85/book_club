@@ -1,6 +1,5 @@
 package hu.bmiklos.bc.model.repository;
 
-import hu.bmiklos.bc.domain.entities.Event;
 import hu.bmiklos.bc.model.entity.EventEntity;
 import java.util.Optional;
 import java.util.UUID;
