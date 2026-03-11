@@ -10,11 +10,12 @@ gem "hanami-router", "~> 2.3.0"
 gem "hanami-validations", "~> 2.3.0"
 gem "hanami-view", "~> 2.3.0"
 
+gem "bcrypt"
 gem "dry-types", "~> 1.7"
 gem "dry-operation", ">= 1.0.1"
+gem "pg"
 gem "puma"
 gem "rake"
-gem "pg"
 
 group :development do
   gem "hanami-webconsole", "~> 2.3.0"
