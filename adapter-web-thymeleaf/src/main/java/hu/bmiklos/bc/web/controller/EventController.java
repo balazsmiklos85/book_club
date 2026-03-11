@@ -1,7 +1,10 @@
 package hu.bmiklos.bc.web.controller;
 
+import hu.bmiklos.bc.business.repository.BookRepository;
 import hu.bmiklos.bc.business.usecase.EventCreationService;
 import hu.bmiklos.bc.business.usecase.SuggestionDetailsService;
+import hu.bmiklos.bc.domain.entities.Book;
+import hu.bmiklos.bc.domain.entities.ShallowUser;
 import hu.bmiklos.bc.domain.entities.Suggestion;
 import hu.bmiklos.bc.domain.entities.User;
 import hu.bmiklos.bc.web.mapper.DateFormatter;
@@ -22,27 +25,20 @@ import org.springframework.web.servlet.ModelAndView;
 @RequiredArgsConstructor
 public class EventController {
 
+  private final BookRepository bookRepository;
   private final SuggestionDetailsService suggestionService;
   private final EventCreationService eventCreationService;
 
   @GetMapping("/new")
-  public ModelAndView newBookForm(@RequestParam String bookId) {
-    Suggestion suggestion =
-        suggestionService
-            .findOldestByBookId(UUID.fromString(bookId))
-            .orElseThrow(
-                () ->
-                    new RuntimeException(
-                        "Suggestion not found.")); // FIXME rename //TODO create dedicated exception
+  public ModelAndView newBookForm(@RequestParam("bookId") String bookId) {
+    Optional<Suggestion> suggestion = suggestionService.findOldestByBookId(UUID.fromString(bookId));
+    Book book = bookRepository.findById(UUID.fromString(bookId));
     Optional<Instant> proposedDateTime =
-        eventCreationService
-            .findLastEvent()
-            .map(event -> event.getTime())
-            .map(lastTime -> lastTime.proposeNewDate());
+        eventCreationService.findLastEventTime().map(lastTime -> lastTime.proposeNewDate());
     Collection<User> users = eventCreationService.getAllUsers();
     ModelAndView modelAndView = new ModelAndView("event/new");
-    modelAndView.addObject("author", suggestion.getBook().getAuthor());
-    modelAndView.addObject("title", suggestion.getBook().getTitle());
+    modelAndView.addObject("author", book.getAuthor());
+    modelAndView.addObject("title", book.getTitle());
     modelAndView.addObject("bookId", bookId);
 
     if (proposedDateTime.isPresent()) {
@@ -51,10 +47,12 @@ public class EventController {
       modelAndView.addObject("proposedDate", dateFormatter.convert(proposedDateTime.get()));
       modelAndView.addObject("proposedTime", timeFormatter.convert(proposedDateTime.get()));
     }
-    Optional.of(suggestion)
-        .map(Suggestion::getSuggester)
-        .map(User::getId)
-        .ifPresent(hostId -> modelAndView.addObject("host", hostId));
+    UUID hostId =
+        suggestion
+            .map(Suggestion::getSuggester)
+            .map(ShallowUser::id)
+            .orElseGet(() -> eventCreationService.getCurrentUser().getId());
+    modelAndView.addObject("host", hostId);
     modelAndView.addObject("users", users);
     return modelAndView;
   }

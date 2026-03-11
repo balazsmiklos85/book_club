@@ -7,7 +7,7 @@
 
 <body>
 	<h1 th:text="#{login}"></h1>
-	<form name='login_form' action="login" method='POST'>
+	<form name='login_form' th:action="@{/login}" method="post">
 		<div>
 			<label th:text="#{field.email} + ':'"></label>
 			<input type='text' name='username' value='' />

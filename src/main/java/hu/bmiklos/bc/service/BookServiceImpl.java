@@ -1,10 +1,6 @@
 package hu.bmiklos.bc.service;
 
-import java.util.Optional;
-import java.util.UUID;
-
-import org.springframework.stereotype.Service;
-
+import hu.bmiklos.bc.business.security.AuthenticatedService;
 import hu.bmiklos.bc.controller.dto.CreateBookRequest;
 import hu.bmiklos.bc.model.Book;
 import hu.bmiklos.bc.repository.BookRepository;
@@ -12,33 +8,38 @@ import hu.bmiklos.bc.service.dto.BookAndSuggesterDto;
 import hu.bmiklos.bc.service.mapper.BookToBookAndSuggesterDtoConverter;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import java.util.Optional;
+import java.util.UUID;
+import org.springframework.stereotype.Service;
 
 @Service
 public class BookServiceImpl extends AuthenticatedService implements BookService {
 
-    private final BookRepository bookRepository;
+  private final BookRepository bookRepository;
 
-    public BookServiceImpl(BookRepository bookRepository) {
-        this.bookRepository = bookRepository;
+  public BookServiceImpl(BookRepository bookRepository) {
+    this.bookRepository = bookRepository;
+  }
+
+  @Override
+  @Transactional
+  public Book createBook(CreateBookRequest book) {
+    Optional<Book> storedBook = bookRepository.findByUrl(book.getUrl());
+    if (storedBook.isPresent()) {
+      return storedBook.get();
     }
 
-    @Override
-    @Transactional
-    public Book createBook(CreateBookRequest book) {
-        Optional<Book> storedBook = bookRepository.findByUrl(book.getUrl());
-        if (storedBook.isPresent()) {
-            return storedBook.get();
-        }
+    Book toSave = new Book(book.getAuthor(), book.getTitle(), book.getUrl());
+    return bookRepository.saveAndFlush(toSave);
+  }
 
-        Book toSave = new Book(book.getAuthor(), book.getTitle(), book.getUrl());
-        return bookRepository.saveAndFlush(toSave);
-    }
-
-    @Override
-    public BookAndSuggesterDto getBookById(String rawId) {
-        var bookId = UUID.fromString(rawId);
-        Book book = bookRepository.findById(bookId)
+  @Override
+  public BookAndSuggesterDto getBookById(String rawId) {
+    var bookId = UUID.fromString(rawId);
+    Book book =
+        bookRepository
+            .findById(bookId)
             .orElseThrow(() -> new EntityNotFoundException("Book not found."));
-        return new BookToBookAndSuggesterDtoConverter().convert(book);
-    }
+    return new BookToBookAndSuggesterDtoConverter().convert(book);
+  }
 }

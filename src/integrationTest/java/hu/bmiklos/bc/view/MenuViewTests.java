@@ -18,39 +18,35 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 @WebAppConfiguration
 class MenuViewTests {
 
-    @Autowired
-    private SpringTemplateEngine templateEngine;
+  @Autowired private SpringTemplateEngine templateEngine;
 
-    @BeforeEach
-    void setup() {
-        if (templateEngine.getLinkBuilders()
-                .stream()
-                .anyMatch(TestLinkBuilder.class::isInstance)) {
-            return;
-        } else {
-            var linkBuilder = new TestLinkBuilder();
-            templateEngine.setLinkBuilder(linkBuilder);
-        }
+  @BeforeEach
+  void setup() {
+    if (templateEngine.getLinkBuilders().stream().anyMatch(TestLinkBuilder.class::isInstance)) {
+      return;
+    } else {
+      var linkBuilder = new TestLinkBuilder();
+      templateEngine.setLinkBuilder(linkBuilder);
     }
+  }
 
-    @Test
-    void adminsCanSeeTheVotingMatrix() {
-        var context = new Context();
-        context.setVariable("isAdmin", true);
+  @Test
+  void adminsCanSeeTheVotingMatrix() {
+    var context = new Context();
+    context.setVariable("isAdmin", true);
 
-        String html = templateEngine.process("fragments/menu", context);
+    String html = templateEngine.process("fragments/menu", context);
 
-        assertThat(html, containsString("<a href=\"/vote/matrix\">🔧"));
-    }
+    assertThat(html, containsString("<a href=\"/vote/matrix\">🔧"));
+  }
 
-    @Test
-    void usersCannotSeeTheVotingMatrix() {
-        var context = new Context();
-        context.setVariable("isAdmin", false);
+  @Test
+  void usersCannotSeeTheVotingMatrix() {
+    var context = new Context();
+    context.setVariable("isAdmin", false);
 
-        String html = templateEngine.process("fragments/menu", context);
+    String html = templateEngine.process("fragments/menu", context);
 
-        assertThat(html, not(containsString("<a href=\"/vote/matrix\">🔧")));
-    }
+    assertThat(html, not(containsString("<a href=\"/vote/matrix\">🔧")));
+  }
 }
-

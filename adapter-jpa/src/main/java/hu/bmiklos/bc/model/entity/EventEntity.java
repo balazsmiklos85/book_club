@@ -26,60 +26,60 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EventEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private UUID id;
 
-    @Column(nullable = false)
-    private UUID bookId;
+  @Column(nullable = false)
+  private UUID bookId;
 
-    @Column(nullable = false)
-    private Instant time;
+  @Column(nullable = false)
+  private Instant time;
 
-    @Column
-    private Integer hostExternalId;
+  @Column private Integer hostExternalId;
 
-    @Column
-    private UUID hostId;
+  @Column private UUID hostId;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "bookId", referencedColumnName = "id", insertable = false, updatable = false)
-    private BookEntity book;
+  @OneToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "bookId", referencedColumnName = "id", insertable = false, updatable = false)
+  private BookEntity book;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "hostId", referencedColumnName = "id", insertable = false, updatable = false)
-    private UserEntity hostByHostId;
+  @OneToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "hostId", referencedColumnName = "id", insertable = false, updatable = false)
+  private UserEntity hostByHostId;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "hostExternalId", referencedColumnName = "externalId", insertable = false, updatable = false)
-    private UserEntity hostByHostExternalId;
+  @OneToOne(fetch = FetchType.EAGER)
+  @JoinColumn(
+      name = "hostExternalId",
+      referencedColumnName = "externalId",
+      insertable = false,
+      updatable = false)
+  private UserEntity hostByHostExternalId;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "eventId", referencedColumnName = "id", insertable = false, updatable = false)
-    private List<ParticipantEntity> participants;
+  @OneToMany(fetch = FetchType.EAGER)
+  @JoinColumn(name = "eventId", referencedColumnName = "id", insertable = false, updatable = false)
+  private List<ParticipantEntity> participants;
 
-    public EventEntity(UUID bookId, Instant time, UUID hostId) {
-        this.bookId = bookId;
-        this.time = time;
-        this.hostId = hostId;
-    }
+  public EventEntity(UUID bookId, Instant time, UUID hostId) {
+    this.bookId = bookId;
+    this.time = time;
+    this.hostId = hostId;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, bookId, time, hostExternalId, hostId);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, bookId, time, hostExternalId, hostId);
+  }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!(obj instanceof EventEntity))
-            return false;
-        EventEntity other = (EventEntity) obj;
-        return Objects.equals(id, other.id)
-                && Objects.equals(bookId, other.bookId)
-                && Objects.equals(time, other.time)
-                && Objects.equals(hostExternalId, other.hostExternalId)
-                && Objects.equals(hostId, other.hostId);
-    }
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (!(obj instanceof EventEntity)) return false;
+    EventEntity other = (EventEntity) obj;
+    return Objects.equals(id, other.id)
+        && Objects.equals(bookId, other.bookId)
+        && Objects.equals(time, other.time)
+        && Objects.equals(hostExternalId, other.hostExternalId)
+        && Objects.equals(hostId, other.hostId);
+  }
 }

@@ -8,8 +8,8 @@ import org.springframework.test.context.TestPropertySource;
 @TestPropertySource(locations = "classpath:application-integrationtest.properties")
 class BookClubApplicationTests {
 
-	@Test
-	void contextLoads() {
-		// if the Spring context cannot be loaded, the test will fail with an exception
-	}
+  @Test
+  void contextLoads() {
+    // if the Spring context cannot be loaded, the test will fail with an exception
+  }
 }

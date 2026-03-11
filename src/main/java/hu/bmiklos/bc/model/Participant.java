@@ -1,8 +1,5 @@
 package hu.bmiklos.bc.model;
 
-import java.util.Objects;
-import java.util.UUID;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -10,68 +7,73 @@ import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "participants")
 @IdClass(ParticipantId.class)
 @Deprecated
 public class Participant {
-    
-    @Id
-    @Column(nullable = false)
-    private UUID eventId;
 
-    @Id
-    @Column(nullable = false)
-    private int participantExternalId;
+  @Id
+  @Column(nullable = false)
+  private UUID eventId;
 
-    @OneToOne
-    @JoinColumn(name = "participantExternalId", referencedColumnName = "externalId", insertable = false, updatable = false)
-    private User user;
+  @Id
+  @Column(nullable = false)
+  private int participantExternalId;
 
-    public Participant() {}
+  @OneToOne
+  @JoinColumn(
+      name = "participantExternalId",
+      referencedColumnName = "externalId",
+      insertable = false,
+      updatable = false)
+  private User user;
 
-    public Participant(UUID eventId, int participantExternalId) {
-        this.eventId = eventId;
-        this.participantExternalId = participantExternalId;
-    }
+  public Participant() {}
 
-    public UUID getEventId() {
-        return eventId;
-    }
+  public Participant(UUID eventId, int participantExternalId) {
+    this.eventId = eventId;
+    this.participantExternalId = participantExternalId;
+  }
 
-    public void setEventId(UUID eventId) {
-        this.eventId = eventId;
-    }
+  public UUID getEventId() {
+    return eventId;
+  }
 
-    public int getParticipantExternalId() {
-        return participantExternalId;
-    }
+  public void setEventId(UUID eventId) {
+    this.eventId = eventId;
+  }
 
-    public void setParticipantExternalId(int participantExternalId) {
-        this.participantExternalId = participantExternalId;
-    }
+  public int getParticipantExternalId() {
+    return participantExternalId;
+  }
 
-    public User getUser() {
-        return user;
-    }
+  public void setParticipantExternalId(int participantExternalId) {
+    this.participantExternalId = participantExternalId;
+  }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+  public User getUser() {
+    return user;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(eventId, participantExternalId);
-    }
+  public void setUser(User user) {
+    this.user = user;
+  }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!(obj instanceof Participant))
-            return false;
-        Participant other = (Participant) obj;
-        return Objects.equals(eventId, other.eventId) && participantExternalId == other.participantExternalId;
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(eventId, participantExternalId);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (!(obj instanceof Participant)) return false;
+    Participant other = (Participant) obj;
+    return Objects.equals(eventId, other.eventId)
+        && participantExternalId == other.participantExternalId;
+  }
 }

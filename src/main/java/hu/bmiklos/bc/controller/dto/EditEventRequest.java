@@ -1,49 +1,49 @@
 package hu.bmiklos.bc.controller.dto;
 
 public class EditEventRequest {
-    private String id;
-    private String bookId;
-    private String date;
-    private String time;
-    private String host;
+  private String id;
+  private String bookId;
+  private String date;
+  private String time;
+  private String host;
 
-    public String getId() {
-        return id;
-    }
+  public String getId() {
+    return id;
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-    
-    public String getBookId() {
-        return bookId;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public void setBookId(String bookId) {
-        this.bookId = bookId;
-    }
+  public String getBookId() {
+    return bookId;
+  }
 
-    public String getDate() {
-        return date;
-    }
+  public void setBookId(String bookId) {
+    this.bookId = bookId;
+  }
 
-    public void setDate(String date) {
-        this.date = date;
-    }
+  public String getDate() {
+    return date;
+  }
 
-    public String getTime() {
-        return time;
-    }
+  public void setDate(String date) {
+    this.date = date;
+  }
 
-    public void setTime(String time) {
-        this.time = time;
-    }
+  public String getTime() {
+    return time;
+  }
 
-    public String getHost() {
-        return host;
-    }
+  public void setTime(String time) {
+    this.time = time;
+  }
 
-    public void setHost(String host) {
-        this.host = host;
-    }
+  public String getHost() {
+    return host;
+  }
+
+  public void setHost(String host) {
+    this.host = host;
+  }
 }

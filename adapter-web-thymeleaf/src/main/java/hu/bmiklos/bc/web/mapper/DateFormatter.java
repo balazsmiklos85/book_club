@@ -3,7 +3,6 @@ package hu.bmiklos.bc.web.mapper;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-
 import org.springframework.core.convert.converter.Converter;
 
 public class DateFormatter implements Converter<Instant, String> {

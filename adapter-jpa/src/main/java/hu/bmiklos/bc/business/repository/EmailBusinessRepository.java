@@ -15,7 +15,8 @@ public class EmailBusinessRepository implements EmailRepository {
 
   @Override
   public Optional<Email> findById(String username) {
-    return emailJpaRepository.findById(username).map(email -> new EmailEntityMapper().convert(email));
+    return emailJpaRepository
+        .findById(username)
+        .map(email -> new EmailEntityMapper().convert(email));
   }
 }
-
