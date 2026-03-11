@@ -6,6 +6,7 @@ gem 'hanami', '~> 2.3.0'
 gem 'hanami-assets', '~> 2.3.0'
 gem 'hanami-controller', '~> 2.3.0'
 gem 'hanami-db', '~> 2.3.0'
+gem "hanami-i18n"
 gem 'hanami-router', '~> 2.3.0'
 gem 'hanami-validations', '~> 2.3.0'
 gem 'hanami-view', '~> 2.3.0'

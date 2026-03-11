@@ -165,6 +165,12 @@ GEM
       rom (~> 5.4, >= 5.4.1)
       rom-sql (~> 3.7)
       zeitwerk (~> 2.6)
+    hanami-helpers (0.0.0)
+    hanami-i18n (0.1.2)
+      dry-inflector
+      hanami-helpers
+      hanami-validations
+      i18n
     hanami-reloader (2.3.0)
       guard (~> 2.19)
       guard-puma (~> 0.8)
@@ -198,6 +204,8 @@ GEM
       better_errors (~> 2.10, >= 2.10.1)
       binding_of_caller (~> 1.0)
     hansi (0.2.1)
+    i18n (1.14.8)
+      concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     io-console (0.8.2)
     irb (1.17.0)
@@ -365,6 +373,7 @@ DEPENDENCIES
   hanami-assets (~> 2.3.0)
   hanami-controller (~> 2.3.0)
   hanami-db (~> 2.3.0)
+  hanami-i18n
   hanami-reloader (~> 2.3.0)
   hanami-router (~> 2.3.0)
   hanami-rspec (~> 2.3.0)
@@ -434,6 +443,8 @@ CHECKSUMS
   hanami-cli (2.3.5) sha256=213fc8181e566930821d830eae335b22e93c3e5018f4f22d0c13792d1e76f05e
   hanami-controller (2.3.1) sha256=ad48df2b4e437fc8392c236d0ddc2fabc1a466db5ee829f05519134889e2b9d9
   hanami-db (2.3.0) sha256=d6baa6c16a9321e5132799b8b26c3e6a2e19b8c5515c8785fb1ab94720d94711
+  hanami-helpers (0.0.0) sha256=88c0e662a74f626cda4a74fabc01649fb6933686dbe69e5eefdfe39e9c20cb93
+  hanami-i18n (0.1.2) sha256=9805a5f8ca5396612d550f2776d3fd8544bf216d58daaddada43ed7186289001
   hanami-reloader (2.3.0) sha256=0367250fd5a4d322ac055bae75612ed3babb4eb6c4a77be22321990479d3404d
   hanami-router (2.3.1) sha256=81b3665cb851de5703bd2fea3f375eccb2af871288cf130ab0fbc42b3b8ae31f
   hanami-rspec (2.3.1) sha256=03d06b8c0431354ee81acdd31ed9e418d86609e26b0cac321767c534d6cec553
@@ -442,6 +453,7 @@ CHECKSUMS
   hanami-view (2.3.1) sha256=7047571e44218bdb255ba50549f105cb4eb35ace39a7aff2765370840f494603
   hanami-webconsole (2.3.1) sha256=0fec8e5b4395ab3c93b976a4cb8a7b9d61ed85d19c67534aa74c99385f2c768f
   hansi (0.2.1) sha256=7e27dfd729f1692a3a7690fc0ef3af9d5e3cfc0285bb135cae7e56180e4805db
+  i18n (1.14.8) sha256=285778639134865c5e0f6269e0b818256017e8cde89993fdfcbfb64d088824a5
   ice_nine (0.11.2) sha256=5d506a7d2723d5592dc121b9928e4931742730131f22a1a37649df1c1e2e63db
   io-console (0.8.2) sha256=d6e3ae7a7cc7574f4b8893b4fca2162e57a825b223a177b7afa236c5ef9814cc
   irb (1.17.0) sha256=168c4ddb93d8a361a045c41d92b2952c7a118fa73f23fe14e55609eb7a863aae
