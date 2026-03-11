@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "hanami/db/relation"
+require 'hanami/db/relation'
 
 module BookClub
   module DB
