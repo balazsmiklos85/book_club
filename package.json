@@ -1,0 +1,8 @@
+{
+  "name": "book_club",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "hanami-assets": "^2.3.0"
+  }
+}
