@@ -3,9 +3,11 @@
 module BookClub
   module Relation
     class Participants < ROM::Relation[:sql]
-      schema :participants, infer: true
-
-      foreign_key :event_id
+      schema :participants, infer: true do
+        associations do
+          belongs_to :events
+        end
+      end
     end
   end
 end

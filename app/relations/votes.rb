@@ -3,10 +3,12 @@
 module BookClub
   module Relation
     class Votes < ROM::Relation[:sql]
-      schema :votes, infer: true
-
-      foreign_key :book_id
-      foreign_key :user_id
+      schema :votes, infer: true do
+        associations do
+          belongs_to :books
+          belongs_to :users
+        end
+      end
     end
   end
 end
