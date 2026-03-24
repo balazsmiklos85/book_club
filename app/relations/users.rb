@@ -4,12 +4,12 @@ module BookClub
   module Relation
     # Users relation class
     class Users < ROM::Relation[:sql]
-      schema :users, infer: true
-
-      associations do
-        has_many :emails
-        has_many :suggestions
-        has_many :votes
+      schema :users, infer: true do
+        associations do
+          has_many :emails
+          has_many :suggestions
+          has_many :votes
+        end
       end
     end
   end
