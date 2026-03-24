@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module BookClub
-  module Relation
+  module Relations
     # Email relation class
     class Emails < ROM::Relation[:sql]
       schema :emails, infer: true do

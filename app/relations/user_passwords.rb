@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module BookClub
-  module Relation
+  module Relations
     class UserPasswords < ROM::Relation[:sql]
       schema :user_password, infer: true
     end

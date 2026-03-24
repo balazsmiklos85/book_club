@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module BookClub
-  module Relation
+  module Relations
     class Votes < ROM::Relation[:sql]
       schema :votes, infer: true do
         associations do
