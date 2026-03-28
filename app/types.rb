@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-require 'hanami/view'
-
 module BookClub
-  class View < Hanami::View
+  module Types
+    include Dry.Types()
   end
 end

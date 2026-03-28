@@ -8,6 +8,7 @@ module BookClub
         associations do
           has_many :emails
           has_many :suggestions
+          has_many :user_passwords
           has_many :votes
         end
       end

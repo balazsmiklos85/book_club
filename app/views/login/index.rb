@@ -4,6 +4,7 @@ module BookClub
   module Views
     module Login
       class Index < Hanami::View
+        expose :csrf_token
       end
     end
   end

@@ -5,5 +5,9 @@ require 'hanami'
 module BookClub
   # Main class of the book club application.
   class App < Hanami::App
+    config.actions.sessions = :cookie, {
+      key: "book_club.session",
+      secret: settings.session_secret
+    }
   end
 end
