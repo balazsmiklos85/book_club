@@ -15,7 +15,7 @@ module BookClub
 
             response.redirect_to(root_path, status: :see_other)
           when Failure
-            flash[:error] = 'Invalid email or password'
+            response.flash[:error] = 'Invalid email or password'
             response.redirect_to(login_path, status: :see_other)
           end
         end

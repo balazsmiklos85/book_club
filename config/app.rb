@@ -7,7 +7,8 @@ module BookClub
   class App < Hanami::App
     config.actions.sessions = :cookie, {
       key: 'book_club.session',
-      secret: settings.session_secret
+      secret: settings.session_secret,
+      flash: true
     }
   end
 end
