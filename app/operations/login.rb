@@ -32,9 +32,9 @@ module BookClub
       end
 
       def verify_password(stored_password, password, email)
-        return Success if stored_password.valid? password
+        return Success(true) if stored_password.valid? password
 
-        log.info "Ivalid password for #{email}"
+        log.info "Invalid password for #{email}"
         Failure :invalid_credentials
       rescue StandardError => e
         logger.error e
