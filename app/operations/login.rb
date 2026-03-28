@@ -18,20 +18,27 @@ module BookClub
       private
 
       def load_user_data(email)
-        record = email_repo.find_with_user_and_password email
-        user = record[:user]
-        Success [user[:external_id], user[:user_passwords].first]
-      rescue StandardError
-        logger.info "Credentials not found for #{email}"
+        user = email_repo.find_with_user_and_password(email)
+                         &.users
+        if user.nil?
+          logger.info "User not found: #{email}"
+          return Failure :user_not_found
+        end
+
+        Success [user.external_id, user.user_passwords.first]
+      rescue StandardError => e
+        logger.error e
         Failure :user_not_found
       end
 
       def verify_password(stored_password, password, email)
-        stored_password.check! password
-        Success
-      rescue StandardError
-        logger.info "Invalid password for #{email}"
+        return Success if stored_password.valid? password
+
+        log.info "Ivalid password for #{email}"
         Failure :invalid_credentials
+      rescue StandardError => e
+        logger.error e
+        Failure :unexpected_error
       end
     end
   end
