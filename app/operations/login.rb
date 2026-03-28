@@ -6,7 +6,7 @@ module BookClub
   module Operations
     class Login < Operation
       include Dry::Validation::Macros
-      include Deps["repos.email_repo"]
+      include Deps['repos.email_repo']
 
       def call(email:, password:)
         record = email_repo.find_with_user_and_password(email)

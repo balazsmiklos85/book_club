@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative "../types"
-require_relative "user"
+require_relative '../types'
+require_relative 'user'
 
 module BookClub
   module Structs

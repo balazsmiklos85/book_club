@@ -20,6 +20,9 @@ gem 'rake'
 
 group :development do
   gem 'hanami-webconsole', '~> 2.3.0'
+  gem 'rubocop'
+  gem 'rubocop-rake'
+  gem 'rubocop-rspec'
 end
 
 group :development, :test do
