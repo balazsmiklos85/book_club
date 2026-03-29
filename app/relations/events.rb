@@ -2,6 +2,7 @@
 
 module BookClub
   module Relations
+    # ROM relation for accessing event records.
     class Events < ROM::Relation[:sql]
       schema :events, infer: true do
         associations do

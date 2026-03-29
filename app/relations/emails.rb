@@ -2,7 +2,7 @@
 
 module BookClub
   module Relations
-    # Email relation class
+    # ROM relation for accessing email records.
     class Emails < ROM::Relation[:sql]
       schema :emails, infer: true do
         associations do

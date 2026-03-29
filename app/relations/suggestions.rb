@@ -2,7 +2,7 @@
 
 module BookClub
   module Relations
-    # Suggestions relation class
+    # ROM relation for accessing suggestion records.
     class Suggestions < ROM::Relation[:sql]
       schema :suggestions, infer: true do
         associations do

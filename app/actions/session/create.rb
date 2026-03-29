@@ -3,9 +3,14 @@
 module BookClub
   module Actions
     module Session
+      # Creates a user session after successful authentication.
       class Create < Action
         include Deps['operations.login']
 
+        # Handles the session creation request.
+        #
+        # @param request [Hanami::Action::Params] the incoming request
+        # @param response [Hanami::Action::Response] the response object to modify
         def handle(request, response)
           result = login.call(email: request.params[:email], password: request.params[:password])
 

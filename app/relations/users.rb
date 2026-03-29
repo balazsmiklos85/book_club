@@ -2,7 +2,7 @@
 
 module BookClub
   module Relations
-    # Users relation class
+    # ROM relation for accessing user records with associated data.
     class Users < ROM::Relation[:sql]
       schema :users, infer: true do
         associations do

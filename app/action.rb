@@ -4,8 +4,9 @@ require 'hanami/action'
 require 'dry/monads'
 
 module BookClub
+  # Base action class providing common functionality across all actions.
   class Action < Hanami::Action
-    # Provide `Success` and `Failure` for pattern matching on operation results
+    # Include Success and Failure monads for result handling.
     include Dry::Monads[:result]
   end
 end

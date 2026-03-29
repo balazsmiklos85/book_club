@@ -2,6 +2,7 @@
 
 module BookClub
   module Relations
+    # ROM relation for accessing vote records.
     class Votes < ROM::Relation[:sql]
       schema :votes, infer: true do
         associations do
