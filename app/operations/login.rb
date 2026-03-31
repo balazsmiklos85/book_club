@@ -19,7 +19,7 @@ module BookClub
 
       def load_user_data(email)
         user = email_repo.find_with_user_and_password(email)
-                         &.users
+                         &.user
         if user.nil?
           logger.info "User not found: #{email}"
           return Failure :user_not_found
@@ -34,7 +34,7 @@ module BookClub
       def verify_password(stored_password, password, email)
         return Success(true) if stored_password.valid? password
 
-        log.info "Invalid password for #{email}"
+        logger.info "Invalid password for #{email}"
         Failure :invalid_credentials
       rescue StandardError => e
         logger.error e
