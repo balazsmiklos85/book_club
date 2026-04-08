@@ -104,6 +104,8 @@ GEM
       zeitwerk (~> 2.6)
     erb (6.0.2)
     erubi (1.13.1)
+    faker (3.6.1)
+      i18n (>= 1.8.11, < 2)
     ffi (1.17.3)
     ffi (1.17.3-aarch64-linux-gnu)
     ffi (1.17.3-aarch64-linux-musl)
@@ -319,6 +321,12 @@ GEM
       dry-struct (~> 1.0)
       dry-types (~> 1.6)
       transproc (~> 1.1)
+    rom-factory (0.13.0)
+      dry-configurable (~> 1.3)
+      dry-core (~> 1.1)
+      dry-struct (~> 1.7)
+      faker (>= 2.0, < 4)
+      rom-core (~> 5.4)
     rom-repository (5.4.3)
       dry-core (~> 1.0)
       dry-initializer (~> 3.2)
@@ -401,6 +409,7 @@ DEPENDENCIES
   dotenv
   dry-operation (>= 1.0.1)
   dry-types (~> 1.7)
+  faker
   hanami (~> 2.3.0)
   hanami-assets (~> 2.3.0)
   hanami-controller (~> 2.3.0)
@@ -416,6 +425,7 @@ DEPENDENCIES
   puma
   rack-test
   rake
+  rom-factory
   rubocop
   rubocop-rake
   rubocop-rspec
@@ -459,6 +469,7 @@ CHECKSUMS
   dry-validation (1.11.1) sha256=70900bb5a2d911c8aab566d3e360c6bff389b8bf92ea8e04885ce51c41ff8085
   erb (6.0.2) sha256=9fe6264d44f79422c87490a1558479bd0e7dad4dd0e317656e67ea3077b5242b
   erubi (1.13.1) sha256=a082103b0885dbc5ecf1172fede897f9ebdb745a4b97a5e8dc63953db1ee4ad9
+  faker (3.6.1) sha256=c513d23c1d26b426283e913b25e0b714576011d7c1ad368a9ac6ea2113a1ccde
   ffi (1.17.3) sha256=0e9f39f7bb3934f77ad6feab49662be77e87eedcdeb2a3f5c0234c2938563d4c
   ffi (1.17.3-aarch64-linux-gnu) sha256=28ad573df26560f0aedd8a90c3371279a0b2bd0b4e834b16a2baa10bd7a97068
   ffi (1.17.3-aarch64-linux-musl) sha256=020b33b76775b1abacc3b7d86b287cef3251f66d747092deec592c7f5df764b2
@@ -548,6 +559,7 @@ CHECKSUMS
   rom (5.4.3) sha256=dc8925ba216e9635651edbbb1b4ddc0f145782a100e78458434e5f0aacfec2c8
   rom-changeset (5.4.0) sha256=503b9d2ad082743a28c06da70d431c7f12c18c4c0bca7f90c66d5aa2e13db898
   rom-core (5.4.0) sha256=a08264e40892cf86a57e32f6c09803b30e4fb3b1da86a64d41e71d92575df08f
+  rom-factory (0.13.0) sha256=b6a3d45f79a2c48117ae1550a0790d1cd6b26b27fdff6307e7368ddb7a65ef85
   rom-repository (5.4.3) sha256=a45477c6e01241ed9361c6d5e457c398882f97e376f7a0ac1276e0aa8c013557
   rom-sql (3.7.0) sha256=56ba0714603d72d7ab5ad3247b6526d04ae83b6fcc807f4a1fa953cd7a65a639
   rouge (4.7.0) sha256=dba5896715c0325c362e895460a6d350803dbf6427454f49a47500f3193ea739

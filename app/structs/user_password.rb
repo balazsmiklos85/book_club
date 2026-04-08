@@ -22,6 +22,7 @@ module BookClub
           BCrypt::Password.new(password_hash) == password + salt
         when 'plaintext'
           password_hash == password + salt
+
         else
           false
         end
