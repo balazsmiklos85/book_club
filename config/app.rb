@@ -2,6 +2,8 @@
 
 require 'hanami'
 
+require_relative 'locale'
+
 module BookClub
   # Main class of the book club application.
   class App < Hanami::App

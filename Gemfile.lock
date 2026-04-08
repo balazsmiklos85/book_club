@@ -168,12 +168,6 @@ GEM
       rom (~> 5.4, >= 5.4.1)
       rom-sql (~> 3.7)
       zeitwerk (~> 2.6)
-    hanami-helpers (0.0.0)
-    hanami-i18n (0.1.2)
-      dry-inflector
-      hanami-helpers
-      hanami-validations
-      i18n
     hanami-reloader (2.3.0)
       guard (~> 2.19)
       guard-puma (~> 0.8)
@@ -414,7 +408,6 @@ DEPENDENCIES
   hanami-assets (~> 2.3.0)
   hanami-controller (~> 2.3.0)
   hanami-db (~> 2.3.0)
-  hanami-i18n
   hanami-reloader (~> 2.3.0)
   hanami-router (~> 2.3.0)
   hanami-rspec (~> 2.3.0)
@@ -490,8 +483,6 @@ CHECKSUMS
   hanami-cli (2.3.5) sha256=213fc8181e566930821d830eae335b22e93c3e5018f4f22d0c13792d1e76f05e
   hanami-controller (2.3.1) sha256=ad48df2b4e437fc8392c236d0ddc2fabc1a466db5ee829f05519134889e2b9d9
   hanami-db (2.3.0) sha256=d6baa6c16a9321e5132799b8b26c3e6a2e19b8c5515c8785fb1ab94720d94711
-  hanami-helpers (0.0.0) sha256=88c0e662a74f626cda4a74fabc01649fb6933686dbe69e5eefdfe39e9c20cb93
-  hanami-i18n (0.1.2) sha256=9805a5f8ca5396612d550f2776d3fd8544bf216d58daaddada43ed7186289001
   hanami-reloader (2.3.0) sha256=0367250fd5a4d322ac055bae75612ed3babb4eb6c4a77be22321990479d3404d
   hanami-router (2.3.1) sha256=81b3665cb851de5703bd2fea3f375eccb2af871288cf130ab0fbc42b3b8ae31f
   hanami-rspec (2.3.1) sha256=03d06b8c0431354ee81acdd31ed9e418d86609e26b0cac321767c534d6cec553

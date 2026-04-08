@@ -20,7 +20,7 @@ module BookClub
 
             response.redirect_to(root_path, status: :see_other)
           when Failure
-            response.flash[:error] = 'Invalid email or password'
+            response.flash[:error] = I18n.t('book_club.flash.login_failed')
             response.redirect_to(login_path, status: :see_other)
           end
         end

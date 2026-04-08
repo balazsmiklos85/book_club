@@ -1,0 +1,12 @@
+# frozen_string_literal: true
+
+en:
+  book_club:
+    login:
+      email_label: "Email"
+      password_label: "Password"
+      sign_in_button: "Sign In"
+      
+    flash:
+      login_failed: "Invalid email or password"
+      login_success: "Welcome back!"
