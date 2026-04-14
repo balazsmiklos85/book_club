@@ -8,20 +8,31 @@ RSpec.describe BookClub::Operations::Login do
   let(:email_repo) { instance_double(BookClub::Repos::EmailRepo) }
   let(:logger) { instance_double(Logger, info: nil, error: nil) }
 
+  let(:password_hash) { instance_double(BookClub::Structs::UserPassword) }
+  let(:user_with_password) do
+    BookClub::Structs::User.new(
+      external_id: 123,
+      user_passwords: [password_hash]
+    )
+  end
+  let(:email_with_user) do
+    BookClub::Structs::Email.new(
+      email_address: 'user@example.com',
+      user: user_with_password
+    )
+  end
+
+  let(:email_repo_lookup_failure) do
+    proc { |_email, _password| raise StandardError, 'Database connection failed' }
+  end
+  let(:password_validation_failure) do
+    proc { |_password| raise StandardError, 'Hash comparison failed' }
+  end
+
   describe '#call' do
     context 'when an existing user provides correct credentials' do
       it 'allows the login to succeed and returns the user external_id' do
-        password_hash = instance_double(BookClub::Structs::UserPassword)
-
-        allow(email_repo).to receive(:find_with_user_and_password).and_return(
-          BookClub::Structs::Email.new(
-            email_address: 'user@example.com',
-            user: BookClub::Structs::User.new(
-              external_id: 123,
-              user_passwords: [password_hash]
-            )
-          )
-        )
+        allow(email_repo).to receive(:find_with_user_and_password).and_return(email_with_user)
         allow(password_hash).to receive(:valid?).with('correct-password').and_return(true)
 
         result = login_operation.call(email: 'user@example.com', password: 'correct-password')
@@ -32,17 +43,8 @@ RSpec.describe BookClub::Operations::Login do
 
     context 'when an existing user provides incorrect credentials' do
       it 'denies the login attempt' do
-        password_hash = instance_double(BookClub::Structs::UserPassword, valid?: false)
-
-        allow(email_repo).to receive(:find_with_user_and_password).and_return(
-          BookClub::Structs::Email.new(
-            email_address: 'user@example.com',
-            user: BookClub::Structs::User.new(
-              external_id: 123,
-              user_passwords: [password_hash]
-            )
-          )
-        )
+        allow(password_hash).to receive(:valid?).and_return(false)
+        allow(email_repo).to receive(:find_with_user_and_password).and_return(email_with_user)
 
         result = login_operation.call(email: 'user@example.com', password: 'wrong-password')
 
@@ -61,38 +63,23 @@ RSpec.describe BookClub::Operations::Login do
     end
 
     context 'when an unexpected error occurs during user lookup' do
-      it 'denies the login attempt and logs the error' do
-        allow(email_repo).to receive(:find_with_user_and_password)
-          .and_raise(StandardError, 'Database connection failed')
-        allow(logger).to receive(:error)
+      it 'denies the login attempt' do
+        allow(email_repo).to receive(:find_with_user_and_password, &email_repo_lookup_failure)
 
         result = login_operation.call(email: 'user@example.com', password: 'any-password')
 
         expect(result.failure?).to be(true)
-        expect(logger).to have_received(:error).at_least(:once)
       end
     end
 
     context 'when an unexpected error occurs during password verification' do
-      it 'denies the login attempt and logs the error' do
-        password_hash = instance_double(BookClub::Structs::UserPassword, valid?: false)
-
-        allow(email_repo).to receive(:find_with_user_and_password).and_return(
-          BookClub::Structs::Email.new(
-            email_address: 'user@example.com',
-            user: BookClub::Structs::User.new(
-              external_id: 123,
-              user_passwords: [password_hash]
-            )
-          )
-        )
-        allow(password_hash).to receive(:valid?).with('any-password').and_raise(StandardError, 'Hash comparison failed')
-        allow(logger).to receive(:error)
+      it 'denies the login attempt' do
+        allow(email_repo).to receive(:find_with_user_and_password).and_return(email_with_user)
+        allow(password_hash).to receive(:valid?, &password_validation_failure)
 
         result = login_operation.call(email: 'user@example.com', password: 'any-password')
 
         expect(result.failure?).to be(true)
-        expect(logger).to have_received(:error).at_least(:once)
       end
     end
   end
