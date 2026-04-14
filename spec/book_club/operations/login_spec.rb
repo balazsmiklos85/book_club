@@ -8,28 +8,21 @@ RSpec.describe BookClub::Operations::Login do
   let(:email_repo) { instance_double(BookClub::Repos::EmailRepo) }
   let(:logger) { instance_double(Logger, info: nil, error: nil) }
 
-  let(:password_hash) { instance_double(BookClub::Structs::UserPassword) }
-  let(:user_with_password) do
-    BookClub::Structs::User.new(
-      external_id: 123,
-      user_passwords: [password_hash]
-    )
-  end
-  let(:email_with_user) do
-    BookClub::Structs::Email.new(
-      email_address: 'user@example.com',
-      user: user_with_password
-    )
-  end
-
-  let(:email_repo_lookup_failure) do
-    proc { |_email, _password| raise StandardError, 'Database connection failed' }
-  end
-  let(:password_validation_failure) do
-    proc { |_password| raise StandardError, 'Hash comparison failed' }
-  end
-
   describe '#call' do
+    let(:password_hash) { instance_double(BookClub::Structs::UserPassword) }
+    let(:user_with_password) do
+      BookClub::Structs::User.new(
+        external_id: 123,
+        user_passwords: [password_hash]
+      )
+    end
+    let(:email_with_user) do
+      BookClub::Structs::Email.new(
+        email_address: 'user@example.com',
+        user: user_with_password
+      )
+    end
+
     context 'when an existing user provides correct credentials' do
       it 'allows the login to succeed and returns the user external_id' do
         allow(email_repo).to receive(:find_with_user_and_password).and_return(email_with_user)
@@ -64,7 +57,7 @@ RSpec.describe BookClub::Operations::Login do
 
     context 'when an unexpected error occurs during user lookup' do
       it 'denies the login attempt' do
-        allow(email_repo).to receive(:find_with_user_and_password, &email_repo_lookup_failure)
+        allow(email_repo).to receive(:find_with_user_and_password) { raise StandardError, 'Database connection failed' }
 
         result = login_operation.call(email: 'user@example.com', password: 'any-password')
 
@@ -75,7 +68,7 @@ RSpec.describe BookClub::Operations::Login do
     context 'when an unexpected error occurs during password verification' do
       it 'denies the login attempt' do
         allow(email_repo).to receive(:find_with_user_and_password).and_return(email_with_user)
-        allow(password_hash).to receive(:valid?, &password_validation_failure)
+        allow(password_hash).to receive(:valid?) { raise StandardError, 'Hash comparison failed' }
 
         result = login_operation.call(email: 'user@example.com', password: 'any-password')
 
