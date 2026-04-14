@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module BookClub
-  # Module that provides authentication protection to actions.
-  # When included, it adds a before callback that redirects unauthenticated users to /login.
   module Actions
+    # Module that provides authentication protection to actions.
+    # When included, it adds a before callback that redirects unauthenticated users to /login.
     module AuthenticatedAction
       def self.included(base)
         base.before :authenticate_user!

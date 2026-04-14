@@ -2,8 +2,8 @@
 
 module BookClub
   module Views
-    # Displays the login form.
     module Login
+      # View that displays the login form.
       class Index < Hanami::View
         expose :csrf_token
       end

@@ -4,6 +4,7 @@ require_relative '../types'
 
 module BookClub
   module Structs
+    # User struct representing a user entity.
     class User < DB::Struct
       attribute? :id, Types::String
       attribute? :name, Types::String
