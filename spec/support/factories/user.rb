@@ -25,6 +25,6 @@ end
 Factory.define(:user_password, relation: :user_passwords) do |f|
   salt = 'fixed_salt_12345'
   f.salt salt
-  f.password_hash { 'password123' + salt }
+  f.password_hash { "password123#{salt}" }
   f.hash_algorithm 'plaintext'
 end
