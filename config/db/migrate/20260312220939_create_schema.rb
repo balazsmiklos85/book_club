@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/BlockLength
+
 ROM::SQL.migration do
   change do
     create_table :books do
@@ -95,3 +97,4 @@ ROM::SQL.migration do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength
