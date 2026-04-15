@@ -2,12 +2,21 @@
 
 ## Overview
 
-[Describe routing configuration and URL structure]
+Routes map HTTP requests to controller actions.
 
-### Endpoint Design
+## Reference
 
-[Document RESTful conventions used]
+### Authentication Routes
 
-### Middleware Integration
+**GET /login** - `Login::Index`
+: Display login form
 
-[Explain middleware attached to routes]
+**POST /session** - `Session::Create`
+: Process login submission
+
+### Session Configuration
+
+- **Session type**: Cookie-based
+- **Session key**: `book_club.session`
+- **Session secret**: Configured in application settings
+- **Session data**: Stores `external_id` for authenticated users

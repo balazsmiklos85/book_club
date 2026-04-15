@@ -2,12 +2,11 @@
 
 ## Overview
 
-[Describe view responsibilities and presenter patterns]
+Views handle response rendering, including template output and data presentation.
 
-### Templates
+## Reference
 
-[Document ERB template structure]
+### Login View
 
-### Presenters
-
-[Explain presenter classes and their role]
+**Login::Index** - `app/views/login/index.rb`
+: Renders the login form with CSRF token for security
