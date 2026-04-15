@@ -285,4 +285,4 @@ ALTER TABLE ONLY public.votes
 SET search_path TO "$user", public;
 
 INSERT INTO schema_migrations (filename) VALUES
-('20250312000000_create_schema.rb');
+('20260312220939_create_schema.rb');
