@@ -8,5 +8,5 @@ Views handle response rendering, including template output and data presentation
 
 ### Login View
 
-**Login::Index** - `app/views/login/index.rb`
+**Login::New** - `app/views/login/new.rb`
 : Renders the login form with CSRF token for security

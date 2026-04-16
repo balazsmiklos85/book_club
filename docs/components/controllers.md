@@ -8,7 +8,7 @@ Controllers handle HTTP requests by invoking operations for business logic and r
 
 ### Authentication Actions
 
-**Login::Index** - `app/actions/login/index.rb`
+**Login::New** - `app/actions/login/new.rb`
 - Route: `GET /login`
 - Displays the login form
 
