@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Register</title>
+</head>
+
+<body>
+	<h1>Register</h1>
+
+	<% if flash[:error] %>
+	  <div style="color: red;">
+	    <%= flash[:error] %>
+	  </div>
+	<% end %>
+
+	<form name='registration_form' action='/register' method='post'>
+		<input type="hidden" name="_csrf_token" value="<%= session["_csrf_token"] %>" />
+		<div>
+			<label><%= I18n.t('book_club.register.name_label') %></label>
+			<input type='text' name='name' value='' />
+		</div>
+		<div>
+			<label><%= I18n.t('book_club.register.email_label') %></label>
+			<input type='text' name='email' value='' />
+		</div>
+		<div>
+			<label><%= I18n.t('book_club.register.confirm_email_label') %></label>
+			<input type='text' name='confirm_email' value='' />
+		</div>
+		<div>
+			<label><%= I18n.t('book_club.register.password_label') %></label>
+			<input type='password' name='password' value='' />
+		</div>
+		<div>
+			<label><%= I18n.t('book_club.register.confirm_password_label') %></label>
+			<input type='password' name='confirm_password' value='' />
+		</div>
+		<div>
+			<label><%= I18n.t('book_club.register.external_id_label') %></label>
+			<input type='text' name='external_id' value='' />
+		</div>
+		<button type="submit"><%= I18n.t('book_club.register.register_button') %></button>
+	</form>
+	<a href="/login"><%= I18n.t('book_club.register.login_here') %></a>
+</body>
+
+</html>

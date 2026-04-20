@@ -5,6 +5,7 @@ module BookClub
   class Routes < Hanami::Routes
     root to: 'leaderboard.index'
     get '/login', to: 'login.new'
+    get '/register', to: 'register.new'
     post '/session', to: 'session.create'
   end
 end

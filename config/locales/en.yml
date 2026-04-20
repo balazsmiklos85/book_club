@@ -6,6 +6,15 @@ en:
       email_label: "Email"
       password_label: "Password"
       sign_in_button: "Sign In"
+    register:
+      name_label: "Name"
+      email_label: "Email"
+      confirm_email_label: "Confirm Email"
+      password_label: "Password"
+      confirm_password_label: "Confirm Password"
+      external_id_label: "External ID"
+      register_button: "Register"
+      login_here: "Already have an account? Login"
       
     flash:
       login_failed: "Invalid email or password"
