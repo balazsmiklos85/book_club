@@ -1,0 +1,16 @@
+# frozen_string_literal: true
+
+require 'hanami'
+
+require_relative 'locale'
+
+module BookClub
+  # Main class of the book club application.
+  class App < Hanami::App
+    config.actions.sessions = :cookie, {
+      key: 'book_club.session',
+      secret: settings.session_secret,
+      flash: true
+    }
+  end
+end

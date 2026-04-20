@@ -1,0 +1,15 @@
+# frozen_string_literal: true
+
+module BookClub
+  module Relations
+    # ROM relation for accessing vote records.
+    class Votes < ROM::Relation[:sql]
+      schema :votes, infer: true do
+        associations do
+          belongs_to :books
+          belongs_to :users
+        end
+      end
+    end
+  end
+end

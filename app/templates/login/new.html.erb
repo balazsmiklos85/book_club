@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Login</title>
+</head>
+
+<body>
+	<h1>Login</h1>
+
+	<% if flash[:error] %>
+	  <div style="color: red;">
+	    <%= flash[:error] %>
+	  </div>
+	<% end %>
+
+	<form name='login_form' action='/session' method='post'>
+		<input type="hidden" name="_csrf_token" value="<%= session["_csrf_token"] %>" />
+		<div>
+			<label><%= I18n.t('book_club.login.email_label') %></label>
+			<input type='email' name='email' value='' />
+		</div>
+		<div>
+			<label><%= I18n.t('book_club.login.password_label') %></label>
+			<input type='password' name='password' value='' />
+		</div>
+		<button type="submit"><%= I18n.t('book_club.login.sign_in_button') %></button>
+	</form>
+	<a href="/registration">Register here</a>
+</body>
+
+</html>
