@@ -17,6 +17,10 @@ RSpec.describe 'Login', type: :request do
     it 'renders the login form template' do
       get '/login'
       expect(last_response.body).to include('Email')
+    end
+
+    it 'renders password field' do
+      get '/login'
       expect(last_response.body).to include('Password')
     end
   end
