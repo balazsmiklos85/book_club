@@ -19,3 +19,5 @@ en:
     flash:
       login_failed: "Invalid email or password"
       login_success: "Welcome back!"
+      registration_failed: "Registration failed. Please try again."
+      registration_success: "Account created successfully!"

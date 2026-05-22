@@ -7,5 +7,6 @@ module BookClub
     get '/login', to: 'login.new'
     get '/register', to: 'register.new'
     post '/session', to: 'session.create'
+    post '/register', to: 'register.create'
   end
 end
