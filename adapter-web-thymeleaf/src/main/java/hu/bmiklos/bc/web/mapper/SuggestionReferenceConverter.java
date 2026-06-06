@@ -5,6 +5,7 @@ import hu.bmiklos.bc.domain.entities.Suggestion;
 import hu.bmiklos.bc.domain.entities.User;
 import hu.bmiklos.bc.web.dto.SuggestionReference;
 import java.text.MessageFormat;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 
@@ -23,6 +24,7 @@ public class SuggestionReferenceConverter implements Converter<Suggestion, Sugge
     } else {
       suggesterName = "[N/A]";
     }
-    return new SuggestionReference(source.getId(), suggesterName, suggester.isSameAs(caller));
+    UUID id = source.getId() != null ? source.getId() : source.getBook().getId();
+    return new SuggestionReference(id, suggesterName, suggester.isSameAs(caller));
   }
 }
