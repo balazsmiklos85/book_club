@@ -1,13 +1,14 @@
 package hu.bmiklos.bc.business.usecase;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import hu.bmiklos.bc.business.exception.DifferentUserException;
 import hu.bmiklos.bc.business.exception.EntityNotFoundException;
+import hu.bmiklos.bc.business.repository.BookRepository;
 import hu.bmiklos.bc.business.repository.SuggestionRepository;
 import hu.bmiklos.bc.domain.entities.*;
 import java.time.Instant;
@@ -25,6 +26,8 @@ class SuggestionRemovalServiceTest {
 
   private static final String OTHER_USER = "Other Test User";
   private static final String USER_NAME = "Test User";
+
+  @Mock private BookRepository bookRepository;
 
   @Mock private SuggestionRepository suggestionRepository;
 
@@ -114,5 +117,35 @@ class SuggestionRemovalServiceTest {
         .isInstanceOf(DifferentUserException.class);
 
     verify(suggestionRepository, never()).delete(any());
+  }
+
+  @Test
+  void removeSuggestion_deletesLegacySuggestionWhenIdIsBookId() {
+    var bookId = givenABookWithLegacyRecommender();
+    var user = givenAUser();
+
+    suggestionRemovalService.removeSuggestion(user, bookId);
+
+    thenLegacyRecommenderWasCleared(bookId);
+  }
+
+  private UUID givenABookWithLegacyRecommender() {
+    var bookId = UUID.randomUUID();
+    var book =
+        new Book(
+            bookId, "Test Author", "Test Title", "test://url.hu", ignored -> null, ignored -> null);
+
+    when(suggestionRepository.findById(bookId)).thenReturn(Optional.empty());
+    when(bookRepository.findById(bookId)).thenReturn(book);
+
+    return bookId;
+  }
+
+  private User givenAUser() {
+    return new User(UUID.randomUUID(), USER_NAME, false, -1);
+  }
+
+  private void thenLegacyRecommenderWasCleared(UUID bookId) {
+    verify(bookRepository).clearLegacyRecommender(bookId);
   }
 }
