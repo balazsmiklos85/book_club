@@ -11,4 +11,6 @@ public interface BookRepository {
   Map<UUID, Integer> getBookWeights();
 
   Book findById(UUID fromString);
+
+  void clearLegacyRecommender(UUID bookId);
 }

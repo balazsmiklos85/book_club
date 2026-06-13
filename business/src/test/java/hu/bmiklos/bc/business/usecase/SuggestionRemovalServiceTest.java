@@ -2,6 +2,7 @@ package hu.bmiklos.bc.business.usecase;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -63,6 +64,9 @@ class SuggestionRemovalServiceTest {
     var user = new User(UUID.randomUUID(), USER_NAME, false, -1);
 
     when(suggestionRepository.findById(suggestionId)).thenReturn(Optional.empty());
+    doThrow(new EntityNotFoundException(suggestionId))
+        .when(bookRepository)
+        .clearLegacyRecommender(suggestionId);
 
     assertThatThrownBy(() -> suggestionRemovalService.removeSuggestion(user, suggestionId))
         .isInstanceOf(EntityNotFoundException.class)
@@ -131,12 +135,8 @@ class SuggestionRemovalServiceTest {
 
   private UUID givenABookWithLegacyRecommender() {
     var bookId = UUID.randomUUID();
-    var book =
-        new Book(
-            bookId, "Test Author", "Test Title", "test://url.hu", ignored -> null, ignored -> null);
 
     when(suggestionRepository.findById(bookId)).thenReturn(Optional.empty());
-    when(bookRepository.findById(bookId)).thenReturn(book);
 
     return bookId;
   }

@@ -3,6 +3,7 @@ package hu.bmiklos.bc.business.repository;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
+import hu.bmiklos.bc.business.exception.EntityNotFoundException;
 import hu.bmiklos.bc.business.mapper.BookEntityMapper;
 import hu.bmiklos.bc.domain.entities.Book;
 import hu.bmiklos.bc.model.entity.BookWeight;
@@ -57,5 +58,14 @@ public class BookBusinessRepository implements BookRepository {
         .findFirst()
         .orElseThrow(
             () -> new RuntimeException("Could not find book " + id + ". No suggester maybe?"));
+  }
+
+  @Override
+  public void clearLegacyRecommender(UUID bookId) {
+    var entity =
+        bookRepository.findById(bookId).orElseThrow(() -> new EntityNotFoundException(bookId));
+    entity.setRecommenderExternalId(null);
+    entity.setRecommendedAt(null);
+    bookRepository.save(entity);
   }
 }
