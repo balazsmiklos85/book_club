@@ -28,13 +28,13 @@ module BookClub
       end
 
       # TODO: this should just create the User, another step should save it
-      def create_user(name:, email:, external:)
+      def create_user(name:, email:, external_id:)
         user_id = users.insert(
           # TODO: this should be a User domain concern
           id: SecureRandom.uuid,
           name: name,
           is_admin: false,
-          external_id: external
+          external_id: external_id
         )
         # TODO: is the user areally already in the database if we have no user_id?
         return Failure :user_already_exists if user_id.nil?
