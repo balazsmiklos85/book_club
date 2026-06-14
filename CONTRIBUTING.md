@@ -2,7 +2,7 @@
 
 ## Development Setup
 
-Clone the repository and follow the [installation instructions](./docs/context/deployment.md)!
+Clone the repository and follow the [local development setup guide](./docs/context/dev-setup.md)!
 
 ## Coding Standards
 

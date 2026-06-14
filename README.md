@@ -13,7 +13,9 @@ Active development.
 
 ## Documentation
 
-- [Deployment & Installation](./docs/context/deployment.md)
+- Installation
+    - [Local Development Setup](./docs/context/dev-setup.md)
+    - [Production deployment](./docs/context/deployment.md)
 - [System Context](./docs/context/system-context.md)
 - [Architecture Overview](./docs/architecture/overview.md)
 - [Component Documentation](./docs/components/)
