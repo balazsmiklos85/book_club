@@ -16,6 +16,9 @@ gem 'dry-types', '~> 1.7'
 gem 'pg'
 gem 'puma'
 gem 'rake'
+# transient dependency needs >= 4.0.0, which as of 2026-06-16 translates to 7.2.0
+# 7.2.0 conflicts with the systemwide available 7.0.3
+gem 'rdoc', '7.0.3'
 
 group :development do
   gem 'hanami-webconsole', '~> 2.3.0'
