@@ -12,8 +12,7 @@ module BookClub
 
       def call(name:, email:, password:, confirm_password:, external_id:)
         step validate_password_match(password, confirm_password)
-        # TODO: email.downcase should be a User domain concern
-        user_id = step create_user(name: name, email: email.downcase, external_id: external_id)
+        user_id = step create_user(name: name, email: email, external_id: external_id)
         step create_password(user_id, password)
         # TODO: Email is not created and persisted for the User
         external_id
