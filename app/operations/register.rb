@@ -8,13 +8,13 @@ module BookClub
     # Registers a new user.
     class Register < Operation
       include Dry::Validation::Macros
-      include Deps['repos.users', 'logger']
+      include Deps['repos.users', 'repos.emails', 'logger']
 
       def call(name:, email:, password:, confirm_password:, external_id:)
         step validate_password_match(password, confirm_password)
         user_id = step create_user(name: name, email: email, external_id: external_id)
         step create_password(user_id, password)
-        # TODO: Email is not created and persisted for the User
+        step create_email(email, user_id)
         external_id
       end
 
@@ -57,6 +57,16 @@ module BookClub
       rescue StandardError => e
         logger.error "Failed to create password for user: #{e.message}"
         Failure :password_creation_failed
+      end
+
+      def create_email(email, user_id)
+        # TODO after this is properly tested, it should be the Email struct's EmailAddress field that does the
+        # downcaseing
+        emails.insert(email.downcase, user_id)
+        Success true
+      rescue StandardError => e
+        logger.error "Failed to create email for user: #{e.message}"
+        Failure :email_creation_failed
       end
     end
   end

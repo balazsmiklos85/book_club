@@ -3,11 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe BookClub::Operations::Register do
-  subject(:register_operation) { described_class.new(users:, logger:) }
+  subject(:register_operation) { described_class.new(users:, emails:, logger:) }
 
   let(:password_relation) { double(insert: nil) }
   let(:user_id) { '550e8400-e29b-41d4-a716-446655440000' }
   let(:users) { double(insert: user_id, user_passwords: password_relation) }
+  let(:emails) { double(insert: nil) }
   let(:logger) { instance_double(Logger, info: nil, error: nil) }
 
   describe '#call' do
@@ -43,6 +44,12 @@ RSpec.describe BookClub::Operations::Register do
         expect(password_relation).to have_received(:insert).with(
           hash_including(password_hash: be_a(String), salt: '', hash_algorithm: 'bcrypt')
         )
+      end
+
+      it 'creates an email record for the user' do
+        register_operation.call(**valid_params)
+
+        expect(emails).to have_received(:insert).with('alice@example.com', user_id)
       end
     end
 
@@ -81,6 +88,12 @@ RSpec.describe BookClub::Operations::Register do
         register_operation.call(**valid_params)
 
         expect(users).not_to have_received(:user_passwords)
+      end
+
+      it 'does not attempt to create an email' do
+        register_operation.call(**valid_params)
+
+        expect(emails).not_to have_received(:insert)
       end
     end
 
