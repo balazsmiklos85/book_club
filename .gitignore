@@ -1,4 +1,5 @@
 .env*.local
+.idea/*
 log/*
 public/*
 !public/404.html
