@@ -22,6 +22,7 @@ gem 'rdoc', '7.0.3'
 
 group :development do
   gem 'hanami-webconsole', '~> 2.3.0'
+  gem 'rspec-rails'
   gem 'rubocop'
   gem 'rubocop-rake'
   gem 'rubocop-rspec'
