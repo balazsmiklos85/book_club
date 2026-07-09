@@ -26,7 +26,6 @@ module BookClub
         Success true
       end
 
-      # TODO: this should just create the User, another step should save it
       def create_user(name:, email:, external_id:)
         user_id = users.insert(
           # TODO: this should be a User domain concern
@@ -44,7 +43,6 @@ module BookClub
         Failure :user_creation_failed
       end
 
-      # TODO: this should just create the UserPassword, another step should save it
       def create_password(user_id, password)
         # TODO: the details of the hashing should be a UserPassword domain concern
         password_hash = BCrypt::Password.create password
@@ -61,7 +59,7 @@ module BookClub
 
       def create_email(email, user_id)
         # TODO after this is properly tested, it should be the Email struct's EmailAddress field that does the
-        # downcaseing
+        # downcasing
         emails.insert(email.downcase, user_id)
         Success true
       rescue StandardError => e
