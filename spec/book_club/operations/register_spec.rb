@@ -16,6 +16,7 @@ RSpec.describe BookClub::Operations::Register do
       {
         name: 'Alice',
         email: 'alice@example.com',
+        confirm_email: 'alice@example.com',
         password: 'secure-password',
         confirm_password: 'secure-password',
         external_id: 123
@@ -30,7 +31,7 @@ RSpec.describe BookClub::Operations::Register do
       end
 
       it 'downcases the email before persisting' do
-        register_operation.call(**valid_params.merge(email: 'Alice@Example.COM'))
+        register_operation.call(**valid_params.merge(email: 'Alice@Example.COM', confirm_email: 'Alice@Example.COM'))
 
         expect(users).to have_received(:insert).with(
           hash_including(name: 'Alice', is_admin: false, external_id: 123)
@@ -40,7 +41,7 @@ RSpec.describe BookClub::Operations::Register do
       it 'creates a password record for the user using the external_id' do
         register_operation.call(**valid_params)
 
-        expect(users).to have_received(:user_passwords).with(user_id)
+        expect(users).to have_received(:user_passwords)
         expect(password_relation).to have_received(:insert).with(
           hash_including(password_hash: be_a(String), salt: '', hash_algorithm: 'bcrypt')
         )
@@ -63,6 +64,21 @@ RSpec.describe BookClub::Operations::Register do
 
       it 'does not attempt to create a user' do
         register_operation.call(**valid_params.merge(confirm_password: 'different-password'))
+
+        expect(users).not_to have_received(:insert)
+      end
+    end
+
+    context 'when emails do not match' do
+      it 'returns a failure with :email_mismatch key' do
+        result = register_operation.call(**valid_params.merge(confirm_email: 'different@example.com'))
+
+        expect(result.failure?).to be(true)
+        expect(result.failure).to eq(:email_mismatch)
+      end
+
+      it 'does not attempt to create a user' do
+        register_operation.call(**valid_params.merge(confirm_email: 'different@example.com'))
 
         expect(users).not_to have_received(:insert)
       end

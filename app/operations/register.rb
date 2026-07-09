@@ -10,7 +10,8 @@ module BookClub
       include Dry::Validation::Macros
       include Deps['repos.users', 'repos.emails', 'logger']
 
-      def call(name:, email:, password:, confirm_password:, external_id:)
+      def call(name:, email:, confirm_email:, password:, confirm_password:, external_id:)
+        step validate_email_match(email, confirm_email)
         step validate_password_match(password, confirm_password)
         user_id = step create_user(name: name, email: email, external_id: external_id)
         step create_password(user_id, password)
@@ -20,7 +21,13 @@ module BookClub
 
       private
 
-      def validate_password_match(password, confirm_password)
+       def validate_email_match(email, confirm_email)
+         return Failure :email_mismatch unless email == confirm_email
+
+         Success true
+       end
+
+       def validate_password_match(password, confirm_password)
         return Failure :password_mismatch unless password == confirm_password
 
         Success true
