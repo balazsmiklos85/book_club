@@ -53,7 +53,8 @@ module BookClub
       def create_password(user_id, password)
         # TODO: the details of the hashing should be a UserPassword domain concern
         password_hash = BCrypt::Password.create password
-        users.user_passwords(user_id).insert(
+        users.user_passwords.insert(
+          user_id: user_id,
           password_hash: password_hash.to_s,
           salt: '',
           hash_algorithm: 'bcrypt'
