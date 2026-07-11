@@ -21,13 +21,13 @@ module BookClub
 
       private
 
-       def validate_email_match(email, confirm_email)
-         return Failure :email_mismatch unless email == confirm_email
+      def validate_email_match(email, confirm_email)
+        return Failure :email_mismatch unless email == confirm_email
 
-         Success true
-       end
+        Success true
+      end
 
-       def validate_password_match(password, confirm_password)
+      def validate_password_match(password, confirm_password)
         return Failure :password_mismatch unless password == confirm_password
 
         Success true
@@ -66,7 +66,7 @@ module BookClub
       end
 
       def create_email(email, user_id)
-        # TODO after this is properly tested, it should be the Email struct's EmailAddress field that does the
+        # TODO: after this is properly tested, it should be the Email struct's EmailAddress field that does the
         # downcasing
         emails.insert(email.downcase, user_id)
         Success true

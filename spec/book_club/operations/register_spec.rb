@@ -31,7 +31,7 @@ RSpec.describe BookClub::Operations::Register do
       end
 
       it 'downcases the email before persisting' do
-        register_operation.call(**valid_params.merge(email: 'Alice@Example.COM', confirm_email: 'Alice@Example.COM'))
+        register_operation.call(**valid_params, email: 'Alice@Example.COM', confirm_email: 'Alice@Example.COM')
 
         expect(users).to have_received(:insert).with(
           hash_including(name: 'Alice', is_admin: false, external_id: 123)
@@ -56,14 +56,14 @@ RSpec.describe BookClub::Operations::Register do
 
     context 'when passwords do not match' do
       it 'returns a failure with :password_mismatch key' do
-        result = register_operation.call(**valid_params.merge(confirm_password: 'different-password'))
+        result = register_operation.call(**valid_params, confirm_password: 'different-password')
 
         expect(result.failure?).to be(true)
         expect(result.failure).to eq(:password_mismatch)
       end
 
       it 'does not attempt to create a user' do
-        register_operation.call(**valid_params.merge(confirm_password: 'different-password'))
+        register_operation.call(**valid_params, confirm_password: 'different-password')
 
         expect(users).not_to have_received(:insert)
       end
@@ -71,14 +71,14 @@ RSpec.describe BookClub::Operations::Register do
 
     context 'when emails do not match' do
       it 'returns a failure with :email_mismatch key' do
-        result = register_operation.call(**valid_params.merge(confirm_email: 'different@example.com'))
+        result = register_operation.call(**valid_params, confirm_email: 'different@example.com')
 
         expect(result.failure?).to be(true)
         expect(result.failure).to eq(:email_mismatch)
       end
 
       it 'does not attempt to create a user' do
-        register_operation.call(**valid_params.merge(confirm_email: 'different@example.com'))
+        register_operation.call(**valid_params, confirm_email: 'different@example.com')
 
         expect(users).not_to have_received(:insert)
       end
