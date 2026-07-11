@@ -34,8 +34,6 @@ module BookClub
 
       def create_user(name:, external_id:)
         user_id = users.insert(
-          # TODO: this should be a User domain concern
-          id: SecureRandom.uuid,
           name: name,
           is_admin: false,
           external_id: external_id
