@@ -8,3 +8,4 @@
 ## Architecture Constraints
 
 See [Architecture Overview](./docs/architecture/overview.md) for architectural details and [ADR 001](./docs/architecture/architecture-decisions/001-`hanami-framework`.md) for framework decisions.
+- *NEVER* produce [Ruby on Rails](https://rubyonrails.org) code! *ALWAYS* produce [Hanami](https://hanakai.org) code!
