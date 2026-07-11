@@ -12,6 +12,14 @@ module BookClub
       attribute? :salt, Types::String
       attribute? :hash_algorithm, Types::String
 
+      # Hashes a plaintext password using BCrypt.
+      #
+      # @param plaintext [String] the password to hash
+      # @return [String] the BCrypt hash
+      def self.hash_password(plaintext)
+        BCrypt::Password.create(plaintext).to_s
+      end
+
       # Verifies if the provided password matches the stored hash.
       #
       # @param password [String] the plaintext password to verify

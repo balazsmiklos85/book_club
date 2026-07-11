@@ -43,7 +43,7 @@ RSpec.describe BookClub::Operations::Register do
 
         expect(users).to have_received(:user_passwords)
         expect(password_relation).to have_received(:insert).with(
-          hash_including(password_hash: be_a(String), salt: '', hash_algorithm: 'bcrypt')
+          hash_including(user_id:, password_hash: be_a(String))
         )
       end
 

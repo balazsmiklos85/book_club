@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'dry/validation'
-require 'bcrypt'
 
 module BookClub
   module Operations
@@ -51,13 +50,9 @@ module BookClub
       end
 
       def create_password(user_id, password)
-        # TODO: the details of the hashing should be a UserPassword domain concern
-        password_hash = BCrypt::Password.create password
         users.user_passwords.insert(
           user_id: user_id,
-          password_hash: password_hash.to_s,
-          salt: '',
-          hash_algorithm: 'bcrypt'
+          password_hash: Structs::UserPassword.hash_password(password)
         )
         Success true
       rescue StandardError => e
