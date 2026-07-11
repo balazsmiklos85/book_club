@@ -7,7 +7,7 @@ module BookClub
   module Structs
     # Represents an email address associated with a user.
     class Email < DB::Struct
-      attribute? :email_address, Types::String
+      attribute? :email_address, Types::EmailAddress
       attribute? :user_id, Types::String
       attribute? :user, Types::Nominal(BookClub::Structs::User).optional
     end

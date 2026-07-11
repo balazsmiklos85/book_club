@@ -66,9 +66,7 @@ module BookClub
       end
 
       def create_email(email, user_id)
-        # TODO: after this is properly tested, it should be the Email struct's EmailAddress field that does the
-        # downcasing
-        emails.insert(email.downcase, user_id)
+        emails.insert(email, user_id)
         Success true
       rescue StandardError => e
         logger.error "Failed to create email for user: #{e.message}"
