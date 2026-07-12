@@ -5,13 +5,8 @@ require 'spec_helper'
 RSpec.describe BookClub::Operations::Register do
   subject(:register_operation) { described_class.new(users:, emails:, logger:) }
 
-  let(:password_command) { double(call: nil) }
-  let(:password_relation) { double(command: password_command) }
-  let(:user_id) { '550e8400-e29b-41d4-a716-446655440000' }
-  let(:user_struct) { double(id: user_id) }
-  let(:users) { double(insert: user_struct, user_passwords: password_relation) }
-  let(:emails) { double(insert: nil) }
-  let(:logger) { instance_double(Logger, info: nil, error: nil) }
+  include_context 'with register operation'
+  include_context 'with register user fixtures'
 
   describe '#call' do
     let(:valid_params) do
