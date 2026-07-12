@@ -20,9 +20,13 @@ RSpec.describe 'Login', type: :request do
     context 'with valid credentials' do
       let(:user) { TestFactories.create_user(email: 'user@example.com', password: 'secret123') }
 
-      it 'creates a session and redirects to the homepage' do
+      it 'returns a redirect status' do
         post '/session', email: 'user@example.com', password: 'secret123'
         expect(last_response.status).to eq(303)
+      end
+
+      it 'redirects to the homepage' do
+        post '/session', email: 'user@example.com', password: 'secret123'
         expect(last_response.headers['Location']).to eq('/')
       end
     end
@@ -114,7 +118,7 @@ end
 
 ### Naming Conventions
 
-Name your tests to describe what behavior they verify. Use nested `describe` blocks for context and clear action verbs in examples:
+Name your tests to describe what behavior they verify. Use nested `describe` blocks for context and clear action verbs in examples. Context descriptions must start with one of the following keywords: `when`, `with`, or `without`.
 
 ```ruby
 RSpec.describe 'Password Reset', type: :request do
@@ -131,7 +135,7 @@ end
 
 ### Using `let` Blocks
 
-Use `let` to define reusable test data. Place it in the most specific context where it's needed:
+Use `let` to define reusable test data. Place it in the most specific context where it's needed. Limit memoized helpers to 5 per example group. When you approach this limit, refactor by extracting shared contexts or consolidating related helpers.
 
 ```ruby
 RSpec.describe 'User Profile', type: :request do
@@ -142,6 +146,44 @@ RSpec.describe 'User Profile', type: :request do
   end
 end
 ```
+
+#### Refactoring When You Hit the Limit
+
+If an example group needs more than 5 helpers, extract shared setup into a `shared_context`. Place these in `spec/support/shared_contexts/`:
+
+```ruby
+# spec/support/shared_contexts/register_operation.rb
+RSpec.shared_context 'with register operation' do
+  let(:password_command) { double(call: nil) }
+  let(:password_relation) { double(command: password_command) }
+  let(:users) { double(insert: nil, user_passwords: password_relation) }
+  let(:emails) { double(insert: nil) }
+  let(:logger) { instance_double(Logger, info: nil, error: nil) }
+end
+```
+
+Then include the context where needed, keeping only the helpers specific to that group:
+
+```ruby
+RSpec.describe BookClub::Operations::Register do
+  include_context 'with register operation'
+
+  subject(:register_operation) { described_class.new(users:, emails:, logger:) }
+
+  describe '#call' do
+    context 'when all parameters are valid' do
+      let(:valid_params) { { name: 'Alice', email: 'alice@example.com', password: 'secure-password' } }
+
+      it 'registers the user successfully' do
+        result = register_operation.call(valid_params)
+        expect(result.success?).to be(true)
+      end
+    end
+  end
+end
+```
+
+This keeps each example group focused while reusing common dependencies.
 
 ### Shared Examples
 

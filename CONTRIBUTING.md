@@ -6,11 +6,11 @@ Clone the repository and follow the [local development setup guide](./docs/conte
 
 ## Coding Standards
 
-- The code style is enforced by [Rubocop](./.rubocop.yml).
+- The code style is enforced by [Rubocop](./.rubocop.yml) defaults, with the exception of string literals using single quotes and in interpolation they use double quotes.
 - Use object-oriented design when applicable!
 - Do not use inline code comments! If you need any inline code comments, it's a good indicator that you need to structure your code better or you need better names for your methods/classes.
 - Add RDoc comments to all public methods and classes!
-- Keep code clean, readable, and idiomatic Ruby!
+- Keep code clean, readable, and idiomatic Ruby! Keep methods short and simple!
 - TODO: Define naming conventions for files and classes.
 - TODO: Document error handling patterns used in the application.
 - TODO: Describe how dependencies are injected and managed.
@@ -19,7 +19,7 @@ Clone the repository and follow the [local development setup guide](./docs/conte
 
 ## Commit Messages
 
-Write clear, descriptive commit messages. One commit should contain just one change. Rule of thumb: if you need more than one gitmoji to represent your change, it is too big.
+Write clear, descriptive commit messages! One commit should contain just one change. Rule of thumb: if you need more than one gitmoji to represent your change, it is too big.
 
 ## Pull Requests
 
@@ -32,8 +32,9 @@ Write clear, descriptive commit messages. One commit should contain just one cha
 
 ## Testing
 
-- Write exhaustive unit tests for business logic in the domain layer!
+- Write exhaustive unit tests for business logic in the domain layer! But keep single unit tests simple!
 - Write integration tests for the happy path of the implemented feature!
 - Strive to increase test coverage!
 - Run the full test suite locally before submitting pull requests!
+- Run Rubocop locally before submitting pull requests!
 
