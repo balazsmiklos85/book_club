@@ -7,6 +7,7 @@ Clone the repository and follow the [local development setup guide](./docs/conte
 ## Coding Standards
 
 - The code style is enforced by [Rubocop](./.rubocop.yml) defaults, with the exception of string literals using single quotes and in interpolation they use double quotes.
+- Omit parentheses from method calls wherever possible! But only where it is possible!
 - Use object-oriented design when applicable!
 - Do not use inline code comments! If you need any inline code comments, it's a good indicator that you need to structure your code better or you need better names for your methods/classes.
 - Add RDoc comments to all public methods and classes!
