@@ -63,10 +63,15 @@ RSpec.describe BookClub::Operations::Register do
     end
 
     context 'when passwords do not match' do
-      it 'returns a failure with password mismatch errors' do
+      it 'returns a failure' do
         result = register_operation.call(valid_params.merge(confirm_password: 'different-password'))
 
         expect(result.failure?).to be(true)
+      end
+
+      it 'includes password mismatch error message' do
+        result = register_operation.call(valid_params.merge(confirm_password: 'different-password'))
+
         expect(result.failure[:password]).to include('does not match confirmation')
       end
 
@@ -78,10 +83,15 @@ RSpec.describe BookClub::Operations::Register do
     end
 
     context 'when emails do not match' do
-      it 'returns a failure with email mismatch errors' do
+      it 'returns a failure' do
         result = register_operation.call(valid_params.merge(confirm_email: 'different@example.com'))
 
         expect(result.failure?).to be(true)
+      end
+
+      it 'includes email mismatch error message' do
+        result = register_operation.call(valid_params.merge(confirm_email: 'different@example.com'))
+
         expect(result.failure[:email]).to include('does not match confirmation')
       end
 
@@ -95,10 +105,15 @@ RSpec.describe BookClub::Operations::Register do
     context 'when user creation fails at the database level' do
       before { allow(users).to receive(:insert) { raise StandardError, 'Database connection lost' } }
 
-      it 'returns a failure with :user_creation_failed key' do
+      it 'returns a failure' do
         result = register_operation.call(valid_params)
 
         expect(result.failure?).to be(true)
+      end
+
+      it 'returns :user_creation_failed failure reason' do
+        result = register_operation.call(valid_params)
+
         expect(result.failure).to eq(:user_creation_failed)
       end
 
@@ -124,10 +139,15 @@ RSpec.describe BookClub::Operations::Register do
     context 'when password creation fails at the database level' do
       before { allow(password_command).to receive(:call) { raise StandardError, 'Constraint violation' } }
 
-      it 'returns a failure with :password_creation_failed key' do
+      it 'returns a failure' do
         result = register_operation.call(valid_params)
 
         expect(result.failure?).to be(true)
+      end
+
+      it 'returns :password_creation_failed failure reason' do
+        result = register_operation.call(valid_params)
+
         expect(result.failure).to eq(:password_creation_failed)
       end
 

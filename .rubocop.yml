@@ -11,3 +11,11 @@ Style/StringLiterals:
 
 Style/StringLiteralsInInterpolation:
   EnforcedStyle: double_quotes
+
+RSpec/MultipleExpectations:
+  Exclude:
+    - 'spec/features/**/*.rb'
+
+RSpec/ExampleLength:
+  Exclude:
+    - 'spec/features/**/*.rb'
