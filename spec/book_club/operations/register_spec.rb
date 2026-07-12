@@ -35,11 +35,21 @@ RSpec.describe BookClub::Operations::Register do
         )
       end
 
-      it 'creates a password record for the user using the external_id' do
+      it 'accesses the user_passwords relation' do
         register_operation.call(valid_params)
 
         expect(users).to have_received(:user_passwords)
+      end
+
+      it 'creates a password command with correct parameters' do
+        register_operation.call(valid_params)
+
         expect(password_relation).to have_received(:command).with(:create, result: :one)
+      end
+
+      it 'passes user_id and password_hash to the password command' do
+        register_operation.call(valid_params)
+
         expect(password_command).to have_received(:call).with(
           hash_including(user_id:, password_hash: be_a(String))
         )
