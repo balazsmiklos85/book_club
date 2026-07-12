@@ -33,20 +33,20 @@ module BookClub
       end
 
       def create_user(name:, external_id:)
-        user_id = users.insert(
+        user = users.insert(
           name: name,
           is_admin: false,
           external_id: external_id
         )
 
-        Success user_id
+        Success user.id
       rescue StandardError => e
         logger.error "Failed to create user: #{e.message}"
         Failure :user_creation_failed
       end
 
       def create_password(user_id, password)
-        users.user_passwords.insert(
+        users.user_passwords.command(:create, result: :one).call(
           user_id: user_id,
           password_hash: Structs::UserPassword.hash_password(password)
         )

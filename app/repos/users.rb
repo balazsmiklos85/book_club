@@ -5,7 +5,7 @@ module BookClub
     # Repository for accessing user records.
     class Users < Hanami::DB::Repo
       def insert(attributes)
-        users.insert(attributes)
+        users.command(:create, result: :one).call(attributes)
       end
 
       def find_by_external_id(external_id)

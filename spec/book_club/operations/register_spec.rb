@@ -5,9 +5,11 @@ require 'spec_helper'
 RSpec.describe BookClub::Operations::Register do
   subject(:register_operation) { described_class.new(users:, emails:, logger:) }
 
-  let(:password_relation) { double(insert: nil) }
+  let(:password_command) { double(call: nil) }
+  let(:password_relation) { double(command: password_command) }
   let(:user_id) { '550e8400-e29b-41d4-a716-446655440000' }
-  let(:users) { double(insert: user_id, user_passwords: password_relation) }
+  let(:user_struct) { double(id: user_id) }
+  let(:users) { double(insert: user_struct, user_passwords: password_relation) }
   let(:emails) { double(insert: nil) }
   let(:logger) { instance_double(Logger, info: nil, error: nil) }
 
@@ -42,7 +44,8 @@ RSpec.describe BookClub::Operations::Register do
         register_operation.call(**valid_params)
 
         expect(users).to have_received(:user_passwords)
-        expect(password_relation).to have_received(:insert).with(
+        expect(password_relation).to have_received(:command).with(:create, result: :one)
+        expect(password_command).to have_received(:call).with(
           hash_including(user_id:, password_hash: be_a(String))
         )
       end
@@ -114,7 +117,7 @@ RSpec.describe BookClub::Operations::Register do
     end
 
     context 'when password creation fails at the database level' do
-      before { allow(password_relation).to receive(:insert) { raise StandardError, 'Constraint violation' } }
+      before { allow(password_command).to receive(:call) { raise StandardError, 'Constraint violation' } }
 
       it 'returns a failure with :password_creation_failed key' do
         result = register_operation.call(**valid_params)
