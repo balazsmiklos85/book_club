@@ -16,17 +16,16 @@ RSpec.describe 'User Registration', type: :feature do
     }
   end
 
-  context 'successful registration' do
+  def fill_registration_form(params = valid_params)
+    params.each do |field, value|
+      fill_in(field, with: value)
+    end
+  end
+
+  context 'with valid parameters' do
     it 'redirects to root with session set', :aggregate_failures do
       visit '/register'
-
-      fill_in('name', with: valid_params[:name])
-      fill_in('email', with: valid_params[:email])
-      fill_in('confirm_email', with: valid_params[:confirm_email])
-      fill_in('password', with: valid_params[:password])
-      fill_in('confirm_password', with: valid_params[:confirm_password])
-      fill_in('external_id', with: valid_params[:external_id])
-
+      fill_registration_form
       click_button('Register')
 
       expect(page).to have_current_path('/')
@@ -36,13 +35,7 @@ RSpec.describe 'User Registration', type: :feature do
   context 'with non-matching confirm_email' do
     it 'redirects to register page with flash error' do
       visit '/register'
-
-      fill_in('name', with: valid_params[:name])
-      fill_in('email', with: valid_params[:email])
-      fill_in('confirm_email', with: 'different@example.com')
-      fill_in('password', with: valid_params[:password])
-      fill_in('confirm_password', with: valid_params[:confirm_password])
-      fill_in('external_id', with: valid_params[:external_id])
+      fill_registration_form(valid_params.merge(confirm_email: 'different@example.com'))
       click_button('Register')
 
       expect(page).to have_current_path('/register')
@@ -50,7 +43,7 @@ RSpec.describe 'User Registration', type: :feature do
     end
   end
 
-  context 'GET /register' do
+  context 'when viewing the registration page' do
     it 'returns 200 status' do
       visit '/register'
 
@@ -61,12 +54,10 @@ RSpec.describe 'User Registration', type: :feature do
       visit '/register'
 
       expect(page).to have_selector('h1', text: 'Register')
-      expect(page).to have_field('name')
-      expect(page).to have_field('email')
-      expect(page).to have_field('confirm_email')
-      expect(page).to have_field('password')
-      expect(page).to have_field('confirm_password')
-      expect(page).to have_field('external_id')
+      selector = %w[name email confirm_email password confirm_password external_id]
+                 .map { |field| "input[name=\"#{field}\"]" }
+                 .join ', '
+      expect(page).to have_css(selector)
     end
   end
 end
