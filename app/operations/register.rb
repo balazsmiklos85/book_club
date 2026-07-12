@@ -6,28 +6,28 @@ module BookClub
     class Register < Operation
       include Deps['repos.users', 'repos.emails', 'logger']
 
-      def call(name:, email:, confirm_email:, password:, confirm_password:, external_id:)
-        step validate_input(name:, email:, confirm_email:, password:, confirm_password:, external_id:)
-        user_id = step create_user(name: name, external_id: external_id)
-        step create_password(user_id, password)
-        step create_email(email, user_id)
-        external_id
+      def call(attrs)
+        validated_attrs = step validate_input attrs
+        user_id = step create_user validated_attrs
+        step create_password user_id, validated_attrs[:password]
+        step create_email validated_attrs[:email], user_id
+        validated_attrs[:external_id]
       end
 
       private
 
-      def validate_input(**input)
-        result = Contracts::RegisterContract.new.call(input)
+      def validate_input(attrs)
+        result = Contracts::RegisterContract.new.call attrs
         return Failure result.errors.to_h unless result.success?
 
         Success result.to_h
       end
 
-      def create_user(name:, external_id:)
+      def create_user(validated)
         user = users.insert(
-          name: name,
+          name: validated[:name],
           is_admin: false,
-          external_id: external_id
+          external_id: validated[:external_id]
         )
 
         Success user.id
