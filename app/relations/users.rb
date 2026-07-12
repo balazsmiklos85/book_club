@@ -7,7 +7,7 @@ module BookClub
     # ROM relation for accessing user records with associated data.
     class Users < ROM::Relation[:sql]
       schema :users, infer: true do
-        attribute :id, Types::Uuid
+        attribute :id, Types::Uuid, primary_key: true
 
         associations do
           has_many :emails
