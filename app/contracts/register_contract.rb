@@ -30,9 +30,7 @@ module BookClub
       end
 
       register_macro(:email_format) do
-        unless /\A[^@\s]+@[^@\s]+\.[^@\s]+\z/.match?(value)
-          key.failure('is invalid')
-        end
+        key.failure('is invalid') unless /\A[^@\s]+@[^@\s]+\.[^@\s]+\z/.match?(value)
       end
     end
   end
