@@ -58,11 +58,11 @@ RSpec.describe BookClub::Operations::Register do
     end
 
     context 'when passwords do not match' do
-      it 'returns a failure with :password_mismatch key' do
+      it 'returns a failure with password mismatch errors' do
         result = register_operation.call(**valid_params, confirm_password: 'different-password')
 
         expect(result.failure?).to be(true)
-        expect(result.failure).to eq(:password_mismatch)
+        expect(result.failure[:password]).to include('does not match confirmation')
       end
 
       it 'does not attempt to create a user' do
@@ -73,11 +73,11 @@ RSpec.describe BookClub::Operations::Register do
     end
 
     context 'when emails do not match' do
-      it 'returns a failure with :email_mismatch key' do
+      it 'returns a failure with email mismatch errors' do
         result = register_operation.call(**valid_params, confirm_email: 'different@example.com')
 
         expect(result.failure?).to be(true)
-        expect(result.failure).to eq(:email_mismatch)
+        expect(result.failure[:email]).to include('does not match confirmation')
       end
 
       it 'does not attempt to create a user' do

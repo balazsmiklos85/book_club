@@ -1,17 +1,13 @@
 # frozen_string_literal: true
 
-require 'dry/validation'
-
 module BookClub
   module Operations
     # Registers a new user.
     class Register < Operation
-      include Dry::Validation::Macros
       include Deps['repos.users', 'repos.emails', 'logger']
 
       def call(name:, email:, confirm_email:, password:, confirm_password:, external_id:)
-        step validate_email_match(email, confirm_email)
-        step validate_password_match(password, confirm_password)
+        step validate_input(name:, email:, confirm_email:, password:, confirm_password:, external_id:)
         user_id = step create_user(name: name, external_id: external_id)
         step create_password(user_id, password)
         step create_email(email, user_id)
@@ -20,16 +16,11 @@ module BookClub
 
       private
 
-      def validate_email_match(email, confirm_email)
-        return Failure :email_mismatch unless email == confirm_email
+      def validate_input(**input)
+        result = Contracts::RegisterContract.new.call(input)
+        return Failure result.errors.to_h unless result.success?
 
-        Success true
-      end
-
-      def validate_password_match(password, confirm_password)
-        return Failure :password_mismatch unless password == confirm_password
-
-        Success true
+        Success result.to_h
       end
 
       def create_user(name:, external_id:)
