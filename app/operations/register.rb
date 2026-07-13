@@ -7,11 +7,13 @@ module BookClub
       include Deps['repos.users', 'repos.emails', 'logger']
 
       def call(attrs)
-        validated_attrs = step validate_input attrs
-        user_id = step create_user validated_attrs
-        step create_password user_id, validated_attrs[:password]
-        step create_email validated_attrs[:email], user_id
-        validated_attrs[:external_id]
+        transaction do
+          validated_attrs = step validate_input attrs
+          user_id = step create_user validated_attrs
+          step create_password user_id, validated_attrs[:password]
+          step create_email validated_attrs[:email], user_id
+          validated_attrs[:external_id]
+        end
       end
 
       private
