@@ -27,7 +27,7 @@ RSpec.describe 'User Registration', type: :feature do
       visit '/register'
 
       expect(page.status_code).to eq 200
-      expect(page).to have_selector 'h1', text: 'Register'
+      expect(page).to have_css 'h1', text: 'Register'
       %w[name email confirm_email password confirm_password external_id]
         .map { |field| "input[name=\"#{field}\"]" }
         .each { |selector| expect(page).to have_css selector }
@@ -44,7 +44,7 @@ RSpec.describe 'User Registration', type: :feature do
       click_button 'Register'
 
       expect(page).to have_current_path '/register'
-      expect(page).to have_selector 'div[style="color: red;"]', text: 'Registration failed'
+      expect(page).to have_css 'div[style="color: red;"]', text: 'Registration failed'
     end
   end
 end
