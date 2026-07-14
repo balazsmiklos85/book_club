@@ -35,3 +35,33 @@ All errors are logged for audit purposes.
 The operation depends on:
 - `email_repo` - Repository for finding users by email address
 - `logger` - For recording authentication events
+
+## Registration Operation
+
+The Registration operation creates a new user account by validating input, persisting the user record, hashing the password, and creating an email record — all within a database transaction.
+
+### Registration Pipeline
+
+1. **Validate input** - Runs the `RegisterContract`; returns `Failure` with errors or `Success` with validated attributes
+2. **Create user** - Inserts a user record (name, is_admin: false, external_id) via the users repository; returns the user's `id`
+3. **Create password** - Hashes the password via BCrypt and inserts it into the `user_passwords` relation
+4. **Create email** - Inserts an email record linked to the user via the emails repository
+
+If any step fails, the transaction is rolled back and an appropriate failure symbol is returned (`:user_creation_failed`, `:password_creation_failed`, or `:email_creation_failed`).
+
+### Validation Contract
+
+`BookClub::Contracts::RegisterContract` enforces the following rules:
+
+- All fields are required: `name`, `email`, `confirm_email`, `password`, `confirm_password`, `external_id`
+- `email` and `confirm_email` must match
+- `password` and `confirm_password` must match
+- `password` must be at least 8 characters
+- `email` must match a valid email format
+
+### Dependencies
+
+The operation depends on:
+- `repos.users` - Repository for creating user records
+- `repos.emails` - Repository for creating email records
+- `logger` - For recording registration events

@@ -9,4 +9,9 @@ Views handle response rendering, including template output and data presentation
 ### Login View
 
 **Login::New** - `app/views/login/new.rb`
-: Renders the login form with CSRF token for security
+: Exposes `csrf_token` for the login form
+
+### Registration View
+
+**Register::New** - `app/views/register/new.rb`
+: Exposes `csrf_token` for the registration form

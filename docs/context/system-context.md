@@ -23,6 +23,16 @@ On failure, the system redirects back to `/login` with an error message displaye
 - The session stores the user's `external_id`
 - Unauthenticated requests to protected routes redirect to `/login`
 
+### How to Register
+
+1. Navigate to `/register` in a browser
+2. Fill in `name`, `email`, `confirm_email`, `password`, `confirm_password`, and `external_id`
+3. Submit the form
+
+On success, the system creates a new user with a hashed password and email record, then redirects to the homepage with a session created.
+
+On failure, the system redirects back to `/register` with a flash error message displayed.
+
 ## External Systems
 
 [Document external systems and integrations here]

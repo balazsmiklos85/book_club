@@ -18,6 +18,18 @@ Controllers handle HTTP requests by invoking operations for business logic and r
 - On success: creates session with user external_id, redirects to homepage
 - On failure: redirects to `/login` with error
 
+### Registration Actions
+
+**Register::New** - `app/actions/register/new.rb`
+- Route: `GET /register`
+- Displays the registration form
+
+**Register::Create** - `app/actions/register/create.rb`
+- Route: `POST /register`
+- Processes registration by invoking the `Register` operation
+- On success: stores the user's `external_id` in the session, redirects to homepage
+- On failure: redirects to `/register` with flash error
+
 ### Protected Actions
 
 Actions that require authentication include the `AuthenticatedAction` module. This module:

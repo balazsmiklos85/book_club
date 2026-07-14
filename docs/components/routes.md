@@ -14,6 +14,14 @@ Routes map HTTP requests to controller actions.
 **POST /session** - `Session::Create`
 : Process login submission
 
+### Registration Routes
+
+**GET /register** - `Register::New`
+: Display registration form
+
+**POST /register** - `Register::Create`
+: Process registration submission
+
 ### Session Configuration
 
 - **Session type**: Cookie-based
