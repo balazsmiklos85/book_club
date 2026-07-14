@@ -7,7 +7,7 @@ module BookClub
     # Authenticates the user
     class Login < Operation
       include Dry::Validation::Macros
-      include Deps['repos.email_repo', 'logger']
+      include Deps['repos.emails', 'logger']
 
       def call(email:, password:)
         user_external_id, stored_password = step load_user_data(email)
@@ -18,8 +18,8 @@ module BookClub
       private
 
       def load_user_data(email)
-        user = email_repo.find_with_user_and_password(email)
-                         &.user
+        user = emails.find_with_user_and_password(email)
+                     &.user
         if user.nil?
           logger.info "User not found: #{email}"
           return Failure :user_not_found

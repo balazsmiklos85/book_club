@@ -74,6 +74,7 @@ EmailsRelation --> DB
 RegisterContract --> EmailAddressType
 RegisterContract --> UuidType
 @enduml
+```
 
 The diagram shows the application's component structure organized by Clean Architecture layers.
 Each layer delegates inward toward the domain layer.
@@ -82,5 +83,3 @@ For detailed component documentation, see:
 - [Presenters](../components/views.md)
 - [Use cases](../components/business-logic.md)
 - [Database gateway](../components/database.md)
-```
-

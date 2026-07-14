@@ -40,7 +40,7 @@ Operation specs test business logic in isolation. Use them to verify authenticat
 
 ```ruby
 RSpec.describe Operations::Login do
-  let(:email_repo) { instance_double(Repos::EmailRepo) }
+  let(:email_repo) { instance_double(Repos::Emails) }
   subject(:login) { described_class.new(email_repo: email_repo) }
 
   describe '#call' do

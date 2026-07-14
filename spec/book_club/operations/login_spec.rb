@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe BookClub::Operations::Login do
-  subject(:login_operation) { described_class.new(email_repo: email_repo, logger: logger) }
+  subject(:login_operation) { described_class.new(emails: email_repo, logger: logger) }
 
-  let(:email_repo) { instance_double(BookClub::Repos::EmailRepo) }
+  let(:email_repo) { instance_double(BookClub::Repos::Emails) }
   let(:logger) { instance_double(Logger, info: nil, error: nil) }
 
   describe '#call' do
