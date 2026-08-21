@@ -30,6 +30,13 @@ pub async fn login(
         .into_response())
 }
 
+pub async fn logout() -> Result<Response> {
+    Ok((
+        [("SET-COOKIE", "token=; Path=/; HttpOnly; Max-Age:0")],
+        Redirect::to("/login"),
+    ).into_response())
+}
+
 pub async fn register_page(ViewEngine(v): ViewEngine<TeraView>) -> Result<Response> {
     format::render().view(&v, "auth/register.html", serde_json::json!({}))
 }
@@ -45,5 +52,6 @@ pub async fn register(
 pub fn routes() -> Routes {
     Routes::new()
         .add("/login", get(login_page).post(login))
+        .add("/logout", get(logout))
         .add("/register", get(register_page).post(register))
 }
