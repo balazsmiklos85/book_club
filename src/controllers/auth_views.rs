@@ -1,3 +1,4 @@
+#![allow(clippy::missing_errors_doc)]
 use crate::models::users::{self, LoginParams, RegisterParams};
 use axum::{extract::Form, response::Redirect};
 use loco_rs::prelude::*;
@@ -19,7 +20,7 @@ pub async fn login(
                 "auth/login.html",
                 serde_json::json!({"error": "Invalid credentials"}),
             )
-            .map(|r| r.into_response());
+            .map(IntoResponse::into_response);
     }
     let jwt_secret = ctx.config.get_jwt_config()?;
     let token = user.generate_jwt(&jwt_secret.secret, jwt_secret.expiration)?;
@@ -34,7 +35,8 @@ pub async fn logout() -> Result<Response> {
     Ok((
         [("SET-COOKIE", "token=; Path=/; HttpOnly; Max-Age:0")],
         Redirect::to("/login"),
-    ).into_response())
+    )
+        .into_response())
 }
 
 pub async fn register_page(ViewEngine(v): ViewEngine<TeraView>) -> Result<Response> {

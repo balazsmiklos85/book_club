@@ -1,6 +1,8 @@
-use axum_extra::extract::CookieJar;
+#![allow(clippy::missing_errors_doc)]
+use crate::controllers::session;
+use crate::models::books;
 use axum::response::Redirect;
-use crate::models::users;
+use axum_extra::extract::CookieJar;
 use loco_rs::prelude::*;
 
 pub async fn home(
@@ -8,20 +10,15 @@ pub async fn home(
     ViewEngine(v): ViewEngine<TeraView>,
     State(ctx): State<AppContext>,
 ) -> Result<Response> {
-    let Some(cookie) = cookies.get("token") else {
+    let Some(user) = session::current_user(&cookies, &ctx).await else {
         return Ok(Redirect::to("/login").into_response());
     };
-
-    let jwt_secret = ctx.config.get_jwt_config()?;
-    let jwt = loco_rs::auth::jwt::JWT::new(&jwt_secret.secret);
-    let Ok(token_data) = jwt.validate(cookie.value()) else {
-        return Ok(Redirect::to("/login").into_response());
-    };
-
-    let Ok(user) = users::Model::find_by_pid(&ctx.db, &token_data.claims.pid).await else {
-        return Ok(Redirect::to("/login").into_response());
-    };
-    format::render().view(&v, "leaderboard.html", serde_json::json!({}))
+    let books = books::Entity::find().all(&ctx.db).await?;
+    format::render().view(
+        &v,
+        "leaderboard.html",
+        serde_json::json!({ "books": books }),
+    )
 }
 
 pub fn routes() -> Routes {
