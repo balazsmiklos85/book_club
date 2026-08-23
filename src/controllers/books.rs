@@ -1,8 +1,9 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unused_async)]
 use crate::controllers::session;
-use crate::models::{book_suggestions, books};
+use crate::models::{book_suggestions, books, votes};
 use axum::extract::Form;
+use axum::extract::Path;
 use axum::response::Redirect;
 use axum_extra::extract::CookieJar;
 use loco_rs::prelude::*;
@@ -70,9 +71,37 @@ pub async fn new(ViewEngine(v): ViewEngine<TeraView>) -> Result<Response> {
     format::render().view(&v, "books/new.html", serde_json::json!({}))
 }
 
+#[debug_handler]
+pub async fn vote(
+    cookies: CookieJar,
+    State(ctx): State<AppContext>,
+    Path(book_id): Path<i64>,
+) -> Result<Response> {
+    let Some(user) = session::current_user(&cookies, &ctx).await else {
+        return Ok(Redirect::to("/login").into_response());
+    };
+    votes::ActiveModel::vote(&ctx.db, book_id, user.id).await?;
+    Ok(Redirect::to("/").into_response())
+}
+
+#[debug_handler]
+pub async fn unvote(
+    cookies: CookieJar,
+    State(ctx): State<AppContext>,
+    Path(book_id): Path<i64>,
+) -> Result<Response> {
+    let Some(user) = session::current_user(&cookies, &ctx).await else {
+        return Ok(Redirect::to("/login").into_response());
+    };
+    votes::ActiveModel::unvote(&ctx.db, book_id, user.id).await?;
+    Ok(Redirect::to("/").into_response())
+}
+
 pub fn routes() -> Routes {
     Routes::new()
         .prefix("books")
         .add("/", post(create))
+        .add("/{id}/vote", post(vote))
+        .add("/{id}/unvote", post(unvote))
         .add("/new", get(new))
 }

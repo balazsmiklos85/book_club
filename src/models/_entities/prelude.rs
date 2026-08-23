@@ -3,3 +3,4 @@
 pub use super::book_suggestions::Entity as BookSuggestions;
 pub use super::books::Entity as Books;
 pub use super::users::Entity as Users;
+pub use super::votes::Entity as Votes;

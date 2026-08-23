@@ -4,11 +4,15 @@
 <body>
     <h1>Leaderboard</h1>
     <a href="/logout">Logout</a>
-    <ul>
-    {% for book in books %}
-    <li>{{ book.title }}{% if book.author %} by {{ book.author }}{% endif %}</li>
-    {% endfor %}
-    </ul>
+    <ul>{% for book in books %}
+    <li>
+    {{ book.title }}{% if book.author %} by {{ book.author }}{% endif %}
+    — {{ book.votes }} vote{{ book.votes | pluralize }}
+    <form method="post" action="/books/{{ book.id }}/{% if book.voted %}unvote{% else %}vote{% endif %}" style="display:inline">
+        <button type="submit">{% if book.voted %}Unvote{% else %}Vote{% endif %}</button>
+    </form>
+</li>
+{% endfor %}</ul>
     <a href="/books/new">Add a book</a>
 </body>
 </html>
