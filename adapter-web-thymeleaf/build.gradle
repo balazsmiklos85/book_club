@@ -11,5 +11,14 @@ dependencies {
 	implementation libs.lombok
 	implementation libs.spring.boot.starter.security
 	implementation libs.spring.boot.starter.web
+	testImplementation libs.junit.api
+	testRuntimeOnly libs.junit.engine
+	testImplementation libs.mockito.core
+	testImplementation libs.mockito.junit
+}
+
+test {
+	useJUnitPlatform()
+	finalizedBy jacocoTestReport
 }
 
