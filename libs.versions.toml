@@ -10,7 +10,6 @@ lombok = "1.18.34"
 mockito = "5.11.0"
 postgresql = "42.7.4"
 slf4j = "2.0.17"
-sonarqube = "6.3.1.5724"
 spotless = "8.0.0"
 spring-boot = "3.3.4"
 spring-security-test = "6.3.3"
@@ -42,7 +41,6 @@ jacoco = { id = "jacoco" }
 jacoco-report-aggregation = { id = "jacoco-report-aggregation" }
 java = { id = "java" }
 liquibase-gradle = { id = "org.liquibase.gradle", version.ref = "liquibase-gradle" }
-sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "dependency-management" }

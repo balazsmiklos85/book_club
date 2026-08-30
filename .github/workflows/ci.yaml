@@ -31,7 +31,6 @@ jobs:
     env:
       GITHUB_HEAD_REF: ${{ github.head_ref }}
       GITHUB_REF_NAME: ${{ github.ref_name }}
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -47,7 +46,7 @@ jobs:
           name: jar
           path: build/libs/
       - name: Test with Gradle
-        run: ./gradlew test integrationTest jacocoTestReport sonar
+        run: ./gradlew test integrationTest jacocoTestReport
         env:
           DATABASE_URL: 'jdbc:h2:mem:testdb'
           PORT: '8080'

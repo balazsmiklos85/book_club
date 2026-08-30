@@ -4,7 +4,6 @@ plugins {
 	alias(libs.plugins.jacoco.report.aggregation)
 	alias(libs.plugins.java)
 	alias(libs.plugins.liquibase.gradle)
-	alias(libs.plugins.sonarqube)
 	alias(libs.plugins.spotless)
 	alias(libs.plugins.spring.boot)
 }
@@ -63,17 +62,6 @@ testCodeCoverageReport {
 	dependsOn jacocoTestReport
 }
 
-sonar {
-	properties {
-		property 'sonar.projectKey', 'balazsmiklos85_book_club'
-		property 'sonar.organization', 'balazsmiklos85'
-		property 'sonar.host.url', 'https://sonarcloud.io'
-		property 'sonar.token', System.env.SONAR_TOKEN
-		property 'sonar.branch.name', System.env.GITHUB_HEAD_REF ?: (System.env.GITHUB_REF_NAME ?: 'local_build')
-		property "sonar.coverage.jacoco.xmlReportPaths", file("build/reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.xml")
-	}
-}
-
 spotless {
     java {
         target("**/*.java")
@@ -88,15 +76,6 @@ subprojects {
 	repositories {
 		mavenCentral()
 	}
-
-	sonar {
-		properties {
-			property "sonar.sources", "src/main"
-			property "sonar.tests", "src/test"
-			property "sonar.coverage.jacoco.xmlReportPaths", "../build/reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.xml"
-			property 'sonar.host.url', 'https://sonarcloud.io'
-        }
-    }
 }
 
 sourceSets {
