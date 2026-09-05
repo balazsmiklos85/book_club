@@ -5,3 +5,5 @@ mod books;
 mod book_suggestions;
 
 mod votes;
+
+mod events;

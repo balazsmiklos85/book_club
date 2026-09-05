@@ -1,6 +1,6 @@
-pub use super::_entities::book_suggestions::{ActiveModel, Column, Entity, Model};
+pub use super::_entities::events::{ActiveModel, Column, Entity, Model};
 use sea_orm::entity::prelude::*;
-pub type BookSuggestions = Entity;
+pub type Events = Entity;
 
 #[async_trait::async_trait]
 impl ActiveModelBehavior for ActiveModel {

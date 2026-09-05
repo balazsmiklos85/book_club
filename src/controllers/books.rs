@@ -67,7 +67,14 @@ pub async fn create(
 }
 
 #[debug_handler]
-pub async fn new(ViewEngine(v): ViewEngine<TeraView>) -> Result<Response> {
+pub async fn new(
+    cookies: CookieJar,
+    ViewEngine(v): ViewEngine<TeraView>,
+    State(ctx): State<AppContext>,
+) -> Result<Response> {
+    let Some(_user) = session::current_user(&cookies, &ctx).await else {
+        return Ok(Redirect::to("/login").into_response());
+    };
     format::render().view(&v, "books/new.html", serde_json::json!({}))
 }
 

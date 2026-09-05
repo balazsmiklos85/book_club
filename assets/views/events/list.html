@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head><title>Events</title></head>
+<body>
+    <h1>Events</h1>
+    <a href="/">Leaderboard</a>
+    <a href="/logout">Logout</a>
+    <ul>{% for event in events %}
+    <li>
+        {{ event.book_title }} by {% if event.book_author %} by {{ event.book_author }}{% endif %} at {{ event.date }}. Host: {{ event.host }}
+    </li>
+    {% endfor %}</ul>
+</body>
+</html>

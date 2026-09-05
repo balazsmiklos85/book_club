@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Map;
 use uuid::Uuid;
 
-pub use super::_entities::users::{self, ActiveModel, Entity, Model};
+pub use super::_entities::users::{self, ActiveModel, Column, Entity, Model};
 
 pub const MAGIC_LINK_LENGTH: i8 = 32;
 pub const MAGIC_LINK_EXPIRATION_MIN: i8 = 5;

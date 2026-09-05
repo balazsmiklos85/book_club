@@ -3,6 +3,7 @@
 <head><title>Leaderboard</title></head>
 <body>
     <h1>Leaderboard</h1>
+    <a href="/events">Events</a>
     <a href="/logout">Logout</a>
     <ul>{% for book in books %}
     <li>
@@ -11,8 +12,18 @@
     <form method="post" action="/books/{{ book.id }}/{% if book.voted %}unvote{% else %}vote{% endif %}" style="display:inline">
         <button type="submit">{% if book.voted %}Unvote{% else %}Vote{% endif %}</button>
     </form>
-</li>
-{% endfor %}</ul>
+    {% for suggester in book.suggesters %}
+    <div>
+        Suggested by: {{ suggester.name }}
+        <form method="get" action="/events/new">
+          <input type="hidden" name="book_id" value="{{ book.id }}" />
+          <input type="hidden" name="host_id" value="{{ suggester.id }}" />
+	  <button type="submit">Create event</button>
+        </form>
+    </div>
+    {% endfor %}
+    </li>
+    {% endfor %}</ul>
     <a href="/books/new">Add a book</a>
 </body>
 </html>

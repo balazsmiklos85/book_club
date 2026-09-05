@@ -17,3 +17,6 @@ target/
 
 *.sqlite
 *.sqlite-*
+
+# JetBrains IDE
+.idea/

@@ -1,0 +1,11 @@
+<h1>Schedule an event</h1>
+<form method="post" action="/events">
+  <input type="hidden" name="book_id" value="{{ book }}" />
+  <input type="date" name="event_date" required>
+  <select name="host_id">
+    {% for user in users %}
+    <option value="{{ user.id }}"{% if user.id == host %} selected{% endif %}>{{ user.name }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit">Create event</button>
+</form>
