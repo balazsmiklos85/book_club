@@ -9,13 +9,13 @@ use axum_extra::extract::CookieJar;
 use chrono::NaiveDate;
 use loco_rs::prelude::*;
 use sea_orm::{FromQueryResult, JoinType, QuerySelect};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct CreateEventParams {
-    book_id: i64,
-    event_date: String,
-    host_id: Option<i64>,
+    pub book_id: i64,
+    pub event_date: NaiveDate,
+    pub host_id: Option<i64>,
 }
 
 #[derive(Debug, FromQueryResult)]
@@ -36,8 +36,8 @@ pub async fn create(
         return Ok(Redirect::to("/login").into_response());
     };
 
-    let event_date = NaiveDate::parse_from_str(&params.event_date, "%Y-%m-%d")
-        .map_err(|e| Error::string(&e.to_string()))?
+    let event_date = params
+        .event_date
         .and_hms_opt(0, 0, 0)
         .ok_or_else(|| Error::string("invalid event date"))?;
 
