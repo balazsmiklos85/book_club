@@ -97,6 +97,12 @@ pub struct NewEventParams {
     host_id: Option<i64>,
 }
 
+#[derive(Serialize)]
+struct UserView {
+    id: i64,
+    name: String,
+}
+
 #[debug_handler]
 pub async fn new(
     cookies: CookieJar,
@@ -108,21 +114,21 @@ pub async fn new(
         return Ok(Redirect::to("/login").into_response());
     };
 
-    if params.book_id.is_none() || params.host_id.is_none() {
+    let (Some(book_id), Some(host_id)) = (params.book_id, params.host_id) else {
         return bad_request("book_id and host_id are required");
-    }
+    };
     let users = users::Entity::find().all(&ctx.db).await?;
-    let rows: Vec<serde_json::Value> = users
+    let user_views: Vec<UserView> = users
         .into_iter()
-        .map(|u| serde_json::json!({ "id": u.id, "name": u.name }))
+        .map(|u| UserView { id: u.id, name: u.name })
         .collect();
     format::render().view(
         &v,
         "events/new.html",
         serde_json::json!({
-            "users": rows,
-            "book": params.book_id.expect("The book ID was already checked to be `Some`"),
-            "host": params.host_id.expect("The host ID was already checked to be `Some`"),
+            "users": user_views,
+            "book": book_id,
+            "host": host_id,
         }),
     )
 }
