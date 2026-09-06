@@ -18,12 +18,12 @@ pub struct CreateEventParams {
     pub host_id: Option<i64>,
 }
 
-#[derive(Debug, FromQueryResult)]
+#[derive(Debug, FromQueryResult, Serialize)]
 pub struct EventRow {
-    pub title: String,
-    pub author: Option<String>,
-    pub event_date: DateTime,
-    pub name: String,
+    pub book_title: String,
+    pub book_author: Option<String>,
+    pub date: DateTime,
+    pub host: Option<String>,
 }
 
 #[debug_handler]
@@ -80,23 +80,15 @@ pub async fn list(
                 .into(),
         )
         .select_only()
-        .column(events::Column::EventDate)
-        .column_as(books::Column::Title, "title")
-        .column_as(books::Column::Author, "author")
-        .column_as(users::Column::Name, "name")
+        .column_as(books::Column::Title, "book_title")
+        .column_as(books::Column::Author, "book_author")
+        .column_as(events::Column::EventDate, "date")
+        .column_as(users::Column::Name, "host")
         .into_model::<EventRow>()
         .all(&ctx.db)
         .await?;
 
-    let event_rows: Vec<serde_json::Value> = rows
-        .into_iter()
-        .map(|e| serde_json::json!({"book_title": e.title, "book_author": e.author, "date": e.event_date, "host": e.name}))
-        .collect();
-    format::render().view(
-        &v,
-        "events/list.html",
-        serde_json::json!({"events": event_rows}),
-    )
+    format::render().view(&v, "events/list.html", serde_json::json!({"events": rows}))
 }
 
 #[derive(Deserialize)]

@@ -1,7 +1,7 @@
 use axum::http::{HeaderName, HeaderValue};
 use book_club::app::App;
 use book_club::controllers::events::CreateEventParams;
-use book_club::models::books;
+use book_club::models::{books, events as events_model};
 use chrono::NaiveDate;
 use loco_rs::testing::prelude::*;
 use sea_orm::{ActiveModelTrait, ActiveValue::Set};
@@ -14,6 +14,48 @@ use crate::requests::prepare_data;
 async fn can_get_events() {
     request::<App, _, _>(|request, ctx| async move {
         let user = prepare_data::init_user_login(&request, &ctx).await;
+        let hosted_book = books::ActiveModel {
+            title: Set("Hosted Book".to_string()),
+            author: Set(Some("Hosted Author".to_string())),
+            url: Set("https://example.com/hosted-book".to_string()),
+            ..Default::default()
+        }
+        .insert(&ctx.db)
+        .await
+        .unwrap();
+        let orphan_book = books::ActiveModel {
+            title: Set("Orphan Book".to_string()),
+            author: Set(Some("Orphan Author".to_string())),
+            url: Set("https://example.com/orphan-book".to_string()),
+            ..Default::default()
+        }
+        .insert(&ctx.db)
+        .await
+        .unwrap();
+        events_model::ActiveModel {
+            book_id: Set(hosted_book.id),
+            event_date: Set(NaiveDate::from_ymd_opt(2026, 12, 1)
+                .unwrap()
+                .and_hms_opt(0, 0, 0)
+                .unwrap()),
+            host_id: Set(Some(user.user.id)),
+            ..Default::default()
+        }
+        .insert(&ctx.db)
+        .await
+        .unwrap();
+        events_model::ActiveModel {
+            book_id: Set(orphan_book.id),
+            event_date: Set(NaiveDate::from_ymd_opt(2026, 12, 2)
+                .unwrap()
+                .and_hms_opt(0, 0, 0)
+                .unwrap()),
+            host_id: Set(None),
+            ..Default::default()
+        }
+        .insert(&ctx.db)
+        .await
+        .unwrap();
         let res = request
             .get("/events")
             .add_header(
@@ -22,6 +64,17 @@ async fn can_get_events() {
             )
             .await;
         assert_eq!(res.status_code(), 200);
+        let body = res.text();
+        assert!(body.contains("Hosted Book"), "missing hosted book: {body}");
+        assert!(body.contains("Orphan Book"), "missing orphan book: {body}");
+        assert!(
+            !body.contains("by  by"),
+            "double 'by' bug present in: {body}"
+        );
+        assert!(
+            !body.contains("None"),
+            "raw None leaked into output: {body}"
+        );
     })
     .await;
 }
