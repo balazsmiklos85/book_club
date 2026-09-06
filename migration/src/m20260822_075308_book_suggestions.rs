@@ -18,7 +18,7 @@ impl MigrationTrait for Migration {
             m,
             "book_suggestions",
             &[("id", ColType::PkAuto)],
-            &[("book", ""), ("user", "")],
+            &[("book", "")],
         )
         .await?;
         m.create_index(
