@@ -13,6 +13,7 @@ use loco_rs::{
 use migration::Migrator;
 use std::path::Path;
 
+use crate::controllers::session::require_login;
 #[allow(unused_imports)]
 use crate::{
     controllers, initializers, models::_entities::users, tasks, workers::downloader::DownloadWorker,
@@ -49,13 +50,14 @@ impl Hooks for App {
         )])
     }
 
-    fn routes(_ctx: &AppContext) -> AppRoutes {
-        AppRoutes::with_default_routes() // controller routes below
-            .add_route(controllers::events::routes())
-            .add_route(controllers::books::routes())
+    fn routes(ctx: &AppContext) -> AppRoutes {
+        let require_login_layer = axum::middleware::from_fn_with_state(ctx.clone(), require_login);
+        AppRoutes::with_default_routes()
+            .add_route(controllers::events::routes().layer(require_login_layer.clone()))
+            .add_route(controllers::books::routes().layer(require_login_layer.clone()))
             .add_route(controllers::auth_views::routes())
             .add_route(controllers::auth::routes())
-            .add_route(controllers::leaderboard::routes())
+            .add_route(controllers::leaderboard::routes().layer(require_login_layer.clone()))
     }
     async fn connect_workers(ctx: &AppContext, queue: &Queue) -> Result<()> {
         queue.register(DownloadWorker::build(ctx)).await?;

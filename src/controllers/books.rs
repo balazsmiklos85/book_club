@@ -1,11 +1,10 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unused_async)]
-use crate::controllers::session;
-use crate::models::{book_suggestions, books, votes};
+use crate::models::{book_suggestions, books, users, votes};
 use axum::extract::Form;
 use axum::extract::Path;
 use axum::response::Redirect;
-use axum_extra::extract::CookieJar;
+use axum::Extension;
 use loco_rs::prelude::*;
 use sea_orm::SqlErr;
 use serde::Deserialize;
@@ -19,13 +18,10 @@ pub struct CreateBookParams {
 
 #[debug_handler]
 pub async fn create(
-    cookies: CookieJar,
+    Extension(user): Extension<users::Model>,
     State(ctx): State<AppContext>,
     Form(params): Form<CreateBookParams>,
 ) -> Result<Response> {
-    let Some(user) = session::current_user(&cookies, &ctx).await else {
-        return Ok(Redirect::to("/login").into_response());
-    };
     let author = params.author.filter(|a| !a.trim().is_empty());
     let new_book = books::ActiveModel {
         title: Set(params.title),
@@ -68,38 +64,28 @@ pub async fn create(
 
 #[debug_handler]
 pub async fn new(
-    cookies: CookieJar,
+    Extension(_user): Extension<users::Model>,
     ViewEngine(v): ViewEngine<TeraView>,
-    State(ctx): State<AppContext>,
 ) -> Result<Response> {
-    let Some(_user) = session::current_user(&cookies, &ctx).await else {
-        return Ok(Redirect::to("/login").into_response());
-    };
     format::render().view(&v, "books/new.html", serde_json::json!({}))
 }
 
 #[debug_handler]
 pub async fn vote(
-    cookies: CookieJar,
+    Extension(user): Extension<users::Model>,
     State(ctx): State<AppContext>,
     Path(book_id): Path<i64>,
 ) -> Result<Response> {
-    let Some(user) = session::current_user(&cookies, &ctx).await else {
-        return Ok(Redirect::to("/login").into_response());
-    };
     votes::ActiveModel::vote(&ctx.db, book_id, user.id).await?;
     Ok(Redirect::to("/").into_response())
 }
 
 #[debug_handler]
 pub async fn unvote(
-    cookies: CookieJar,
+    Extension(user): Extension<users::Model>,
     State(ctx): State<AppContext>,
     Path(book_id): Path<i64>,
 ) -> Result<Response> {
-    let Some(user) = session::current_user(&cookies, &ctx).await else {
-        return Ok(Redirect::to("/login").into_response());
-    };
     votes::ActiveModel::unvote(&ctx.db, book_id, user.id).await?;
     Ok(Redirect::to("/").into_response())
 }

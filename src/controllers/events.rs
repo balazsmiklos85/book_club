@@ -1,11 +1,10 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
-use crate::controllers::session;
 use crate::models::{book_suggestions, books, events, users, votes};
 use axum::extract::Form;
 use axum::response::Redirect;
-use axum_extra::extract::CookieJar;
+use axum::Extension;
 use chrono::NaiveDate;
 use loco_rs::prelude::*;
 use sea_orm::{FromQueryResult, JoinType, QuerySelect};
@@ -28,14 +27,10 @@ pub struct EventRow {
 
 #[debug_handler]
 pub async fn create(
-    cookies: CookieJar,
+    Extension(_user): Extension<users::Model>,
     State(ctx): State<AppContext>,
     Form(params): Form<CreateEventParams>,
 ) -> Result<Response> {
-    let Some(_) = session::current_user(&cookies, &ctx).await else {
-        return Ok(Redirect::to("/login").into_response());
-    };
-
     let event_date = params
         .event_date
         .and_hms_opt(0, 0, 0)
@@ -62,14 +57,10 @@ pub async fn create(
 
 #[debug_handler]
 pub async fn list(
-    cookies: CookieJar,
+    Extension(_user): Extension<users::Model>,
     ViewEngine(v): ViewEngine<TeraView>,
     State(ctx): State<AppContext>,
 ) -> Result<Response> {
-    let Some(_user) = session::current_user(&cookies, &ctx).await else {
-        return Ok(Redirect::to("/login").into_response());
-    };
-
     let rows = events::Entity::find()
         .inner_join(books::Entity)
         .join(
@@ -105,22 +96,21 @@ struct UserView {
 
 #[debug_handler]
 pub async fn new(
-    cookies: CookieJar,
+    Extension(_user): Extension<users::Model>,
     Query(params): Query<NewEventParams>,
     ViewEngine(v): ViewEngine<TeraView>,
     State(ctx): State<AppContext>,
 ) -> Result<Response> {
-    let Some(_) = session::current_user(&cookies, &ctx).await else {
-        return Ok(Redirect::to("/login").into_response());
-    };
-
     let (Some(book_id), Some(host_id)) = (params.book_id, params.host_id) else {
         return bad_request("book_id and host_id are required");
     };
     let users = users::Entity::find().all(&ctx.db).await?;
     let user_views: Vec<UserView> = users
         .into_iter()
-        .map(|u| UserView { id: u.id, name: u.name })
+        .map(|u| UserView {
+            id: u.id,
+            name: u.name,
+        })
         .collect();
     format::render().view(
         &v,

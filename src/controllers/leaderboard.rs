@@ -1,20 +1,15 @@
 #![allow(clippy::missing_errors_doc)]
-use crate::controllers::session;
 use crate::models::{book_suggestions, books, users, votes};
-use axum::response::Redirect;
-use axum_extra::extract::CookieJar;
+use axum::Extension;
 use loco_rs::prelude::*;
 use std::collections::HashMap;
 use std::collections::HashSet;
 
 pub async fn home(
-    cookies: CookieJar,
+    Extension(user): Extension<users::Model>,
     ViewEngine(v): ViewEngine<TeraView>,
     State(ctx): State<AppContext>,
 ) -> Result<Response> {
-    let Some(user) = session::current_user(&cookies, &ctx).await else {
-        return Ok(Redirect::to("/login").into_response());
-    };
     let books = books::Entity::find().all(&ctx.db).await?;
     let votes = votes::Entity::find().all(&ctx.db).await?;
     let suggestions = book_suggestions::Entity::find().all(&ctx.db).await?;
