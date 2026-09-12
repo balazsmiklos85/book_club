@@ -16,7 +16,7 @@ use std::path::Path;
 use crate::controllers::session::require_login;
 #[allow(unused_imports)]
 use crate::{
-    controllers, initializers, models::_entities::users, tasks, workers::downloader::DownloadWorker,
+    controllers, initializers, models::_entities::users, workers::downloader::DownloadWorker,
 };
 
 pub struct App;
@@ -56,7 +56,6 @@ impl Hooks for App {
             .add_route(controllers::events::routes().layer(require_login_layer.clone()))
             .add_route(controllers::books::routes().layer(require_login_layer.clone()))
             .add_route(controllers::auth_views::routes())
-            .add_route(controllers::auth::routes())
             .add_route(controllers::leaderboard::routes().layer(require_login_layer.clone()))
     }
     async fn connect_workers(ctx: &AppContext, queue: &Queue) -> Result<()> {
@@ -64,10 +63,8 @@ impl Hooks for App {
         Ok(())
     }
 
-    #[allow(unused_variables)]
-    fn register_tasks(tasks: &mut Tasks) {
+    fn register_tasks(_tasks: &mut Tasks) {
         // tasks-inject (do not remove)
-        tasks.register(tasks::user_create::UserCreate);
     }
     async fn truncate(ctx: &AppContext) -> Result<()> {
         truncate_table(&ctx.db, users::Entity).await?;
