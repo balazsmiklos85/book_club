@@ -1,4 +1,7 @@
+use crate::models::book_suggestions;
+
 pub use super::_entities::book_suggestions::{ActiveModel, Column, Entity, Model};
+use loco_rs::model::{ModelError, ModelResult};
 use sea_orm::entity::prelude::*;
 pub type BookSuggestions = Entity;
 
@@ -18,11 +21,48 @@ impl ActiveModelBehavior for ActiveModel {
     }
 }
 
-// implement your read-oriented logic here
-impl Model {}
+impl Model {
+    pub async fn find_by_book_and_user(
+        db: &DatabaseConnection,
+        book_id: i64,
+        user_id: i64,
+    ) -> ModelResult<Self> {
+        Entity::find()
+            .filter(Column::BookId.eq(book_id))
+            .filter(Column::UserId.eq(user_id))
+            .one(db)
+            .await?
+            .ok_or(ModelError::EntityNotFound)
+    }
+}
 
-// implement your write-oriented logic here
-impl ActiveModel {}
+impl ActiveModel {
+    pub async fn suggest(self, db: &DatabaseConnection) -> ModelResult<Model> {
+        return match self.clone().insert(db).await {
+            Ok(suggestion) => Ok(suggestion),
+            Err(err)
+                if matches!(
+                    err.sql_err(),
+                    Some(SqlErr::UniqueConstraintViolation { .. })
+                ) =>
+            {
+                book_suggestions::Model::find_by_book_and_user(
+                    db,
+                    self.book_id
+                        .clone()
+                        .take()
+                        .ok_or(ModelError::EntityNotFound)?,
+                    self.user_id
+                        .clone()
+                        .take()
+                        .ok_or(ModelError::EntityNotFound)?,
+                )
+                .await
+            }
+            Err(err) => return Err(err.into()),
+        };
+    }
+}
 
 // implement your custom finders, selectors oriented logic here
 impl Entity {}

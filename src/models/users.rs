@@ -151,4 +151,3 @@ impl Model {
             .map_err(ModelError::from)
     }
 }
-

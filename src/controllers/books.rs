@@ -6,7 +6,6 @@ use axum::extract::Path;
 use axum::response::Redirect;
 use axum::Extension;
 use loco_rs::prelude::*;
-use sea_orm::SqlErr;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -29,32 +28,13 @@ pub async fn create(
         url: Set(params.url.clone()),
         ..Default::default()
     };
-    let book = match new_book.insert(&ctx.db).await {
-        Ok(book) => book,
-        Err(err)
-            if matches!(
-                err.sql_err(),
-                Some(SqlErr::UniqueConstraintViolation { .. })
-            ) =>
-        {
-            books::Model::find_by_url(&ctx.db, &params.url).await?
-        }
-        Err(err) => return Err(err.into()),
-    };
+    let book = new_book.ensure(&ctx.db, &params.url).await?;
     let suggestion = book_suggestions::ActiveModel {
         book_id: Set(book.id),
         user_id: Set(user.id),
         ..Default::default()
     };
-    if let Err(err) = suggestion.insert(&ctx.db).await {
-        if !matches!(
-            err.sql_err(),
-            Some(SqlErr::UniqueConstraintViolation { .. })
-        ) {
-            return Err(err.into());
-        }
-    }
-
+    suggestion.suggest(&ctx.db).await?;
     Ok(Redirect::to("/").into_response())
 }
 

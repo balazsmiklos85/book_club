@@ -34,8 +34,22 @@ impl Model {
     }
 }
 
-// implement your write-oriented logic here
-impl ActiveModel {}
+impl ActiveModel {
+    pub async fn ensure(self, db: &DatabaseConnection, url: &String) -> ModelResult<Model> {
+        return match self.insert(db).await {
+            Ok(book) => Ok(book),
+            Err(err)
+                if matches!(
+                    err.sql_err(),
+                    Some(SqlErr::UniqueConstraintViolation { .. })
+                ) =>
+            {
+                Model::find_by_url(db, url).await
+            }
+            Err(err) => return Err(err.into()),
+        };
+    }
+}
 
 // implement your custom finders, selectors oriented logic here
 impl Entity {}

@@ -133,5 +133,3 @@ async fn can_find_by_pid() {
     assert_debug_snapshot!(existing_user.map(|user| (user.pid, user.email)));
     assert_debug_snapshot!(non_existing_user_results.map(|user| (user.pid, user.email)));
 }
-
-
