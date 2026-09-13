@@ -37,11 +37,7 @@ pub async fn create(
                 Some(SqlErr::UniqueConstraintViolation { .. })
             ) =>
         {
-            books::Entity::find()
-                .filter(books::Column::Url.eq(params.url))
-                .one(&ctx.db)
-                .await?
-                .ok_or_else(|| Error::string("unique url but no book found"))?
+            books::Model::find_by_url(&ctx.db, &params.url).await?
         }
         Err(err) => return Err(err.into()),
     };

@@ -1,4 +1,5 @@
 pub use super::_entities::books::{ActiveModel, Column, Entity, Model};
+use loco_rs::model::{ModelError, ModelResult};
 use sea_orm::entity::prelude::*;
 pub type Books = Entity;
 
@@ -18,8 +19,20 @@ impl ActiveModelBehavior for ActiveModel {
     }
 }
 
-// implement your read-oriented logic here
-impl Model {}
+impl Model {
+    /// Finds a `book` by the provided URL.
+    ///
+    /// # Errors
+    ///
+    /// When could not find `book` by the given URL or database query error.
+    pub async fn find_by_url(db: &DatabaseConnection, url: &String) -> ModelResult<Self> {
+        Entity::find()
+            .filter(Column::Url.eq(url))
+            .one(db)
+            .await?
+            .ok_or(ModelError::EntityNotFound)
+    }
+}
 
 // implement your write-oriented logic here
 impl ActiveModel {}
