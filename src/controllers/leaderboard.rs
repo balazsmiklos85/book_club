@@ -16,31 +16,34 @@ pub async fn home(
         book_suggestions::Entity::find().all(&ctx.db),
         users::Entity::find().all(&ctx.db)
     )?;
-    let user_names: HashMap<i64, String> = users.into_iter().map(|u| (u.id, u.name)).collect();
-    let mut suggesters_by_book: HashMap<i64, Vec<(i64, String)>> = HashMap::new();
-    for s in suggestions {
-        if let Some(name) = user_names.get(&s.user_id) {
-            suggesters_by_book
-                .entry(s.book_id)
-                .or_default()
-                .push((s.user_id, name.clone()));
-        } else {
-            suggesters_by_book
-                .entry(s.book_id)
-                .or_default()
-                .push((s.user_id, format!("[{}]", s.user_id)));
-        }
-    }
-    let rows = aggregate_votes(user, books, votes, &suggesters_by_book);
+    let rows = aggregate_votes(user, books, votes, users, suggestions);
     format::render().view(&v, "leaderboard.html", serde_json::json!({ "books": rows}))
+}
+
+fn aggregate_suggestions(
+    users: Vec<crate::models::users::Model>,
+    suggestions: Vec<crate::models::book_suggestions::Model>,
+) -> HashMap<i64, Vec<(i64, String)>> {
+    let user_names: HashMap<i64, String> = users.into_iter().map(|u| (u.id, u.name)).collect();
+    suggestions.into_iter().fold(HashMap::new(), |mut acc, s| {
+        let display_name = user_names
+            .get(&s.user_id)
+            .map_or_else(|| format!("[{}]", s.user_id), |name| name.clone());
+        acc.entry(s.book_id)
+            .or_default()
+            .push((s.user_id, display_name));
+        acc
+    })
 }
 
 fn aggregate_votes(
     user: crate::models::users::Model,
-    books: Vec<crate::models::books::Model>,
-    votes: Vec<crate::models::votes::Model>,
-    suggesters_by_book: &HashMap<i64, Vec<(i64, String)>>,
+    books: Vec<books::Model>,
+    votes: Vec<votes::Model>,
+    users: Vec<users::Model>,
+    suggestions: Vec<book_suggestions::Model>,
 ) -> Vec<sea_orm::prelude::Json> {
+    let suggesters_by_book = aggregate_suggestions(users, suggestions);
     let mut votes_on_books: HashMap<i64, i64> = HashMap::new();
     for v in &votes {
         *votes_on_books.entry(v.book_id).or_default() += 1;
