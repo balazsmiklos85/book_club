@@ -10,10 +10,12 @@ pub async fn home(
     ViewEngine(v): ViewEngine<TeraView>,
     State(ctx): State<AppContext>,
 ) -> Result<Response> {
-    let books = books::Entity::find().all(&ctx.db).await?;
-    let votes = votes::Entity::find().all(&ctx.db).await?;
-    let suggestions = book_suggestions::Entity::find().all(&ctx.db).await?;
-    let users = users::Entity::find().all(&ctx.db).await?;
+    let (books, votes, suggestions, users) = tokio::try_join!(
+        books::Entity::find().all(&ctx.db),
+        votes::Entity::find().all(&ctx.db),
+        book_suggestions::Entity::find().all(&ctx.db),
+        users::Entity::find().all(&ctx.db)
+    )?;
     let user_names: HashMap<i64, String> = users.into_iter().map(|u| (u.id, u.name)).collect();
     let mut suggesters_by_book: HashMap<i64, Vec<(i64, String)>> = HashMap::new();
     for s in suggestions {
