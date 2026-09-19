@@ -20,7 +20,9 @@ impl ActiveModelBehavior for ActiveModel {
 
 impl Model {}
 
-impl ActiveModel {
+impl ActiveModel {}
+
+impl Entity {
     pub async fn clean_up_by_book(db: &DatabaseConnection, book_id: i64) -> Result<(), DbErr> {
         Entity::delete_many()
             .filter(Column::BookId.eq(book_id))
@@ -61,5 +63,3 @@ impl ActiveModel {
         Ok(())
     }
 }
-
-impl Entity {}

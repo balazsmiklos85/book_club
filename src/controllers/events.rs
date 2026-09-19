@@ -44,8 +44,8 @@ pub async fn create(
             ..Default::default()
         }
         .insert(&ctx.db),
-        book_suggestions::ActiveModel::clean_up_by_book(&ctx.db, params.book_id),
-        votes::ActiveModel::clean_up_by_book(&ctx.db, params.book_id)
+        book_suggestions::Entity::clean_up_by_book(&ctx.db, params.book_id),
+        votes::Entity::clean_up_by_book(&ctx.db, params.book_id)
     )?;
 
     Ok(Redirect::to("/").into_response())

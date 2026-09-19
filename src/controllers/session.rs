@@ -22,7 +22,7 @@ async fn load_user(cookies: CookieJar, ctx: AppContext) -> Option<Model> {
     let jwt_secret = ctx.config.get_jwt_config().ok()?;
     let jwt = loco_rs::auth::jwt::JWT::new(&jwt_secret.secret);
     let token_data = jwt.validate(cookie.value()).ok()?;
-    users::Model::find_by_pid(&ctx.db, &token_data.claims.pid)
+    users::Entity::find_by_pid(&ctx.db, &token_data.claims.pid)
         .await
         .ok()
 }

@@ -1,6 +1,6 @@
 use book_club::{
     app::App,
-    models::users::{self, Model, RegisterParams},
+    models::users::{self, ActiveModel, Entity, RegisterParams},
 };
 use insta::assert_debug_snapshot;
 use loco_rs::testing::prelude::*;
@@ -51,7 +51,7 @@ async fn can_create_with_password() {
         name: "framework".to_string(),
     };
 
-    let user = Model::create_with_password(&boot.app_context.db, &params)
+    let user = ActiveModel::create_with_password(&boot.app_context.db, &params)
         .await
         .expect("a user should be created");
 
@@ -78,7 +78,7 @@ async fn handle_create_with_password_with_duplicate() {
         .await
         .expect("Failed to seed database");
 
-    let new_user = Model::create_with_password(
+    let new_user = ActiveModel::create_with_password(
         &boot.app_context.db,
         &RegisterParams {
             email: "user1@example.com".to_string(),
@@ -103,9 +103,9 @@ async fn can_find_by_email() {
         .await
         .expect("Failed to seed database");
 
-    let existing_user = Model::find_by_email(&boot.app_context.db, "user1@example.com").await;
+    let existing_user = Entity::find_by_email(&boot.app_context.db, "user1@example.com").await;
     let non_existing_user_results =
-        Model::find_by_email(&boot.app_context.db, "un@existing-email.com").await;
+        Entity::find_by_email(&boot.app_context.db, "un@existing-email.com").await;
 
     // Narrowed on purpose — see `can_create_with_password` above.
     assert_debug_snapshot!(existing_user.map(|user| (user.email, user.name)));
@@ -125,9 +125,9 @@ async fn can_find_by_pid() {
         .expect("Failed to seed database");
 
     let existing_user =
-        Model::find_by_pid(&boot.app_context.db, "11111111-1111-1111-1111-111111111111").await;
+        Entity::find_by_pid(&boot.app_context.db, "11111111-1111-1111-1111-111111111111").await;
     let non_existing_user_results =
-        Model::find_by_pid(&boot.app_context.db, "23232323-2323-2323-2323-232323232323").await;
+        Entity::find_by_pid(&boot.app_context.db, "23232323-2323-2323-2323-232323232323").await;
 
     // Narrowed on purpose — see `can_create_with_password` above.
     assert_debug_snapshot!(existing_user.map(|user| (user.pid, user.email)));

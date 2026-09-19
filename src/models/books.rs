@@ -19,20 +19,7 @@ impl ActiveModelBehavior for ActiveModel {
     }
 }
 
-impl Model {
-    /// Finds a `book` by the provided URL.
-    ///
-    /// # Errors
-    ///
-    /// When could not find `book` by the given URL or database query error.
-    pub async fn find_by_url(db: &DatabaseConnection, url: &String) -> ModelResult<Self> {
-        Entity::find()
-            .filter(Column::Url.eq(url))
-            .one(db)
-            .await?
-            .ok_or(ModelError::EntityNotFound)
-    }
-}
+impl Model {}
 
 impl ActiveModel {
     pub async fn ensure(self, db: &DatabaseConnection, url: &String) -> ModelResult<Model> {
@@ -44,12 +31,24 @@ impl ActiveModel {
                     Some(SqlErr::UniqueConstraintViolation { .. })
                 ) =>
             {
-                Model::find_by_url(db, url).await
+                Entity::find_by_url(db, url).await
             }
             Err(err) => return Err(err.into()),
         };
     }
 }
 
-// implement your custom finders, selectors oriented logic here
-impl Entity {}
+impl Entity {
+    /// Finds a `book` by the provided URL.
+    ///
+    /// # Errors
+    ///
+    /// When could not find `book` by the given URL or database query error.
+    pub async fn find_by_url(db: &DatabaseConnection, url: &String) -> ModelResult<Model> {
+        Entity::find()
+            .filter(Column::Url.eq(url))
+            .one(db)
+            .await?
+            .ok_or(ModelError::EntityNotFound)
+    }
+}

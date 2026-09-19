@@ -1,5 +1,3 @@
-use crate::models::book_suggestions;
-
 pub use super::_entities::book_suggestions::{ActiveModel, Column, Entity, Model};
 use loco_rs::model::{ModelError, ModelResult};
 use sea_orm::entity::prelude::*;
@@ -21,30 +19,9 @@ impl ActiveModelBehavior for ActiveModel {
     }
 }
 
-impl Model {
-    pub async fn find_by_book_and_user(
-        db: &DatabaseConnection,
-        book_id: i64,
-        user_id: i64,
-    ) -> ModelResult<Self> {
-        Entity::find()
-            .filter(Column::BookId.eq(book_id))
-            .filter(Column::UserId.eq(user_id))
-            .one(db)
-            .await?
-            .ok_or(ModelError::EntityNotFound)
-    }
-}
+impl Model {}
 
 impl ActiveModel {
-    pub async fn clean_up_by_book(db: &DatabaseConnection, book_id: i64) -> Result<(), DbErr> {
-        Entity::delete_many()
-            .filter(Column::BookId.eq(book_id))
-            .exec(db)
-            .await?;
-        Ok(())
-    }
-
     pub async fn suggest(self, db: &DatabaseConnection) -> ModelResult<Model> {
         return match self.clone().insert(db).await {
             Ok(suggestion) => Ok(suggestion),
@@ -54,7 +31,7 @@ impl ActiveModel {
                     Some(SqlErr::UniqueConstraintViolation { .. })
                 ) =>
             {
-                book_suggestions::Model::find_by_book_and_user(
+                Entity::find_by_book_and_user(
                     db,
                     self.book_id
                         .clone()
@@ -72,5 +49,25 @@ impl ActiveModel {
     }
 }
 
-// implement your custom finders, selectors oriented logic here
-impl Entity {}
+impl Entity {
+    pub async fn find_by_book_and_user(
+        db: &DatabaseConnection,
+        book_id: i64,
+        user_id: i64,
+    ) -> ModelResult<Model> {
+        Entity::find()
+            .filter(Column::BookId.eq(book_id))
+            .filter(Column::UserId.eq(user_id))
+            .one(db)
+            .await?
+            .ok_or(ModelError::EntityNotFound)
+    }
+
+    pub async fn clean_up_by_book(db: &DatabaseConnection, book_id: i64) -> Result<(), DbErr> {
+        Entity::delete_many()
+            .filter(Column::BookId.eq(book_id))
+            .exec(db)
+            .await?;
+        Ok(())
+    }
+}

@@ -12,7 +12,7 @@ pub async fn login(
     State(ctx): State<AppContext>,
     Form(params): Form<LoginParams>,
 ) -> Result<Response> {
-    let user = users::Model::find_by_email(&ctx.db, &params.email).await?;
+    let user = users::Entity::find_by_email(&ctx.db, &params.email).await?;
     if !user.verify_password(&params.password) {
         return format::render()
             .view(
@@ -47,7 +47,7 @@ pub async fn register(
     State(ctx): State<AppContext>,
     Form(params): Form<RegisterParams>,
 ) -> Result<Response> {
-    users::Model::create_with_password(&ctx.db, &params).await?;
+    users::ActiveModel::create_with_password(&ctx.db, &params).await?;
     Ok(Redirect::to("/register").into_response())
 }
 

@@ -52,7 +52,7 @@ pub async fn vote(
     State(ctx): State<AppContext>,
     Path(book_id): Path<i64>,
 ) -> Result<Response> {
-    votes::ActiveModel::vote(&ctx.db, book_id, user.id).await?;
+    votes::Entity::vote(&ctx.db, book_id, user.id).await?;
     Ok(Redirect::to("/").into_response())
 }
 
@@ -62,7 +62,7 @@ pub async fn unvote(
     State(ctx): State<AppContext>,
     Path(book_id): Path<i64>,
 ) -> Result<Response> {
-    votes::ActiveModel::unvote(&ctx.db, book_id, user.id).await?;
+    votes::Entity::unvote(&ctx.db, book_id, user.id).await?;
     Ok(Redirect::to("/").into_response())
 }
 

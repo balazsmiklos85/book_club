@@ -30,7 +30,7 @@ pub async fn init_user_login(request: &TestServer, ctx: &AppContext) -> LoggedIn
     let token = login_response.cookie("token").value().to_string();
 
     LoggedInUser {
-        user: users::Model::find_by_email(&ctx.db, USER_EMAIL)
+        user: users::Entity::find_by_email(&ctx.db, USER_EMAIL)
             .await
             .unwrap(),
         token,

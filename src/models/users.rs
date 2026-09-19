@@ -54,41 +54,6 @@ impl ActiveModelBehavior for super::_entities::users::ActiveModel {
 }
 
 impl Model {
-    /// finds a user by the provided email
-    ///
-    /// # Errors
-    ///
-    /// When could not find user by the given token or DB query error
-    pub async fn find_by_email(db: &DatabaseConnection, email: &str) -> ModelResult<Self> {
-        let user = users::Entity::find()
-            .filter(
-                model::query::condition()
-                    .eq(users::Column::Email, email)
-                    .build(),
-            )
-            .one(db)
-            .await?;
-        user.ok_or_else(|| ModelError::EntityNotFound)
-    }
-
-    /// finds a user by the provided pid
-    ///
-    /// # Errors
-    ///
-    /// When could not find user  or DB query error
-    pub async fn find_by_pid(db: &DatabaseConnection, pid: &str) -> ModelResult<Self> {
-        let parse_uuid = Uuid::parse_str(pid).map_err(|e| ModelError::Any(e.into()))?;
-        let user = users::Entity::find()
-            .filter(
-                model::query::condition()
-                    .eq(users::Column::Pid, parse_uuid)
-                    .build(),
-            )
-            .one(db)
-            .await?;
-        user.ok_or_else(|| ModelError::EntityNotFound)
-    }
-
     /// Verifies whether the provided plain password matches the hashed password
     ///
     /// # Errors
@@ -99,6 +64,19 @@ impl Model {
         hash::verify_password(password, &self.password)
     }
 
+    /// Creates a JWT
+    ///
+    /// # Errors
+    ///
+    /// when could not convert user claims to jwt token
+    pub fn generate_jwt(&self, secret: &str, expiration: u64) -> ModelResult<String> {
+        jwt::JWT::new(secret)
+            .generate_token(expiration, self.pid.to_string(), Map::new())
+            .map_err(ModelError::from)
+    }
+}
+
+impl ActiveModel {
     /// Asynchronously creates a user with a password and saves it to the
     /// database.
     ///
@@ -108,7 +86,7 @@ impl Model {
     pub async fn create_with_password(
         db: &DatabaseConnection,
         params: &RegisterParams,
-    ) -> ModelResult<Self> {
+    ) -> ModelResult<Model> {
         let txn = db.begin().await?;
 
         if users::Entity::find()
@@ -139,15 +117,41 @@ impl Model {
 
         Ok(user)
     }
+}
 
-    /// Creates a JWT
+impl Entity {
+    /// finds a user by the provided email
     ///
     /// # Errors
     ///
-    /// when could not convert user claims to jwt token
-    pub fn generate_jwt(&self, secret: &str, expiration: u64) -> ModelResult<String> {
-        jwt::JWT::new(secret)
-            .generate_token(expiration, self.pid.to_string(), Map::new())
-            .map_err(ModelError::from)
+    /// When could not find user by the given token or DB query error
+    pub async fn find_by_email(db: &DatabaseConnection, email: &str) -> ModelResult<Model> {
+        let user = users::Entity::find()
+            .filter(
+                model::query::condition()
+                    .eq(users::Column::Email, email)
+                    .build(),
+            )
+            .one(db)
+            .await?;
+        user.ok_or_else(|| ModelError::EntityNotFound)
+    }
+
+    /// finds a user by the provided pid
+    ///
+    /// # Errors
+    ///
+    /// When could not find user  or DB query error
+    pub async fn find_by_pid(db: &DatabaseConnection, pid: &str) -> ModelResult<Model> {
+        let parse_uuid = Uuid::parse_str(pid).map_err(|e| ModelError::Any(e.into()))?;
+        let user = users::Entity::find()
+            .filter(
+                model::query::condition()
+                    .eq(users::Column::Pid, parse_uuid)
+                    .build(),
+            )
+            .one(db)
+            .await?;
+        user.ok_or_else(|| ModelError::EntityNotFound)
     }
 }
