@@ -53,7 +53,7 @@ fn aggregate_votes(
         .filter(|v| v.user_id == user.id)
         .map(|v| v.book_id)
         .collect();
-    let rows: Vec<serde_json::Value> = books
+    let mut rows: Vec<serde_json::Value> = books
         .into_iter()
         .map(|b| {
             serde_json::json!({
@@ -68,6 +68,7 @@ fn aggregate_votes(
             })
         })
         .collect();
+    rows.sort_by_key(|r| std::cmp::Reverse(r["votes"].as_i64().unwrap_or(0)));
     rows
 }
 
@@ -78,6 +79,28 @@ pub fn routes() -> Routes {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn aggregates_vote_counts_voted_flag_and_suggesters() {
+        let given_user_alice = test_user(1, "Alice");
+        let given_user_bob = test_user(2, "Bob");
+
+        let rows = aggregate_votes(
+            given_user_alice.clone(),
+            vec![test_book(20), test_book(10)],
+            vec![test_vote(10, 1), test_vote(10, 2), test_vote(20, 2)],
+            vec![given_user_alice.clone(), given_user_bob.clone()],
+            vec![test_suggestion(10, 1), test_suggestion(20, 2)],
+        );
+
+        then_books_are_ordered_by_most_votes(&rows);
+        then_book_shows_votes(&rows, "Book 10", 2);
+        then_book_shows_votes(&rows, "Book 20", 1);
+        then_alice_voted_for(&rows, "Book 10");
+        then_alice_can_still_vote_for(&rows, "Book 20");
+        then_book_lists_suggesters(&rows, "Book 10", &["Alice"]);
+        then_book_lists_suggesters(&rows, "Book 20", &["Bob"]);
+    }
 
     // TODO: move to the user model module
     fn test_user(id: i64, name: &str) -> users::Model {
@@ -134,30 +157,63 @@ mod tests {
         }
     }
 
-    #[test]
-    fn aggregates_vote_counts_voted_flag_and_suggesters() {
-        let alice = test_user(1, "Alice");
-        let bob = test_user(2, "Bob");
+    fn find_book<'a>(rows: &'a [serde_json::Value], title: &str) -> &'a serde_json::Value {
+        rows.iter()
+            .find(|r| r["title"] == title)
+            .expect("book should appear on leaderboard")
+    }
 
-        let rows = aggregate_votes(
-            alice.clone(),
-            vec![test_book(10), test_book(20)],
-            vec![test_vote(10, 1), test_vote(10, 2), test_vote(20, 2)],
-            vec![alice.clone(), bob.clone()],
-            vec![test_suggestion(10, 1), test_suggestion(20, 2)],
+    fn then_books_are_ordered_by_most_votes(rows: &[serde_json::Value]) {
+        let counts: Vec<i64> = rows
+            .iter()
+            .map(|r| r["votes"].as_i64().unwrap_or(-1))
+            .collect();
+        assert_eq!(
+            rows[0]["title"],
+            serde_json::json!("Book 10"),
+            "Book 10 got most votes so it should come first"
         );
+        assert!(
+            counts.windows(2).all(|w| w[0] >= w[1]),
+            "most voted book should come first, got counts {counts:?}"
+        );
+    }
 
-        assert_eq!(rows[0]["votes"], serde_json::json!(2));
-        assert_eq!(rows[1]["votes"], serde_json::json!(1));
-        assert_eq!(rows[0]["voted"], serde_json::json!(true));
-        assert_eq!(rows[1]["voted"], serde_json::json!(false));
+    fn then_book_shows_votes(rows: &[serde_json::Value], title: &str, expected: i64) {
         assert_eq!(
-            rows[0]["suggesters"],
-            serde_json::json!([{ "id": 1, "name": "Alice" }])
+            find_book(rows, title)["votes"],
+            serde_json::json!(expected),
+            "{title} got {expected} votes so it should show {expected}"
         );
+    }
+
+    fn then_alice_voted_for(rows: &[serde_json::Value], title: &str) {
         assert_eq!(
-            rows[1]["suggesters"],
-            serde_json::json!([{ "id": 2, "name": "Bob" }])
+            find_book(rows, title)["voted"],
+            serde_json::json!(true),
+            "Alice voted for {title} so it should show voted"
+        );
+    }
+
+    fn then_alice_can_still_vote_for(rows: &[serde_json::Value], title: &str) {
+        assert_eq!(
+            find_book(rows, title)["voted"],
+            serde_json::json!(false),
+            "Alice did not vote for {title} yet so she can still vote"
+        );
+    }
+
+    fn then_book_lists_suggesters(rows: &[serde_json::Value], title: &str, expected: &[&str]) {
+        let names: Vec<String> = find_book(rows, title)["suggesters"]
+            .as_array()
+            .cloned()
+            .unwrap_or_default()
+            .iter()
+            .map(|s| s["name"].as_str().unwrap_or("").to_string())
+            .collect();
+        assert_eq!(
+            names, expected,
+            "{title} was suggested by {expected:?} so it should list them"
         );
     }
 }
