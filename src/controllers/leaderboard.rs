@@ -74,3 +74,90 @@ fn aggregate_votes(
 pub fn routes() -> Routes {
     Routes::new().add("/", get(home))
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // TODO: move to the user model module
+    fn test_user(id: i64, name: &str) -> users::Model {
+        users::Model {
+            id,
+            pid: uuid::Uuid::new_v4(),
+            email: format!("user{id}@example.com"),
+            password: "password".to_string(),
+            api_key: format!("api-key-{id}"),
+            name: name.to_string(),
+            reset_token: None,
+            reset_sent_at: None,
+            email_verification_token: None,
+            email_verification_sent_at: None,
+            email_verified_at: None,
+            magic_link_token: None,
+            magic_link_expiration: None,
+            created_at: chrono::Utc::now().into(),
+            updated_at: chrono::Utc::now().into(),
+        }
+    }
+
+    // TODO: move to the book model module
+    fn test_book(id: i64) -> books::Model {
+        books::Model {
+            id,
+            title: format!("Book {id}"),
+            author: Some("Author".to_string()),
+            url: format!("https://example.com/{id}"),
+            created_at: chrono::Utc::now().into(),
+            updated_at: chrono::Utc::now().into(),
+        }
+    }
+
+    // TODO: move to the vote model module
+    fn test_vote(book_id: i64, user_id: i64) -> votes::Model {
+        votes::Model {
+            id: 0,
+            book_id,
+            user_id,
+            created_at: chrono::Utc::now().into(),
+            updated_at: chrono::Utc::now().into(),
+        }
+    }
+
+    // TODO: move to the suggestion model module
+    fn test_suggestion(book_id: i64, user_id: i64) -> book_suggestions::Model {
+        book_suggestions::Model {
+            id: 0,
+            book_id,
+            user_id,
+            created_at: chrono::Utc::now().into(),
+            updated_at: chrono::Utc::now().into(),
+        }
+    }
+
+    #[test]
+    fn aggregates_vote_counts_voted_flag_and_suggesters() {
+        let alice = test_user(1, "Alice");
+        let bob = test_user(2, "Bob");
+
+        let rows = aggregate_votes(
+            alice.clone(),
+            vec![test_book(10), test_book(20)],
+            vec![test_vote(10, 1), test_vote(10, 2), test_vote(20, 2)],
+            vec![alice.clone(), bob.clone()],
+            vec![test_suggestion(10, 1), test_suggestion(20, 2)],
+        );
+
+        assert_eq!(rows[0]["votes"], serde_json::json!(2));
+        assert_eq!(rows[1]["votes"], serde_json::json!(1));
+        assert_eq!(rows[0]["voted"], serde_json::json!(true));
+        assert_eq!(rows[1]["voted"], serde_json::json!(false));
+        assert_eq!(
+            rows[0]["suggesters"],
+            serde_json::json!([{ "id": 1, "name": "Alice" }])
+        );
+        assert_eq!(
+            rows[1]["suggesters"],
+            serde_json::json!([{ "id": 2, "name": "Bob" }])
+        );
+    }
+}
