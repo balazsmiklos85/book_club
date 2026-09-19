@@ -37,6 +37,14 @@ impl Model {
 }
 
 impl ActiveModel {
+    pub async fn clean_up_by_book(db: &DatabaseConnection, book_id: i64) -> Result<(), DbErr> {
+        Entity::delete_many()
+            .filter(Column::BookId.eq(book_id))
+            .exec(db)
+            .await?;
+        Ok(())
+    }
+
     pub async fn suggest(self, db: &DatabaseConnection) -> ModelResult<Model> {
         return match self.clone().insert(db).await {
             Ok(suggestion) => Ok(suggestion),

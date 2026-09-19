@@ -44,12 +44,8 @@ pub async fn create(
             ..Default::default()
         }
         .insert(&ctx.db),
-        book_suggestions::Entity::delete_many()
-            .filter(crate::models::book_suggestions::Column::BookId.eq(params.book_id))
-            .exec(&ctx.db),
-        votes::Entity::delete_many()
-            .filter(crate::models::votes::Column::BookId.eq(params.book_id))
-            .exec(&ctx.db)
+        book_suggestions::ActiveModel::clean_up_by_book(&ctx.db, params.book_id),
+        votes::ActiveModel::clean_up_by_book(&ctx.db, params.book_id)
     )?;
 
     Ok(Redirect::to("/").into_response())
