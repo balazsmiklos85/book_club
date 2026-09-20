@@ -22,6 +22,11 @@ impl ActiveModelBehavior for ActiveModel {
 impl Model {}
 
 impl ActiveModel {
+    /// Inserts a new book, returning the existing one for a duplicate URL.
+    ///
+    /// # Errors
+    ///
+    /// When the database insert or lookup fails.
     pub async fn ensure(self, db: &DatabaseConnection, url: &String) -> ModelResult<Model> {
         return match self.insert(db).await {
             Ok(book) => Ok(book),

@@ -22,6 +22,11 @@ impl ActiveModelBehavior for ActiveModel {
 impl Model {}
 
 impl ActiveModel {
+    /// Inserts a new book suggestion, returning the existing one on conflict.
+    ///
+    /// # Errors
+    ///
+    /// When the database insert or lookup fails, or the book or user id is missing.
     pub async fn suggest(self, db: &DatabaseConnection) -> ModelResult<Model> {
         return match self.clone().insert(db).await {
             Ok(suggestion) => Ok(suggestion),
@@ -50,6 +55,11 @@ impl ActiveModel {
 }
 
 impl Entity {
+    /// Finds a suggestion by book and user.
+    ///
+    /// # Errors
+    ///
+    /// When the database query fails or no matching suggestion exists.
     pub async fn find_by_book_and_user(
         db: &DatabaseConnection,
         book_id: i64,
@@ -63,6 +73,11 @@ impl Entity {
             .ok_or(ModelError::EntityNotFound)
     }
 
+    /// Deletes all suggestions for the given book.
+    ///
+    /// # Errors
+    ///
+    /// When the database delete fails.
     pub async fn clean_up_by_book(db: &DatabaseConnection, book_id: i64) -> Result<(), DbErr> {
         Entity::delete_many()
             .filter(Column::BookId.eq(book_id))

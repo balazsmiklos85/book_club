@@ -16,7 +16,7 @@ pub async fn home(
         book_suggestions::Entity::find().all(&ctx.db),
         users::Entity::find().all(&ctx.db)
     )?;
-    let rows = aggregate_votes(user, books, votes, users, suggestions);
+    let rows = aggregate_votes(&user, books, &votes, users, suggestions);
     format::render().view(&v, "leaderboard.html", serde_json::json!({ "books": rows}))
 }
 
@@ -28,7 +28,8 @@ fn aggregate_suggestions(
     suggestions.into_iter().fold(HashMap::new(), |mut acc, s| {
         let display_name = user_names
             .get(&s.user_id)
-            .map_or_else(|| format!("[{}]", s.user_id), |name| name.clone());
+            .cloned()
+            .unwrap_or_else(|| format!("[{}]", s.user_id));
         acc.entry(s.book_id)
             .or_default()
             .push((s.user_id, display_name));
@@ -37,15 +38,15 @@ fn aggregate_suggestions(
 }
 
 fn aggregate_votes(
-    user: crate::models::users::Model,
+    user: &crate::models::users::Model,
     books: Vec<books::Model>,
-    votes: Vec<votes::Model>,
+    votes: &[votes::Model],
     users: Vec<users::Model>,
     suggestions: Vec<book_suggestions::Model>,
 ) -> Vec<sea_orm::prelude::Json> {
     let suggesters_by_book = aggregate_suggestions(users, suggestions);
     let mut votes_on_books: HashMap<i64, i64> = HashMap::new();
-    for v in &votes {
+    for v in votes {
         *votes_on_books.entry(v.book_id).or_default() += 1;
     }
     let user_votes: HashSet<i64> = votes
@@ -86,9 +87,9 @@ mod tests {
         let given_user_alice = test_user(1, "Alice");
 
         let rows = aggregate_votes(
-            given_user_alice.clone(),
+            &given_user_alice,
             vec![test_book(10), test_book(20)],
-            vec![test_vote(20, 1)],
+            &[test_vote(20, 1)],
             vec![given_user_alice.clone()],
             vec![test_suggestion(10, 1)],
         );
@@ -103,9 +104,9 @@ mod tests {
         let given_user_bob = test_user(2, "Bob");
 
         let rows = aggregate_votes(
-            given_user_alice.clone(),
+            &given_user_alice,
             vec![test_book(20), test_book(10)],
-            vec![test_vote(10, 1), test_vote(10, 2), test_vote(20, 2)],
+            &[test_vote(10, 1), test_vote(10, 2), test_vote(20, 2)],
             vec![given_user_alice.clone(), given_user_bob.clone()],
             vec![test_suggestion(10, 1), test_suggestion(20, 2)],
         );

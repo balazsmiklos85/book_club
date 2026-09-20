@@ -23,6 +23,11 @@ impl Model {}
 impl ActiveModel {}
 
 impl Entity {
+    /// Deletes all votes for the given book.
+    ///
+    /// # Errors
+    ///
+    /// When the database delete fails.
     pub async fn clean_up_by_book(db: &DatabaseConnection, book_id: i64) -> Result<(), DbErr> {
         Entity::delete_many()
             .filter(Column::BookId.eq(book_id))
@@ -31,6 +36,11 @@ impl Entity {
         Ok(())
     }
 
+    /// Records a vote, ignoring it when the user already voted.
+    ///
+    /// # Errors
+    ///
+    /// When the database insert fails.
     pub async fn vote(db: &DatabaseConnection, book_id: i64, user_id: i64) -> loco_rs::Result<()> {
         let vote = ActiveModel {
             book_id: sea_orm::ActiveValue::Set(book_id),
@@ -50,6 +60,11 @@ impl Entity {
         }
     }
 
+    /// Removes a user's vote for the given book.
+    ///
+    /// # Errors
+    ///
+    /// When the database delete fails.
     pub async fn unvote(
         db: &DatabaseConnection,
         book_id: i64,
