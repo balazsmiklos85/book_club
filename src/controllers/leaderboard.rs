@@ -55,6 +55,7 @@ fn aggregate_votes(
         .collect();
     let mut rows: Vec<serde_json::Value> = books
         .into_iter()
+        .filter(|b| suggesters_by_book.contains_key(&b.id))
         .map(|b| {
             serde_json::json!({
                 "id": b.id,
@@ -81,7 +82,23 @@ mod tests {
     use super::*;
 
     #[test]
-    fn aggregates_vote_counts_voted_flag_and_suggesters() {
+    fn should_show_books_only_with_suggestions() {
+        let given_user_alice = test_user(1, "Alice");
+
+        let rows = aggregate_votes(
+            given_user_alice.clone(),
+            vec![test_book(10), test_book(20)],
+            vec![test_vote(20, 1)],
+            vec![given_user_alice.clone()],
+            vec![test_suggestion(10, 1)],
+        );
+
+        then_book_lists_suggesters(&rows, "Book 10", &["Alice"]);
+        then_book_is_hidden(&rows, "Book 20");
+    }
+
+    #[test]
+    fn should_sort_books_by_votes() {
         let given_user_alice = test_user(1, "Alice");
         let given_user_bob = test_user(2, "Bob");
 
@@ -214,6 +231,13 @@ mod tests {
         assert_eq!(
             names, expected,
             "{title} was suggested by {expected:?} so it should list them"
+        );
+    }
+
+    fn then_book_is_hidden(rows: &[serde_json::Value], title: &str) {
+        assert!(
+            rows.iter().all(|r| r["title"] != title),
+            "{title} has no active suggestions so it should stay hidden, got {rows:?}"
         );
     }
 }

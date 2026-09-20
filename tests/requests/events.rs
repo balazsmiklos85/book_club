@@ -1,9 +1,10 @@
 use axum::http::{HeaderName, HeaderValue};
 use book_club::app::App;
 use book_club::controllers::events::CreateEventParams;
-use book_club::models::{books, events as events_model};
+use book_club::models::{book_suggestions, books, events as events_model, votes};
 use chrono::NaiveDate;
 use loco_rs::testing::prelude::*;
+use loco_rs::{app::AppContext, TestServer};
 use sea_orm::{ActiveModelTrait, ActiveValue::Set};
 use serial_test::serial;
 
@@ -101,7 +102,7 @@ async fn can_get_create() {
 async fn can_create_event() {
     request::<App, _, _>(|request, ctx| async move {
         let user = prepare_data::init_user_login(&request, &ctx).await;
-        books::ActiveModel {
+        let book = books::ActiveModel {
             title: Set("Test Book".to_string()),
             url: Set("https://example.com/test-book".to_string()),
             ..Default::default()
@@ -116,7 +117,7 @@ async fn can_create_event() {
                 HeaderValue::from_str(&format!("token={}", user.token)).unwrap(),
             )
             .form(&CreateEventParams {
-                book_id: 1,
+                book_id: book.id,
                 event_date: NaiveDate::from_ymd_opt(2026, 12, 1).unwrap(),
                 host_id: None,
             })
@@ -124,4 +125,138 @@ async fn can_create_event() {
         assert_eq!(res.status_code(), 303);
     })
     .await;
+}
+
+#[tokio::test]
+#[serial]
+async fn event_clears_leaderboard_and_votes() {
+    request::<App, _, _>(|request, ctx| async move {
+        let user = given_logged_in_user(&request, &ctx).await;
+        let book_id = given_book_with_suggestion_and_vote(&ctx, user.user.id).await;
+
+        then_leaderboard_is(&request, &user, "Cleanup Book", Visibility::Visible).await;
+
+        when_creating_event(&request, &user, book_id).await;
+
+        then_leaderboard_is(&request, &user, "Cleanup Book", Visibility::Hidden).await;
+
+        when_resuggesting_book(&ctx, book_id, user.user.id).await;
+
+        then_resuggested_book_has_no_votes(&request, &user, "Cleanup Book").await;
+    })
+    .await;
+}
+
+async fn given_logged_in_user(
+    request: &TestServer,
+    ctx: &AppContext,
+) -> prepare_data::LoggedInUser {
+    prepare_data::init_user_login(request, ctx).await
+}
+
+async fn given_book_with_suggestion_and_vote(ctx: &AppContext, user_id: i64) -> i64 {
+    let book = books::ActiveModel {
+        title: Set("Cleanup Book".to_string()),
+        url: Set("https://example.com/cleanup-book".to_string()),
+        ..Default::default()
+    }
+    .insert(&ctx.db)
+    .await
+    .unwrap();
+    book_suggestions::ActiveModel {
+        book_id: Set(book.id),
+        user_id: Set(user_id),
+        ..Default::default()
+    }
+    .insert(&ctx.db)
+    .await
+    .unwrap();
+    votes::ActiveModel {
+        book_id: Set(book.id),
+        user_id: Set(user_id),
+        ..Default::default()
+    }
+    .insert(&ctx.db)
+    .await
+    .unwrap();
+    book.id
+}
+
+async fn leaderboard_body(request: &TestServer, user: &prepare_data::LoggedInUser) -> String {
+    let res = request
+        .get("/")
+        .add_header(
+            HeaderName::from_static("cookie"),
+            HeaderValue::from_str(&format!("token={}", user.token)).unwrap(),
+        )
+        .await;
+    assert_eq!(res.status_code(), 200);
+    res.text()
+}
+
+#[derive(Debug, PartialEq)]
+enum Visibility {
+    Visible,
+    Hidden,
+}
+
+async fn then_leaderboard_is(
+    request: &TestServer,
+    user: &prepare_data::LoggedInUser,
+    title: &str,
+    visibility: Visibility,
+) {
+    let body = leaderboard_body(request, user).await;
+    assert_eq!(
+        body.contains(title),
+        visibility == Visibility::Visible,
+        "expected {title} to be {visibility:?} on leaderboard, got: {body}"
+    );
+}
+
+async fn when_creating_event(
+    request: &TestServer,
+    user: &prepare_data::LoggedInUser,
+    book_id: i64,
+) {
+    let res = request
+        .post("/events")
+        .add_header(
+            HeaderName::from_static("cookie"),
+            HeaderValue::from_str(&format!("token={}", user.token)).unwrap(),
+        )
+        .form(&CreateEventParams {
+            book_id,
+            event_date: NaiveDate::from_ymd_opt(2026, 12, 1).unwrap(),
+            host_id: Some(user.user.id),
+        })
+        .await;
+    assert_eq!(res.status_code(), 303);
+}
+
+async fn when_resuggesting_book(ctx: &AppContext, book_id: i64, user_id: i64) {
+    book_suggestions::ActiveModel {
+        book_id: Set(book_id),
+        user_id: Set(user_id),
+        ..Default::default()
+    }
+    .insert(&ctx.db)
+    .await
+    .unwrap();
+}
+
+async fn then_resuggested_book_has_no_votes(
+    request: &TestServer,
+    user: &prepare_data::LoggedInUser,
+    title: &str,
+) {
+    let body = leaderboard_body(request, user).await;
+    assert!(
+        body.contains(title),
+        "{title} should be back on leaderboard, got: {body}"
+    );
+    assert!(
+        body.contains("0 votes"),
+        "re-suggested {title} should carry no old votes, got: {body}"
+    );
 }
