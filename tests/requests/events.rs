@@ -82,6 +82,88 @@ async fn can_get_events() {
 
 #[tokio::test]
 #[serial]
+async fn can_get_event_details() {
+    request::<App, _, _>(|request, ctx| async move {
+        let host = given_logged_in_user(&request, &ctx).await;
+        let event = given_hosted_event(&ctx, host.user.id).await;
+
+        let body = when_getting_event_details(&request, &host, event.id).await;
+
+        then_details_show_the_book(&body, "Detail Book");
+        then_details_show_the_date(&body, "2026-12-01");
+        then_details_show_the_host(&body, "loco");
+    })
+    .await;
+}
+
+async fn given_hosted_event(ctx: &AppContext, host_id: i64) -> events_model::Model {
+    let book = books::ActiveModel {
+        title: Set("Detail Book".to_string()),
+        author: Set(Some("Detail Author".to_string())),
+        url: Set("https://example.com/detail-book".to_string()),
+        ..Default::default()
+    }
+    .insert(&ctx.db)
+    .await
+    .unwrap();
+    events_model::ActiveModel {
+        book_id: Set(book.id),
+        event_date: Set(NaiveDate::from_ymd_opt(2026, 12, 1)
+            .unwrap()
+            .and_hms_opt(0, 0, 0)
+            .unwrap()),
+        host_id: Set(Some(host_id)),
+        ..Default::default()
+    }
+    .insert(&ctx.db)
+    .await
+    .unwrap()
+}
+
+async fn when_getting_event_details(
+    request: &TestServer,
+    user: &prepare_data::LoggedInUser,
+    event_id: i64,
+) -> String {
+    let res = request
+        .get(&format!("/events/{event_id}"))
+        .add_header(
+            HeaderName::from_static("cookie"),
+            HeaderValue::from_str(&format!("token={}", user.token)).unwrap(),
+        )
+        .await;
+    assert_eq!(
+        res.status_code(),
+        200,
+        "expected the event details page to be served, got: {}",
+        res.text()
+    );
+    res.text()
+}
+
+fn then_details_show_the_book(body: &str, title: &str) {
+    assert!(
+        body.contains(title),
+        "the details page should show the book {title}, got: {body}"
+    );
+}
+
+fn then_details_show_the_date(body: &str, date: &str) {
+    assert!(
+        body.contains(date),
+        "the details page should show the date {date}, got: {body}"
+    );
+}
+
+fn then_details_show_the_host(body: &str, host: &str) {
+    assert!(
+        body.contains(host),
+        "the details page should show the host {host}, got: {body}"
+    );
+}
+
+#[tokio::test]
+#[serial]
 async fn can_get_create() {
     request::<App, _, _>(|request, ctx| async move {
         let user = prepare_data::init_user_login(&request, &ctx).await;
