@@ -1,7 +1,7 @@
 use axum::http::{HeaderName, HeaderValue};
 use book_club::app::App;
 use book_club::controllers::events::CreateEventParams;
-use book_club::models::{book_suggestions, books, events as events_model, votes};
+use book_club::models::{book_suggestions, books, events as events_model, participants, votes};
 use chrono::NaiveDate;
 use loco_rs::testing::prelude::*;
 use loco_rs::{app::AppContext, TestServer};
@@ -94,14 +94,28 @@ async fn can_get_event_details() {
     request::<App, _, _>(|request, ctx| async move {
         let host = given_logged_in_user(&request, &ctx).await;
         let event = given_hosted_event(&ctx, host.user.id).await;
+        given_participant(&ctx, event.id, host.user.id).await;
+        given_participant(&ctx, event.id, 4242).await;
 
         let body = when_getting_event_details(&request, &host, event.id).await;
 
         then_details_show_the_book(&body, "Detail Book");
         then_details_show_the_date(&body, "2026-12-01");
         then_details_show_the_host(&body, "loco");
+        then_details_show_the_participants(&body, host.user.id, 4242);
     })
     .await;
+}
+
+async fn given_participant(ctx: &AppContext, event_id: i64, user_id: i64) {
+    participants::ActiveModel {
+        event_id: Set(event_id),
+        user_id: Set(user_id),
+        ..Default::default()
+    }
+    .insert(&ctx.db)
+    .await
+    .unwrap();
 }
 
 async fn given_hosted_event(ctx: &AppContext, host_id: i64) -> events_model::Model {
@@ -167,6 +181,18 @@ fn then_details_show_the_host(body: &str, host: &str) {
     assert!(
         body.contains(host),
         "the details page should show the host {host}, got: {body}"
+    );
+}
+
+fn then_details_show_the_participants(body: &str, host_id: i64, dangling_id: i64) {
+    assert!(
+        body.contains(&format!(r#"data-user-id="{host_id}""#)),
+        "the details page should list the host as a participant, got: {body}"
+    );
+    assert!(
+        body.contains(&format!(r#"data-user-id="{dangling_id}""#)),
+        "the details page should list the dangling user id {dangling_id} as a participant, \
+         got: {body}"
     );
 }
 
