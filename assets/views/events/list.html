@@ -7,7 +7,10 @@
     <a href="/logout">Logout</a>
     <ul>{% for event in events %}
     <li>
-        {{ event.book_title }}{% if event.book_author %} by {{ event.book_author }}{% endif %} at {{ event.date }}{% if event.host %}. Host: {{ event.host }}{% endif %}
+      <a href="/events/{{ event.id }}">{{ event.book_title }}</a>
+      {% if event.book_author %} by {{ event.book_author }}{% endif %}
+      at {{ event.date }}
+      {% if event.host %}. Host: {{ event.host }}{% endif %}
     </li>
     {% endfor %}</ul>
 </body>

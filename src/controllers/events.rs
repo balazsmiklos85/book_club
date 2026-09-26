@@ -19,6 +19,7 @@ pub struct CreateEventParams {
 
 #[derive(Debug, FromQueryResult, Serialize)]
 pub struct EventRow {
+    pub id: i64,
     pub book_title: String,
     pub book_author: Option<String>,
     pub date: DateTime,
@@ -52,6 +53,35 @@ pub async fn create(
 }
 
 #[debug_handler]
+pub async fn details(
+    Extension(_user): Extension<users::Model>,
+    ViewEngine(v): ViewEngine<TeraView>,
+    State(ctx): State<AppContext>,
+    Path(id): Path<i64>,
+) -> Result<Response> {
+    let event = events::Entity::find_by_id(id)
+        .inner_join(books::Entity)
+        .join(
+            JoinType::LeftJoin,
+            events::Entity::belongs_to(users::Entity)
+                .from(events::Column::HostId)
+                .to(users::Column::Id)
+                .into(),
+        )
+        .select_only()
+        .column_as(events::Column::Id, "id")
+        .column_as(books::Column::Title, "book_title")
+        .column_as(books::Column::Author, "book_author")
+        .column_as(events::Column::EventDate, "date")
+        .column_as(users::Column::Name, "host")
+        .into_model::<EventRow>()
+        .one(&ctx.db)
+        .await?;
+
+    format::render().view(&v, "events/details.html", serde_json::json!({"event": event}))
+}
+
+#[debug_handler]
 pub async fn list(
     Extension(_user): Extension<users::Model>,
     ViewEngine(v): ViewEngine<TeraView>,
@@ -67,6 +97,7 @@ pub async fn list(
                 .into(),
         )
         .select_only()
+        .column_as(events::Column::Id, "id")
         .column_as(books::Column::Title, "book_title")
         .column_as(books::Column::Author, "book_author")
         .column_as(events::Column::EventDate, "date")
@@ -125,4 +156,5 @@ pub fn routes() -> Routes {
         .add("/", get(list))
         .add("/", post(create))
         .add("/new", get(new))
+        .add("/{id}", get(details))
 }

@@ -33,7 +33,7 @@ async fn can_get_events() {
         .insert(&ctx.db)
         .await
         .unwrap();
-        events_model::ActiveModel {
+        let hosted_event = events_model::ActiveModel {
             book_id: Set(hosted_book.id),
             event_date: Set(NaiveDate::from_ymd_opt(2026, 12, 1)
                 .unwrap()
@@ -45,7 +45,7 @@ async fn can_get_events() {
         .insert(&ctx.db)
         .await
         .unwrap();
-        events_model::ActiveModel {
+        let orphan_event = events_model::ActiveModel {
             book_id: Set(orphan_book.id),
             event_date: Set(NaiveDate::from_ymd_opt(2026, 12, 2)
                 .unwrap()
@@ -68,6 +68,14 @@ async fn can_get_events() {
         let body = res.text();
         assert!(body.contains("Hosted Book"), "missing hosted book: {body}");
         assert!(body.contains("Orphan Book"), "missing orphan book: {body}");
+        assert!(
+            body.contains(&format!("/events/{}", hosted_event.id)),
+            "hosted book should link to its detail page: {body}"
+        );
+        assert!(
+            body.contains(&format!("/events/{}", orphan_event.id)),
+            "orphan book should link to its detail page: {body}"
+        );
         assert!(
             !body.contains("by  by"),
             "double 'by' bug present in: {body}"

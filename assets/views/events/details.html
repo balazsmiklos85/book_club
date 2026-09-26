@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head><title>Event</title></head>
+<body>
+    <h1>{{ event.book_title }}</h1>
+    <a href="/">Leaderboard</a>
+    <a href="/events">Events</a>
+    <a href="/logout">Logout</a>
+    <p>
+      {% if event.book_author %}by {{ event.book_author }}{% endif %}
+      at {{ event.date }}
+      {% if event.host %}. Host: {{ event.host }}{% endif %}
+    </p>
+</body>
+</html>
