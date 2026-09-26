@@ -66,4 +66,6 @@ Static YAML fixtures in `src/fixtures`. One file per table, loaded through `Hook
 
 To filter by module: `cargo test models::`, `cargo test requests::books`.
 
+The integration test target is `mod`, not the directory name: `cargo test --test mod requests::events`.
+
 Snapshot changes are reviewed with `cargo insta review` and accepted deliberately, never blindly.
