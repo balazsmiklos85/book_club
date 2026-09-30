@@ -11,5 +11,8 @@
       at {{ event.date }}
       {% if event.host %}. Host: {{ event.host }}{% endif %}
     </p>
+    <ul>{% for pid in participants %}
+    <li data-user-id="{{ pid }}">{{ pid }}</li>
+    {% endfor %}</ul>
 </body>
 </html>

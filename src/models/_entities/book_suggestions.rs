@@ -11,9 +11,9 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i64,
     #[sea_orm(unique_key = "unique")]
-    pub book_id: i64,
-    #[sea_orm(unique_key = "unique")]
     pub user_id: i64,
+    #[sea_orm(unique_key = "unique")]
+    pub book_id: i64,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -26,24 +26,10 @@ pub enum Relation {
         on_delete = "Cascade"
     )]
     Books,
-    #[sea_orm(
-        belongs_to = "super::users::Entity",
-        from = "Column::UserId",
-        to = "super::users::Column::Id",
-        on_update = "Cascade",
-        on_delete = "Cascade"
-    )]
-    Users,
 }
 
 impl Related<super::books::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Books.def()
-    }
-}
-
-impl Related<super::users::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::Users.def()
     }
 }

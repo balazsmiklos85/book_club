@@ -1,13 +1,13 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
-use crate::models::{book_suggestions, books, events, users, votes};
+use crate::models::{book_suggestions, books, events, participants, users, votes};
 use axum::extract::Form;
 use axum::response::Redirect;
 use axum::Extension;
 use chrono::NaiveDate;
 use loco_rs::prelude::*;
-use sea_orm::{FromQueryResult, JoinType, QuerySelect};
+use sea_orm::{ColumnTrait, EntityTrait, FromQueryResult, JoinType, QueryFilter, QuerySelect};
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize)]
@@ -78,7 +78,19 @@ pub async fn details(
         .one(&ctx.db)
         .await?;
 
-    format::render().view(&v, "events/details.html", serde_json::json!({"event": event}))
+    let participant_ids: Vec<i64> = participants::Entity::find()
+        .filter(participants::Column::EventId.eq(id))
+        .all(&ctx.db)
+        .await?
+        .into_iter()
+        .map(|part| part.user_id)
+        .collect();
+
+    format::render().view(
+        &v,
+        "events/details.html",
+        serde_json::json!({"event": event, "participants": participant_ids}),
+    )
 }
 
 #[debug_handler]

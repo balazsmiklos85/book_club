@@ -4,39 +4,32 @@ use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
-#[sea_orm(table_name = "events")]
+#[sea_orm(table_name = "participants")]
 pub struct Model {
     pub created_at: DateTimeWithTimeZone,
     pub updated_at: DateTimeWithTimeZone,
     #[sea_orm(primary_key)]
     pub id: i64,
-    pub event_date: DateTime,
-    pub host_id: Option<i64>,
-    pub book_id: i64,
+    #[sea_orm(unique_key = "unique")]
+    pub user_id: i64,
+    #[sea_orm(unique_key = "unique")]
+    pub event_id: i64,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
     #[sea_orm(
-        belongs_to = "super::books::Entity",
-        from = "Column::BookId",
-        to = "super::books::Column::Id",
+        belongs_to = "super::events::Entity",
+        from = "Column::EventId",
+        to = "super::events::Column::Id",
         on_update = "Cascade",
         on_delete = "Cascade"
     )]
-    Books,
-    #[sea_orm(has_many = "super::participants::Entity")]
-    Participants,
+    Events,
 }
 
-impl Related<super::books::Entity> for Entity {
+impl Related<super::events::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::Books.def()
-    }
-}
-
-impl Related<super::participants::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::Participants.def()
+        Relation::Events.def()
     }
 }
