@@ -11,8 +11,12 @@
       at {{ event.date }}
       {% if event.host %}. Host: {{ event.host }}{% endif %}
     </p>
-    <ul>{% for pid in participants %}
-    <li data-user-id="{{ pid }}">{{ pid }}</li>
+    <ul>{% for participant in participants %}
+    <li data-user-id="{{ participant.user_id }}">{% if participant.name %}{{ participant.name }}{% else %}[{{ participant.user_id }}]{% endif %}</li>
     {% endfor %}</ul>
+    <form method="post" action="/events/{{ event.id }}/participants">
+      <input type="number" name="user_id" required>
+      <button type="submit">Add participant</button>
+    </form>
 </body>
 </html>

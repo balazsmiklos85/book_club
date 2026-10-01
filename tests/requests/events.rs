@@ -1,7 +1,9 @@
 use axum::http::{HeaderName, HeaderValue};
 use book_club::app::App;
 use book_club::controllers::events::CreateEventParams;
-use book_club::models::{book_suggestions, books, events as events_model, participants, votes};
+use book_club::models::{
+    book_suggestions, books, events as events_model, participants, users, votes,
+};
 use chrono::NaiveDate;
 use loco_rs::testing::prelude::*;
 use loco_rs::{app::AppContext, TestServer};
@@ -105,6 +107,118 @@ async fn can_get_event_details() {
         then_details_show_the_participants(&body, host.user.id, 4242);
     })
     .await;
+}
+
+#[tokio::test]
+#[serial]
+async fn can_see_participant_names_and_dangling_ids() {
+    request::<App, _, _>(|request, ctx| async move {
+        let host = given_logged_in_user(&request, &ctx).await;
+        let event = given_hosted_event(&ctx, host.user.id).await;
+        let reader = given_user(&ctx, "Second Reader").await;
+        given_participant(&ctx, event.id, reader.id).await;
+        given_participant(&ctx, event.id, 4242).await;
+
+        let body = when_getting_event_details(&request, &host, event.id).await;
+
+        then_details_show_the_participant_name(&body, "Second Reader");
+        then_details_show_the_dangling_participant(&body, 4242);
+    })
+    .await;
+}
+
+fn then_details_show_the_participant_name(body: &str, name: &str) {
+    assert!(
+        body.contains(name),
+        "the details page should show the participant name {name}, got: {body}"
+    );
+}
+
+fn then_details_show_the_dangling_participant(body: &str, user_id: i64) {
+    assert!(
+        body.contains(&format!("[{user_id}]")),
+        "the details page should show the dangling participant as [{user_id}], got: {body}"
+    );
+}
+
+async fn given_user(ctx: &AppContext, name: &str) -> users::Model {
+    let email = format!("{}@example.com", name.to_lowercase().replace(' ', "-"));
+    users::ActiveModel::create_with_password(
+        &ctx.db,
+        &users::RegisterParams {
+            email,
+            password: "1234".to_string(),
+            name: name.to_string(),
+        },
+    )
+    .await
+    .unwrap()
+}
+
+#[tokio::test]
+#[serial]
+async fn can_add_participant_by_user_id() {
+    request::<App, _, _>(|request, ctx| async move {
+        let host = given_logged_in_user(&request, &ctx).await;
+        let event = given_hosted_event(&ctx, host.user.id).await;
+
+        when_adding_participant(&request, &host, event.id, 77).await;
+
+        let body = when_getting_event_details(&request, &host, event.id).await;
+        then_details_show_participant(&body, 77);
+    })
+    .await;
+}
+
+#[tokio::test]
+#[serial]
+async fn cannot_add_the_same_participant_twice() {
+    request::<App, _, _>(|request, ctx| async move {
+        let host = given_logged_in_user(&request, &ctx).await;
+        let event = given_hosted_event(&ctx, host.user.id).await;
+
+        when_adding_participant(&request, &host, event.id, 77).await;
+        when_adding_participant(&request, &host, event.id, 77).await;
+
+        let body = when_getting_event_details(&request, &host, event.id).await;
+        then_details_show_participant(&body, 77);
+    })
+    .await;
+}
+
+async fn when_adding_participant(
+    request: &TestServer,
+    user: &prepare_data::LoggedInUser,
+    event_id: i64,
+    participant_id: i64,
+) {
+    let res = request
+        .post(&format!("/events/{event_id}/participants"))
+        .add_header(
+            HeaderName::from_static("cookie"),
+            HeaderValue::from_str(&format!("token={}", user.token)).unwrap(),
+        )
+        .form(&serde_json::json!({ "user_id": participant_id }))
+        .await;
+    assert_eq!(
+        res.status_code(),
+        303,
+        "expected a redirect back to the details page, got: {}",
+        res.text()
+    );
+}
+
+fn then_details_show_participant(body: &str, user_id: i64) {
+    let marker = format!(r#"data-user-id="{user_id}""#);
+    assert!(
+        body.contains(&marker),
+        "the details page should list the participant {user_id}, got: {body}"
+    );
+    assert_eq!(
+        body.matches(&marker).count(),
+        1,
+        "the details page should list the participant {user_id} exactly once, got: {body}"
+    );
 }
 
 async fn given_participant(ctx: &AppContext, event_id: i64, user_id: i64) {

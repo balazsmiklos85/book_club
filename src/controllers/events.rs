@@ -52,6 +52,12 @@ pub async fn create(
     Ok(Redirect::to("/").into_response())
 }
 
+#[derive(Debug, FromQueryResult, Serialize)]
+pub struct ParticipantRow {
+    pub user_id: i64,
+    pub name: Option<String>,
+}
+
 #[debug_handler]
 pub async fn details(
     Extension(_user): Extension<users::Model>,
@@ -78,19 +84,51 @@ pub async fn details(
         .one(&ctx.db)
         .await?;
 
-    let participant_ids: Vec<i64> = participants::Entity::find()
+    let participants: Vec<ParticipantRow> = participants::Entity::find()
+        .join(
+            JoinType::LeftJoin,
+            participants::Entity::belongs_to(users::Entity)
+                .from(participants::Column::UserId)
+                .to(users::Column::Id)
+                .into(),
+        )
         .filter(participants::Column::EventId.eq(id))
+        .select_only()
+        .column_as(participants::Column::UserId, "user_id")
+        .column_as(users::Column::Name, "name")
+        .into_model::<ParticipantRow>()
         .all(&ctx.db)
-        .await?
-        .into_iter()
-        .map(|part| part.user_id)
-        .collect();
+        .await?;
 
     format::render().view(
         &v,
         "events/details.html",
-        serde_json::json!({"event": event, "participants": participant_ids}),
+        serde_json::json!({"event": event, "participants": participants}),
     )
+}
+
+#[derive(Deserialize)]
+pub struct NewParticipantParams {
+    pub user_id: i64,
+}
+
+#[debug_handler]
+pub async fn add_participant(
+    Extension(_user): Extension<users::Model>,
+    State(ctx): State<AppContext>,
+    Path(id): Path<i64>,
+    Form(params): Form<NewParticipantParams>,
+) -> Result<Response> {
+    participants::Entity::insert(participants::ActiveModel {
+        event_id: Set(id),
+        user_id: Set(params.user_id),
+        ..Default::default()
+    })
+    .on_conflict_do_nothing_on([participants::Column::EventId, participants::Column::UserId])
+    .exec(&ctx.db)
+    .await?;
+
+    Ok(Redirect::to(&format!("/events/{id}")).into_response())
 }
 
 #[debug_handler]
@@ -169,4 +207,5 @@ pub fn routes() -> Routes {
         .add("/", post(create))
         .add("/new", get(new))
         .add("/{id}", get(details))
+        .add("/{id}/participants", post(add_participant))
 }
