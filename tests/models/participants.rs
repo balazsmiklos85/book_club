@@ -69,12 +69,10 @@ async fn given_event(db: &DatabaseConnection) -> i64 {
     .unwrap();
     events::ActiveModel {
         book_id: Set(book.id),
-        event_date: Set(
-            NaiveDate::from_ymd_opt(2026, 12, 1)
-                .unwrap()
-                .and_hms_opt(0, 0, 0)
-                .unwrap(),
-        ),
+        event_date: Set(NaiveDate::from_ymd_opt(2026, 12, 1)
+            .unwrap()
+            .and_hms_opt(0, 0, 0)
+            .unwrap()),
         ..Default::default()
     }
     .insert(db)
