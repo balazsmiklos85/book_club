@@ -136,6 +136,7 @@ mod tests {
             email_verified_at: None,
             magic_link_token: None,
             magic_link_expiration: None,
+            is_admin: false,
             created_at: chrono::Utc::now().into(),
             updated_at: chrono::Utc::now().into(),
         }

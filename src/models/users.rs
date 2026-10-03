@@ -108,6 +108,7 @@ impl ActiveModel {
             email: ActiveValue::set(params.email.clone()),
             password: ActiveValue::set(password_hash),
             name: ActiveValue::set(params.name.clone()),
+            is_admin: ActiveValue::set(false),
             ..Default::default()
         }
         .insert(&txn)

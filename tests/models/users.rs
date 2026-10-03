@@ -114,6 +114,59 @@ async fn can_find_by_email() {
 
 #[tokio::test]
 #[serial]
+async fn create_with_password_defaults_to_non_admin() {
+    let boot = boot_test::<App>()
+        .await
+        .expect("Failed to boot test application");
+
+    let user = ActiveModel::create_with_password(
+        &boot.app_context.db,
+        &RegisterParams {
+            email: "non-admin@framework.com".to_string(),
+            password: "1234".to_string(),
+            name: "framework".to_string(),
+        },
+    )
+    .await
+    .expect("a user should be created");
+
+    assert!(
+        !user.is_admin,
+        "a user created through create_with_password must not be an admin"
+    );
+}
+
+#[tokio::test]
+#[serial]
+async fn can_persist_admin_flag() {
+    let boot = boot_test::<App>()
+        .await
+        .expect("Failed to boot test application");
+
+    let admin = users::ActiveModel {
+        email: ActiveValue::set("admin@framework.com".to_string()),
+        password: ActiveValue::set("1234".to_string()),
+        name: ActiveValue::set("admin".to_string()),
+        is_admin: ActiveValue::set(true),
+        ..Default::default()
+    }
+    .insert(&boot.app_context.db)
+    .await
+    .expect("an admin user should be created");
+
+    assert!(admin.is_admin, "the admin flag must be set on insert");
+
+    let fetched = Entity::find_by_email(&boot.app_context.db, "admin@framework.com")
+        .await
+        .expect("the admin user should be found");
+    assert!(
+        fetched.is_admin,
+        "the admin flag must survive a database round-trip"
+    );
+}
+
+#[tokio::test]
+#[serial]
 async fn can_find_by_pid() {
     configure_insta!();
 

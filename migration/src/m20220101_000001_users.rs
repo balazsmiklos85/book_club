@@ -27,6 +27,7 @@ impl MigrationTrait for Migration {
                 ("email_verified_at", ColType::TimestampWithTimeZoneNull),
                 ("magic_link_token", ColType::StringNull),
                 ("magic_link_expiration", ColType::TimestampWithTimeZoneNull),
+                ("is_admin", ColType::Boolean),
             ],
             &[],
         )
