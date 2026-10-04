@@ -76,3 +76,61 @@ async fn then_other_book_keeps_suggestions(db: &DatabaseConnection, other: i64) 
         "other book suggestions should be kept, got {remaining:?}"
     );
 }
+
+#[tokio::test]
+#[serial]
+async fn given_description_when_suggesting_then_description_round_trips() {
+    let db = given_seeded_db().await;
+    let book_id = given_book(&db, "Described Book", "https://example.com/described-book").await;
+
+    when_creating_suggestion(&db, book_id, 1, Some("A gripping tale".to_string())).await;
+    when_creating_suggestion(&db, book_id, 2, None).await;
+
+    then_suggestion_has_description(&db, book_id, 1, Some("A gripping tale".to_string())).await;
+    then_suggestion_has_description(&db, book_id, 2, None).await;
+}
+
+async fn given_book(db: &DatabaseConnection, title: &str, url: &str) -> i64 {
+    books::ActiveModel {
+        title: Set(title.to_string()),
+        url: Set(url.to_string()),
+        ..Default::default()
+    }
+    .insert(db)
+    .await
+    .unwrap()
+    .id
+}
+
+async fn when_creating_suggestion(
+    db: &DatabaseConnection,
+    book_id: i64,
+    user_id: i64,
+    description: Option<String>,
+) {
+    book_suggestions::ActiveModel {
+        book_id: Set(book_id),
+        user_id: Set(user_id),
+        description: Set(description),
+        ..Default::default()
+    }
+    .insert(db)
+    .await
+    .unwrap();
+}
+
+async fn then_suggestion_has_description(
+    db: &DatabaseConnection,
+    book_id: i64,
+    user_id: i64,
+    expected: Option<String>,
+) {
+    let suggestion = book_suggestions::Entity::find_by_book_and_user(db, book_id, user_id)
+        .await
+        .unwrap();
+    assert!(
+        suggestion.description == expected,
+        "suggestion for book {book_id} by user {user_id} should have description {expected:?}, got {:?}",
+        suggestion.description
+    );
+}

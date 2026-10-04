@@ -13,6 +13,7 @@ pub struct CreateBookParams {
     title: String,
     author: Option<String>,
     url: String,
+    description: Option<String>,
 }
 
 #[debug_handler]
@@ -32,6 +33,7 @@ pub async fn create(
     let suggestion = book_suggestions::ActiveModel {
         book_id: Set(book.id),
         user_id: Set(user.id),
+        description: Set(params.description),
         ..Default::default()
     };
     suggestion.suggest(&ctx.db).await?;

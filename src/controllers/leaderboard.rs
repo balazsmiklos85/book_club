@@ -171,6 +171,7 @@ mod tests {
             id: 0,
             book_id,
             user_id,
+            description: None,
             created_at: chrono::Utc::now().into(),
             updated_at: chrono::Utc::now().into(),
         }

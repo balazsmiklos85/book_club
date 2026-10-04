@@ -17,7 +17,11 @@ impl MigrationTrait for Migration {
         create_table(
             m,
             "book_suggestions",
-            &[("id", ColType::PkAuto), ("user_id", ColType::BigInteger)],
+            &[
+                ("id", ColType::PkAuto),
+                ("user_id", ColType::BigInteger),
+                ("description", ColType::TextNull),
+            ],
             &[("book", "")],
         )
         .await?;

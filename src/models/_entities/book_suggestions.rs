@@ -12,6 +12,8 @@ pub struct Model {
     pub id: i64,
     #[sea_orm(unique_key = "unique")]
     pub user_id: i64,
+    #[sea_orm(column_type = "Text", nullable)]
+    pub description: Option<String>,
     #[sea_orm(unique_key = "unique")]
     pub book_id: i64,
 }
