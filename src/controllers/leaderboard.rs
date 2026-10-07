@@ -17,7 +17,15 @@ pub async fn home(
         users::Entity::find().all(&ctx.db)
     )?;
     let rows = aggregate_votes(&user, books, &votes, users, suggestions);
-    format::render().view(&v, "leaderboard.html", serde_json::json!({ "books": rows}))
+    format::render().view(
+        &v,
+        "leaderboard.html",
+        serde_json::json!({
+            "books": rows,
+            "is_admin": user.is_admin,
+            "user_id": user.id,
+        }),
+    )
 }
 
 fn aggregate_suggestions(

@@ -42,10 +42,17 @@ pub async fn create(
 
 #[debug_handler]
 pub async fn new(
-    Extension(_user): Extension<users::Model>,
+    Extension(user): Extension<users::Model>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<Response> {
-    format::render().view(&v, "books/new.html", serde_json::json!({}))
+    format::render().view(
+        &v,
+        "books/new.html",
+        serde_json::json!({
+            "is_admin": user.is_admin,
+            "user_id": user.id,
+        }),
+    )
 }
 
 #[debug_handler]

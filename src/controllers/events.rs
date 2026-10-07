@@ -60,7 +60,7 @@ pub struct ParticipantRow {
 
 #[debug_handler]
 pub async fn details(
-    Extension(_user): Extension<users::Model>,
+    Extension(user): Extension<users::Model>,
     ViewEngine(v): ViewEngine<TeraView>,
     State(ctx): State<AppContext>,
     Path(id): Path<i64>,
@@ -103,7 +103,12 @@ pub async fn details(
     format::render().view(
         &v,
         "events/details.html",
-        serde_json::json!({"event": event, "participants": participants}),
+        serde_json::json!({
+            "event": event,
+            "participants": participants,
+            "is_admin": user.is_admin,
+            "user_id": user.id,
+        }),
     )
 }
 
@@ -133,7 +138,7 @@ pub async fn add_participant(
 
 #[debug_handler]
 pub async fn list(
-    Extension(_user): Extension<users::Model>,
+    Extension(user): Extension<users::Model>,
     ViewEngine(v): ViewEngine<TeraView>,
     State(ctx): State<AppContext>,
 ) -> Result<Response> {
@@ -156,7 +161,15 @@ pub async fn list(
         .all(&ctx.db)
         .await?;
 
-    format::render().view(&v, "events/list.html", serde_json::json!({"events": rows}))
+    format::render().view(
+        &v,
+        "events/list.html",
+        serde_json::json!({
+            "events": rows,
+            "is_admin": user.is_admin,
+            "user_id": user.id,
+        }),
+    )
 }
 
 #[derive(Deserialize)]
@@ -173,7 +186,7 @@ struct UserView {
 
 #[debug_handler]
 pub async fn new(
-    Extension(_user): Extension<users::Model>,
+    Extension(user): Extension<users::Model>,
     Query(params): Query<NewEventParams>,
     ViewEngine(v): ViewEngine<TeraView>,
     State(ctx): State<AppContext>,
@@ -196,6 +209,8 @@ pub async fn new(
             "users": user_views,
             "book": book_id,
             "host": host_id,
+            "is_admin": user.is_admin,
+            "user_id": user.id,
         }),
     )
 }
