@@ -1,24 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Register</title>
+    <title>{{ t(key="registration", lang="en-US") }}</title>
 </head>
 <body>
-    <h1>Register</h1>
+    <h1>{{ t(key="registration", lang="en-US") }}</h1>
     <form action="/register" method="POST">
         <div>
-            <label>Name</label>
+            <label>{{ t(key="field-name", lang="en-US") }}:</label>
             <input type="text" name="name" required />
         </div>
         <div>
-            <label>Email</label>
+            <label>{{ t(key="field-email", lang="en-US") }}:</label>
             <input type="email" name="email" required />
         </div>
         <div>
-            <label>Password</label>
+            <label>{{ t(key="field-confirm_email", lang="en-US") }}:</label>
+            <input type="email" name="confirm_email" required />
+        </div>
+        <div>
+            <label>{{ t(key="field-password", lang="en-US") }}:</label>
             <input type="password" name="password" required />
         </div>
-        <button type="submit">Sign Up</button>
+        <div>
+            <label>{{ t(key="field-confirm_password", lang="en-US") }}:</label>
+            <input type="password" name="confirm_password" required />
+        </div>
+        <button type="submit">{{ t(key="registration", lang="en-US") }}</button>
     </form>
+    <a href="/login">{{ t(key="login_here", lang="en-US") }}</a>
 </body>
 </html>
