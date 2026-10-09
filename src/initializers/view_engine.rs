@@ -41,6 +41,8 @@ impl Initializer for ViewEngineInitializer {
             engines::TeraView::build()?
         };
 
-        Ok(router.layer(Extension(ViewEngine::from(tera_engine))))
+        Ok(router
+            .layer(Extension(ViewEngine::from(tera_engine)))
+            .layer(axum::middleware::from_fn(crate::i18n::resolve_locale_middleware)))
     }
 }

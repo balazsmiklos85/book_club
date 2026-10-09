@@ -4,9 +4,11 @@ use axum::Extension;
 use loco_rs::prelude::*;
 use std::collections::HashMap;
 use std::collections::HashSet;
+use unic_langid::LanguageIdentifier;
 
 pub async fn home(
     Extension(user): Extension<users::Model>,
+    Extension(locale): Extension<LanguageIdentifier>,
     ViewEngine(v): ViewEngine<TeraView>,
     State(ctx): State<AppContext>,
 ) -> Result<Response> {
@@ -24,6 +26,7 @@ pub async fn home(
             "books": rows,
             "is_admin": user.is_admin,
             "user_id": user.id,
+            "lang": locale.to_string(),
         }),
     )
 }

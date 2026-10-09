@@ -1,13 +1,22 @@
 #![allow(clippy::missing_errors_doc)]
 use crate::models::users::{self, LoginParams, RegisterParams};
-use axum::{extract::Form, response::Redirect};
+use axum::{extract::Form, response::Redirect, Extension};
 use loco_rs::prelude::*;
+use unic_langid::LanguageIdentifier;
 
-pub async fn login_page(ViewEngine(v): ViewEngine<TeraView>) -> Result<Response> {
-    format::render().view(&v, "auth/login.html", serde_json::json!({}))
+pub async fn login_page(
+    Extension(locale): Extension<LanguageIdentifier>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<Response> {
+    format::render().view(
+        &v,
+        "auth/login.html",
+        serde_json::json!({"lang": locale.to_string()}),
+    )
 }
 
 pub async fn login(
+    Extension(locale): Extension<LanguageIdentifier>,
     ViewEngine(v): ViewEngine<TeraView>,
     State(ctx): State<AppContext>,
     Form(params): Form<LoginParams>,
@@ -18,7 +27,10 @@ pub async fn login(
             .view(
                 &v,
                 "auth/login.html",
-                serde_json::json!({"error": "Invalid credentials"}),
+                serde_json::json!({
+                    "error": "Invalid credentials",
+                    "lang": locale.to_string(),
+                }),
             )
             .map(IntoResponse::into_response);
     }
@@ -39,8 +51,15 @@ pub async fn logout() -> Result<Response> {
         .into_response())
 }
 
-pub async fn register_page(ViewEngine(v): ViewEngine<TeraView>) -> Result<Response> {
-    format::render().view(&v, "auth/register.html", serde_json::json!({}))
+pub async fn register_page(
+    Extension(locale): Extension<LanguageIdentifier>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<Response> {
+    format::render().view(
+        &v,
+        "auth/register.html",
+        serde_json::json!({"lang": locale.to_string()}),
+    )
 }
 
 pub async fn register(

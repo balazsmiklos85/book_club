@@ -9,6 +9,7 @@ use chrono::NaiveDate;
 use loco_rs::prelude::*;
 use sea_orm::{ColumnTrait, EntityTrait, FromQueryResult, JoinType, QueryFilter, QuerySelect};
 use serde::{Deserialize, Serialize};
+use unic_langid::LanguageIdentifier;
 
 #[derive(Deserialize, Serialize)]
 pub struct CreateEventParams {
@@ -61,6 +62,7 @@ pub struct ParticipantRow {
 #[debug_handler]
 pub async fn details(
     Extension(user): Extension<users::Model>,
+    Extension(locale): Extension<LanguageIdentifier>,
     ViewEngine(v): ViewEngine<TeraView>,
     State(ctx): State<AppContext>,
     Path(id): Path<i64>,
@@ -108,6 +110,7 @@ pub async fn details(
             "participants": participants,
             "is_admin": user.is_admin,
             "user_id": user.id,
+            "lang": locale.to_string(),
         }),
     )
 }
@@ -139,6 +142,7 @@ pub async fn add_participant(
 #[debug_handler]
 pub async fn list(
     Extension(user): Extension<users::Model>,
+    Extension(locale): Extension<LanguageIdentifier>,
     ViewEngine(v): ViewEngine<TeraView>,
     State(ctx): State<AppContext>,
 ) -> Result<Response> {
@@ -168,6 +172,7 @@ pub async fn list(
             "events": rows,
             "is_admin": user.is_admin,
             "user_id": user.id,
+            "lang": locale.to_string(),
         }),
     )
 }
@@ -187,6 +192,7 @@ struct UserView {
 #[debug_handler]
 pub async fn new(
     Extension(user): Extension<users::Model>,
+    Extension(locale): Extension<LanguageIdentifier>,
     Query(params): Query<NewEventParams>,
     ViewEngine(v): ViewEngine<TeraView>,
     State(ctx): State<AppContext>,
@@ -211,6 +217,7 @@ pub async fn new(
             "host": host_id,
             "is_admin": user.is_admin,
             "user_id": user.id,
+            "lang": locale.to_string(),
         }),
     )
 }

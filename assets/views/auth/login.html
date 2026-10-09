@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{ t(key="login", lang="en-US") }}</title>
+    <title>{{ t(key="login", lang=lang) }}</title>
 </head>
 <body>
-    <h1>{{ t(key="login", lang="en-US") }}</h1>
+    <h1>{{ t(key="login", lang=lang) }}</h1>
     <form action="/login" method="POST">
         <div>
-            <label>{{ t(key="field-email", lang="en-US") }}:</label>
+            <label>{{ t(key="field-email", lang=lang) }}:</label>
             <input type="email" name="email" required />
         </div>
         <div>
-            <label>{{ t(key="field-password", lang="en-US") }}:</label>
+            <label>{{ t(key="field-password", lang=lang) }}:</label>
             <input type="password" name="password" required />
         </div>
-        <button type="submit">🔓{{ t(key="login", lang="en-US") }}</button>
+        <button type="submit">🔓{{ t(key="login", lang=lang) }}</button>
     </form>
-    <a href="/register">{{ t(key="register_here", lang="en-US") }}</a>
+    <a href="/register">{{ t(key="register_here", lang=lang) }}</a>
 </body>
 </html>

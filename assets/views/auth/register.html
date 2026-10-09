@@ -1,33 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{ t(key="registration", lang="en-US") }}</title>
+    <title>{{ t(key="registration", lang=lang) }}</title>
 </head>
 <body>
-    <h1>{{ t(key="registration", lang="en-US") }}</h1>
+    <h1>{{ t(key="registration", lang=lang) }}</h1>
     <form action="/register" method="POST">
         <div>
-            <label>{{ t(key="field-name", lang="en-US") }}:</label>
+            <label>{{ t(key="field-name", lang=lang) }}:</label>
             <input type="text" name="name" required />
         </div>
         <div>
-            <label>{{ t(key="field-email", lang="en-US") }}:</label>
+            <label>{{ t(key="field-email", lang=lang) }}:</label>
             <input type="email" name="email" required />
         </div>
         <div>
-            <label>{{ t(key="field-confirm_email", lang="en-US") }}:</label>
+            <label>{{ t(key="field-confirm_email", lang=lang) }}:</label>
             <input type="email" name="confirm_email" required />
         </div>
         <div>
-            <label>{{ t(key="field-password", lang="en-US") }}:</label>
+            <label>{{ t(key="field-password", lang=lang) }}:</label>
             <input type="password" name="password" required />
         </div>
         <div>
-            <label>{{ t(key="field-confirm_password", lang="en-US") }}:</label>
+            <label>{{ t(key="field-confirm_password", lang=lang) }}:</label>
             <input type="password" name="confirm_password" required />
         </div>
-        <button type="submit">{{ t(key="registration", lang="en-US") }}</button>
+        <button type="submit">{{ t(key="registration", lang=lang) }}</button>
     </form>
-    <a href="/login">{{ t(key="login_here", lang="en-US") }}</a>
+    <a href="/login">{{ t(key="login_here", lang=lang) }}</a>
 </body>
 </html>

@@ -50,7 +50,7 @@ fn renders_menu_fragment_with_admin_gate() {
     let admin = view
         .render(
             "menu.html",
-            serde_json::json!({"is_admin": true, "user_id": 1}),
+            serde_json::json!({"is_admin": true, "user_id": 1, "lang": "en-US"}),
         )
         .expect("menu fragment should render for an admin");
     for link in [
@@ -92,7 +92,7 @@ fn renders_menu_fragment_with_admin_gate() {
     let member = view
         .render(
             "menu.html",
-            serde_json::json!({"is_admin": false, "user_id": 1}),
+            serde_json::json!({"is_admin": false, "user_id": 1, "lang": "en-US"}),
         )
         .expect("menu fragment should render for a member");
     assert!(
@@ -134,5 +134,90 @@ fn renders_menu_fragment_with_admin_gate() {
             "menu links should appear in order (Leaderboard, Events, Profile, Users, Logout); {href} at {pos} is not after the previous link at {prev}; got: {member}"
         );
         prev = pos;
+    }
+}
+
+/// Guard: every template that reads `lang` from the context (`lang=lang`) must
+/// actually REQUIRE it — rendering without `lang` must fail, and rendering with
+/// `lang` must succeed.
+///
+/// This is what makes a render site that forgets to inject `lang` a runtime
+/// error (Tera "variable not found") rather than a silent fallback. Walking the
+/// templates (rather than testing each route) means a new template that adopts
+/// `lang=lang` is covered automatically, without a new test.
+#[test]
+fn templates_using_lang_require_lang_in_context() {
+    use std::fs;
+    use std::path::Path;
+
+    let view = build_view();
+    let views_dir = Path::new("assets/views");
+
+    /// Recursively collect all `.html` files under `dir`.
+    fn collect_html_files(dir: &Path, out: &mut Vec<std::path::PathBuf>) {
+        let entries = fs::read_dir(dir).expect("views dir should be readable");
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if path.is_dir() {
+                collect_html_files(&path, out);
+            } else if path.extension().is_some_and(|ext| ext == "html") {
+                out.push(path);
+            }
+        }
+    }
+
+    let mut html_files = Vec::new();
+    collect_html_files(views_dir, &mut html_files);
+
+    let mut lang_templates = Vec::new();
+    for path in &html_files {
+        let content = fs::read_to_string(path).expect("template should be readable");
+        if content.contains("lang=lang") {
+            lang_templates.push(path.clone());
+        }
+    }
+
+    assert!(
+        !lang_templates.is_empty(),
+        "expected at least one template to use lang=lang, but found none — \
+         the guard would be vacuous"
+    );
+
+    /// The context each `lang=lang` template needs besides `lang`. Templates
+    /// that don't use a variable simply ignore the extra keys.
+    fn context_for(template: &str, with_lang: bool) -> serde_json::Value {
+        let mut ctx = serde_json::json!({});
+        if with_lang {
+            ctx["lang"] = serde_json::json!("en-US");
+        }
+        if template.contains("menu.html") {
+            ctx["is_admin"] = serde_json::json!(true);
+            ctx["user_id"] = serde_json::json!(1);
+        }
+        ctx
+    }
+
+    for template in &lang_templates {
+        let relative = template
+            .strip_prefix(views_dir)
+            .expect("template should be under the views dir")
+            .display()
+            .to_string();
+
+        // Without `lang`, the template must fail — this is what turns a render
+        // site that forgets to inject `lang` into a loud runtime error.
+        let without_lang = view.render(&relative, context_for(&relative, false));
+        assert!(
+            without_lang.is_err(),
+            "template {relative} uses lang=lang but rendered WITHOUT lang — \
+             a render site that forgets to inject `lang` would silently render \
+             in the wrong locale instead of failing loudly"
+        );
+
+        // With `lang`, the template must render successfully.
+        view.render(&relative, context_for(&relative, true))
+            .unwrap_or_else(|e| panic!(
+                "template {relative} uses lang=lang but failed to render with lang provided: {e}"
+            ));
     }
 }

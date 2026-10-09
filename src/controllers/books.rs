@@ -7,6 +7,7 @@ use axum::response::Redirect;
 use axum::Extension;
 use loco_rs::prelude::*;
 use serde::Deserialize;
+use unic_langid::LanguageIdentifier;
 
 #[derive(Deserialize)]
 pub struct CreateBookParams {
@@ -43,6 +44,7 @@ pub async fn create(
 #[debug_handler]
 pub async fn new(
     Extension(user): Extension<users::Model>,
+    Extension(locale): Extension<LanguageIdentifier>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<Response> {
     format::render().view(
@@ -51,6 +53,7 @@ pub async fn new(
         serde_json::json!({
             "is_admin": user.is_admin,
             "user_id": user.id,
+            "lang": locale.to_string(),
         }),
     )
 }

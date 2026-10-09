@@ -1,11 +1,11 @@
-<h1>{{ t(key="book_club", lang="en-US") }}</h1>
+<h1>{{ t(key="book_club", lang=lang) }}</h1>
 <ul>
-  <li style="display: inline"><a href="/">📊{{ t(key="leaderboard", lang="en-US") }}</a></li>
-  <li style="display: inline"><a href="/events/">📆{{ t(key="events", lang="en-US") }}</a></li>
-  <li style="display: inline"><a href="/users/{{ user_id }}">👤{{ t(key="user-profile", lang="en-US") }}</a></li>
-  <li style="display: inline"><a href="/users">📋{{ t(key="users", lang="en-US") }}</a></li>
+  <li style="display: inline"><a href="/">📊{{ t(key="leaderboard", lang=lang) }}</a></li>
+  <li style="display: inline"><a href="/events/">📆{{ t(key="events", lang=lang) }}</a></li>
+  <li style="display: inline"><a href="/users/{{ user_id }}">👤{{ t(key="user-profile", lang=lang) }}</a></li>
+  <li style="display: inline"><a href="/users">📋{{ t(key="users", lang=lang) }}</a></li>
   {% if is_admin %}
-  <li style="display: inline"><a href="/vote/matrix">🔧{{ t(key="matrix", lang="en-US") }}</a></li>
+  <li style="display: inline"><a href="/vote/matrix">🔧{{ t(key="matrix", lang=lang) }}</a></li>
   {% endif %}
-  <li style="display: inline"><a href="/logout">🚪{{ t(key="logout", lang="en-US") }}</a></li>
+  <li style="display: inline"><a href="/logout">🚪{{ t(key="logout", lang=lang) }}</a></li>
 </ul>
