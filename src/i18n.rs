@@ -72,13 +72,12 @@ pub fn resolve_locale(accept_language: Option<&str>) -> LanguageIdentifier {
 ///
 /// Handlers read the resolved locale with the `Extension<LanguageIdentifier>`
 /// extractor and inject it into the render context (see the controllers).
-pub async fn resolve_locale_middleware(request: Request<Body>, next: Next) -> Response {
+pub async fn resolve_locale_middleware(mut request: Request<Body>, next: Next) -> Response {
     let accept_language = request
         .headers()
         .get(ACCEPT_LANGUAGE)
         .and_then(|value| value.to_str().ok());
     let locale = resolve_locale(accept_language);
-    let mut request = request;
     request.extensions_mut().insert(locale);
     next.run(request).await
 }
@@ -109,14 +108,13 @@ fn parse_accept_language(header: &str) -> Vec<Candidate> {
         .collect()
 }
 
-/// Pull the `q=` value out of a parameter list such as `q=0.9, foo=bar`.
+/// Pull the `q=` value out of a parameter string such as `q=0.9`.
 fn parse_quality(params: &str) -> Option<f64> {
-    params.split(',').find_map(|param| {
-        param
-            .trim()
-            .strip_prefix("q=")
-            .and_then(|value| value.trim().parse::<f64>().ok())
-    })
+    params
+        .strip_prefix("q=")?
+        .trim()
+        .parse::<f64>()
+        .ok()
 }
 
 /// Map a single language tag onto a registered locale, if we have one.
