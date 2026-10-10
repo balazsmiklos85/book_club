@@ -122,29 +122,16 @@ fn parse_quality(params: &str) -> Option<f64> {
 /// Map a single language tag onto a registered locale, if we have one.
 ///
 /// A bare `*` wildcard matches the default. Otherwise we match on the language
-/// subtag (case-insensitively) and, when the tag carries a region, prefer a
-/// registered locale that shares it.
+/// subtag (case-insensitively) and ignore any region subtag.
 fn match_registered(tag: &str) -> Option<LanguageIdentifier> {
     if tag == "*" {
         return Some(DEFAULT_LOCALE);
     }
 
-    let mut parts = tag.split('-');
-    let language = parts.next()?.to_lowercase();
-    let region = parts.next().map(str::to_lowercase);
-
-    let language_matches: Vec<LanguageIdentifier> = REGISTERED_LOCALES
+    let language = tag.split('-').next()?.to_lowercase();
+    REGISTERED_LOCALES
         .iter()
-        .filter(|locale| locale_language(locale) == language)
-        .cloned()
-        .collect();
-
-    // Prefer a locale that also matches the region (when the tag carries one);
-    // otherwise the first registered locale for this language.
-    language_matches
-        .iter()
-        .find(|locale| locale_region(locale) == region)
-        .or_else(|| language_matches.first())
+        .find(|locale| locale_language(locale) == language)
         .cloned()
 }
 
@@ -156,11 +143,6 @@ fn locale_language(locale: &LanguageIdentifier) -> String {
         .next()
         .unwrap_or("")
         .to_lowercase()
-}
-
-/// Lowercased region subtag of a locale, if it has one (`en-US` -> `us`).
-fn locale_region(locale: &LanguageIdentifier) -> Option<String> {
-    locale.to_string().split('-').nth(1).map(str::to_lowercase)
 }
 
 #[cfg(test)]
