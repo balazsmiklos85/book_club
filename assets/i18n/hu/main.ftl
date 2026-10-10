@@ -38,6 +38,7 @@ login = Bejelentkezés
 login_here = Jelentkezz be itt
 logout = Kijelentkezés
 matrix = Szavazási mátrix
+password-mismatch = A jelszó és a megerősítés nem egyezik meg
 password-reset = Jelszóváltoztatás
 register_here = Regisztrálj itt
 registration = Regisztráció

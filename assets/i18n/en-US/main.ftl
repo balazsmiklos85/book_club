@@ -49,6 +49,7 @@ login_here = Login here
 logout = Logout
 matrix = Vote Matrix
 password-reset = Password reset
+password-mismatch = Password and confirmation do not match
 register_here = Register here
 registration = Registration
 suggestion-delete = Remove suggestion

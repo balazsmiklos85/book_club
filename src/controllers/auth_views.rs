@@ -63,9 +63,23 @@ pub async fn register_page(
 }
 
 pub async fn register(
+    Extension(locale): Extension<LanguageIdentifier>,
+    ViewEngine(v): ViewEngine<TeraView>,
     State(ctx): State<AppContext>,
     Form(params): Form<RegisterParams>,
 ) -> Result<Response> {
+    if params.confirm_email != params.email || params.confirm_password != params.password {
+        return format::render()
+            .view(
+                &v,
+                "auth/register.html",
+                serde_json::json!({
+                    "error": "password-mismatch",
+                    "lang": locale.to_string(),
+                }),
+            )
+            .map(IntoResponse::into_response);
+    }
     users::ActiveModel::create_with_password(&ctx.db, &params).await?;
     Ok(Redirect::to("/register").into_response())
 }

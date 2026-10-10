@@ -5,6 +5,9 @@
 </head>
 <body>
     <h1>{{ t(key="registration", lang=lang) }}</h1>
+    {% if error %}
+    <p style="color:red;">{{ t(key=error, lang=lang) }}</p>
+    {% endif %}
     <form action="/register" method="POST">
         <div>
             <label>{{ t(key="field-name", lang=lang) }}:</label>

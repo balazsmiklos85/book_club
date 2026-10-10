@@ -42,6 +42,7 @@ login = Anmelden
 login_here = Hier anmelden
 logout = Abmelden
 matrix = Abstimmungsmatrix
+password-mismatch = Passwort und Bestätigung stimmen nicht überein
 password-reset = Passwort zurücksetzen
 register_here = Hier registrieren
 registration = Registrierung
