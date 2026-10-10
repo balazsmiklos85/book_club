@@ -16,6 +16,8 @@ pub struct RegisterParams {
     pub email: String,
     pub password: String,
     pub name: String,
+    pub confirm_email: String,
+    pub confirm_password: String,
 }
 
 #[derive(Debug, Validate, Deserialize)]

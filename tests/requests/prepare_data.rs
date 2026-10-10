@@ -17,6 +17,8 @@ pub async fn init_user_login(request: &TestServer, ctx: &AppContext) -> LoggedIn
             email: USER_EMAIL.to_string(),
             password: USER_PASSWORD.to_string(),
             name: "loco".to_string(),
+            confirm_email: USER_EMAIL.to_string(),
+            confirm_password: USER_PASSWORD.to_string(),
         })
         .await;
 

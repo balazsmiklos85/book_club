@@ -146,9 +146,11 @@ async fn given_user(ctx: &AppContext, name: &str) -> users::Model {
     users::ActiveModel::create_with_password(
         &ctx.db,
         &users::RegisterParams {
-            email,
+            email: email.clone(),
             password: "1234".to_string(),
             name: name.to_string(),
+            confirm_email: email.clone(),
+            confirm_password: "1234".to_string(),
         },
     )
     .await

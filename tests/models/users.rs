@@ -49,6 +49,8 @@ async fn can_create_with_password() {
         email: "test@framework.com".to_string(),
         password: "1234".to_string(),
         name: "framework".to_string(),
+        confirm_email: "test@framework.com".to_string(),
+        confirm_password: "1234".to_string(),
     };
 
     let user = ActiveModel::create_with_password(&boot.app_context.db, &params)
@@ -84,6 +86,8 @@ async fn handle_create_with_password_with_duplicate() {
             email: "user1@example.com".to_string(),
             password: "1234".to_string(),
             name: "framework".to_string(),
+            confirm_email: "user1@example.com".to_string(),
+            confirm_password: "1234".to_string(),
         },
     )
     .await;
@@ -125,6 +129,8 @@ async fn create_with_password_defaults_to_non_admin() {
             email: "non-admin@framework.com".to_string(),
             password: "1234".to_string(),
             name: "framework".to_string(),
+            confirm_email: "non-admin@framework.com".to_string(),
+            confirm_password: "1234".to_string(),
         },
     )
     .await
