@@ -1,29 +1,60 @@
 <!DOCTYPE html>
 <html>
-<head><title>Leaderboard</title></head>
+<head><title>{{ t(key="leaderboard", lang=lang) }}</title></head>
 <body>
-    <h1>Leaderboard</h1>
-    <a href="/events">Events</a>
-    <a href="/logout">Logout</a>
-    <ul>{% for book in books %}
+    {% include "menu.html" %}
+    <h2>{{ t(key="leaderboard", lang=lang) }}</h2>
+    <ol>
+    {% for book in books %}
     <li>
-    {{ book.title }}{% if book.author %} by {{ book.author }}{% endif %}
-    — {{ book.votes }} vote{{ book.votes | pluralize }}
-    <form method="post" action="/books/{{ book.id }}/{% if book.voted %}unvote{% else %}vote{% endif %}" style="display:inline">
-        <button type="submit">{% if book.voted %}Unvote{% else %}Vote{% endif %}</button>
-    </form>
-    {% for suggester in book.suggesters %}
-    <div>
-        Suggested by: {{ suggester.name }}
-        <form method="get" action="/events/new">
-          <input type="hidden" name="book_id" value="{{ book.id }}" />
-          <input type="hidden" name="host_id" value="{{ suggester.id }}" />
-	  <button type="submit">Create event</button>
+        <span>
+        {% if book.is_new %}<span>🆕</span>{% endif %}
+        <a href="{{ book.url }}">{{ book.author }}: {{ book.title }}</a>
+        {% if book.is_new %}<span>🆕</span>{% endif %}
+        <br />
+        {% for suggester in book.suggesters %}
+        <div>
+            <span>{{ t(key="field-recommender", lang=lang) }}: </span>
+            <a href="/books/{{ book.id }}/suggestions">{{ suggester.name }}</a>
+            <form method="post" action="/books/{{ book.id }}/suggestions/{{ suggester.id }}/delete" style="display: inline;">
+                <button type="submit">🗑️{{ t(key="suggestion-delete", lang=lang) }}</button>
+            </form>
+        </div>
+        {% endfor %}
+        <div>
+            {% for voter in book.voters %}
+            <img src="https://gravatar.com/avatar/{{ voter.gravatar_hash }}?s=16&d=identicon" alt="voter avatar" />
+            {% endfor %}
+        </div>
+        </span>
+        {% if book.voted %}
+        <form method="post" action="/books/{{ book.id }}/unvote" style="display: inline;">
+            <button type="submit">👎{{ t(key="button-unvote", lang=lang) }}</button>
         </form>
-    </div>
-    {% endfor %}
+        {% else %}
+        <form method="post" action="/books/{{ book.id }}/vote" style="display: inline;">
+            <button type="submit">👍{{ t(key="button-vote", lang=lang) }}</button>
+        </form>
+        {% endif %}
+        {% if is_admin %}
+        {% for suggester in book.suggesters %}
+        <form method="get" action="/events/new" style="display: inline;">
+            <input type="hidden" name="book_id" value="{{ book.id }}" />
+            <input type="hidden" name="host_id" value="{{ suggester.user_id }}" />
+            <button type="submit">🗓️{{ t(key="events-new", lang=lang) }}</button>
+        </form>
+        {% endfor %}
+        {% if book.suggesters | length > 0 %}
+        <form method="get" action="/events/new" style="display: inline;" data-admin="true">
+            <input type="hidden" name="book_id" value="{{ book.id }}" />
+            <input type="hidden" name="host_id" value="{{ book.suggesters[0].user_id }}" />
+            <button type="submit">🗓️{{ t(key="events-new", lang=lang) }}</button>
+        </form>
+        {% endif %}
+        {% endif %}
     </li>
-    {% endfor %}</ul>
-    <a href="/books/new">Add a book</a>
+    {% endfor %}
+    </ol>
+    <a href="/books/new">📚{{ t(key="book-add_new", lang=lang) }}</a>
 </body>
 </html>

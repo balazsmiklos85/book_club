@@ -169,11 +169,11 @@ fn templates_using_lang_require_lang_in_context() {
     let mut html_files = Vec::new();
     collect_html_files(views_dir, &mut html_files);
 
-    let mut lang_templates = Vec::new();
+    let mut lang_templates: Vec<(std::path::PathBuf, String)> = Vec::new();
     for path in &html_files {
         let content = fs::read_to_string(path).expect("template should be readable");
         if content.contains("lang=lang") {
-            lang_templates.push(path.clone());
+            lang_templates.push((path.clone(), content));
         }
     }
 
@@ -183,21 +183,37 @@ fn templates_using_lang_require_lang_in_context() {
          the guard would be vacuous"
     );
 
-    /// The context each `lang=lang` template needs besides `lang`. Templates
-    /// that don't use a variable simply ignore the extra keys.
-    fn context_for(template: &str, with_lang: bool) -> serde_json::Value {
+    /// Matches the sequence a `{% for x in y %}` tag loops over, capturing `y`.
+    static LOOP_SOURCE: std::sync::LazyLock<regex::Regex> = std::sync::LazyLock::new(|| {
+        regex::Regex::new(r"\{%-?\s*for\s+.*?\s+in\s+([A-Za-z_]\w*)")
+            .expect("loop pattern should compile")
+    });
+
+    /// The context a template needs to render besides `lang`. Derived from the
+    /// template's own source, so a future template is covered without naming
+    /// it here: whatever it loops over gets an empty list, and the menu
+    /// fragment — either rendered directly or included — gets the `user_id`
+    /// and `is_admin` it reads.
+    fn context_for(relative: &str, content: &str, with_lang: bool) -> serde_json::Value {
         let mut ctx = serde_json::json!({});
         if with_lang {
             ctx["lang"] = serde_json::json!("en-US");
         }
-        if template.contains("menu.html") {
+        for name in LOOP_SOURCE
+            .captures_iter(content)
+            .filter_map(|caps| caps.get(1))
+            .map(|m| m.as_str())
+        {
+            ctx[name] = serde_json::json!([]);
+        }
+        if relative == "menu.html" || content.contains("menu.html") {
             ctx["is_admin"] = serde_json::json!(true);
             ctx["user_id"] = serde_json::json!(1);
         }
         ctx
     }
 
-    for template in &lang_templates {
+    for (template, content) in &lang_templates {
         let relative = template
             .strip_prefix(views_dir)
             .expect("template should be under the views dir")
@@ -206,7 +222,7 @@ fn templates_using_lang_require_lang_in_context() {
 
         // Without `lang`, the template must fail — this is what turns a render
         // site that forgets to inject `lang` into a loud runtime error.
-        let without_lang = view.render(&relative, context_for(&relative, false));
+        let without_lang = view.render(&relative, context_for(&relative, content, false));
         assert!(
             without_lang.is_err(),
             "template {relative} uses lang=lang but rendered WITHOUT lang — \
@@ -215,7 +231,7 @@ fn templates_using_lang_require_lang_in_context() {
         );
 
         // With `lang`, the template must render successfully.
-        view.render(&relative, context_for(&relative, true))
+        view.render(&relative, context_for(&relative, content, true))
             .unwrap_or_else(|e| panic!(
                 "template {relative} uses lang=lang but failed to render with lang provided: {e}"
             ));

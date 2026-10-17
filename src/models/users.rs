@@ -101,6 +101,7 @@ impl ActiveModel {
             .await?
             .is_some()
         {
+            txn.rollback().await?;
             return Err(ModelError::EntityAlreadyExists {});
         }
 

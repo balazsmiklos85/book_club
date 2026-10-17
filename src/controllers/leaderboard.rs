@@ -31,11 +31,20 @@ pub async fn home(
     )
 }
 
+fn gravatar_hash(email: &str) -> String {
+    format!("{:x}", md5::compute(email.trim().to_lowercase()))
+}
+
+fn is_new(created_at: &sea_orm::prelude::DateTimeWithTimeZone) -> bool {
+    let cutoff = chrono::Utc::now() - chrono::Duration::days(30);
+    created_at.timestamp() > cutoff.timestamp()
+}
+
 fn aggregate_suggestions(
-    users: Vec<crate::models::users::Model>,
+    users: &[crate::models::users::Model],
     suggestions: Vec<crate::models::book_suggestions::Model>,
-) -> HashMap<i64, Vec<(i64, String)>> {
-    let user_names: HashMap<i64, String> = users.into_iter().map(|u| (u.id, u.name)).collect();
+) -> HashMap<i64, Vec<(i64, i64, String)>> {
+    let user_names: HashMap<i64, String> = users.iter().map(|u| (u.id, u.name.clone())).collect();
     suggestions.into_iter().fold(HashMap::new(), |mut acc, s| {
         let display_name = user_names
             .get(&s.user_id)
@@ -43,7 +52,7 @@ fn aggregate_suggestions(
             .unwrap_or_else(|| format!("[{}]", s.user_id));
         acc.entry(s.book_id)
             .or_default()
-            .push((s.user_id, display_name));
+            .push((s.id, s.user_id, display_name));
         acc
     })
 }
@@ -55,10 +64,23 @@ fn aggregate_votes(
     users: Vec<users::Model>,
     suggestions: Vec<book_suggestions::Model>,
 ) -> Vec<sea_orm::prelude::Json> {
-    let suggesters_by_book = aggregate_suggestions(users, suggestions);
+    let user_infos: HashMap<i64, (String, String)> = users
+        .iter()
+        .map(|u| (u.id, (u.name.clone(), u.email.clone())))
+        .collect();
+    let suggesters_by_book = aggregate_suggestions(&users, suggestions);
     let mut votes_on_books: HashMap<i64, i64> = HashMap::new();
     for v in votes {
         *votes_on_books.entry(v.book_id).or_default() += 1;
+    }
+    let mut voters_by_book: HashMap<i64, Vec<serde_json::Value>> = HashMap::new();
+    for v in votes {
+        if let Some((name, email)) = user_infos.get(&v.user_id) {
+            voters_by_book.entry(v.book_id).or_default().push(serde_json::json!({
+                "name": name,
+                "gravatar_hash": gravatar_hash(email),
+            }));
+        }
     }
     let user_votes: HashSet<i64> = votes
         .iter()
@@ -69,15 +91,19 @@ fn aggregate_votes(
         .into_iter()
         .filter(|b| suggesters_by_book.contains_key(&b.id))
         .map(|b| {
+            let is_new_flag = is_new(&b.created_at);
             serde_json::json!({
                 "id": b.id,
                 "title": b.title,
                 "author": b.author,
+                "url": b.url,
                 "votes": votes_on_books.get(&b.id).copied().unwrap_or(0),
                 "voted": user_votes.contains(&b.id),
+                "is_new": is_new_flag,
                 "suggesters": suggesters_by_book.get(&b.id)
-                    .map(|l| l.iter().map(|(id, name)| serde_json::json!({ "id": id, "name": name })).collect::<Vec<_>>())
+                    .map(|l| l.iter().map(|(sid, uid, name)| serde_json::json!({ "id": sid, "user_id": uid, "name": name, "is_of_user": *uid == user.id })).collect::<Vec<_>>())
                     .unwrap_or_default(),
+                "voters": voters_by_book.get(&b.id).cloned().unwrap_or_default(),
             })
         })
         .collect();

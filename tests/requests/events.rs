@@ -488,7 +488,21 @@ async fn then_resuggested_book_has_no_votes(
         "{title} should be back on leaderboard, got: {body}"
     );
     assert!(
-        body.contains("0 votes"),
+        !row_of(&body, title).contains("gravatar.com/avatar/"),
         "re-suggested {title} should carry no old votes, got: {body}"
     );
+}
+
+/// The `<li>` of a single book, so a per-book assertion cannot be satisfied by
+/// another row on the same page.
+fn row_of(body: &str, title: &str) -> String {
+    let start = body
+        .find(&format!("{title}</a>"))
+        .unwrap_or_else(|| panic!("the leaderboard should list {title}, got: {body}"));
+    let open = body[..start].rfind("<li>").expect("the book should sit in an <li>");
+    let end = body[start..]
+        .find("</li>")
+        .map(|offset| start + offset)
+        .unwrap_or(body.len());
+    body[open..end].to_string()
 }

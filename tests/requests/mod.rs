@@ -8,4 +8,6 @@ pub mod events;
 
 pub mod i18n;
 
+pub mod leaderboard;
+
 pub mod locale;

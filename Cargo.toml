@@ -44,6 +44,7 @@ fluent-templates = { version = "0.15", features = ["tera"] }
 unic-langid = { version = "0.9" }
 # /view engine
 axum-extra = { version = "0.10", features = ["cookie", "form"] }
+md5 = "0.7"
 
 [[bin]]
 name = "book_club-cli"
