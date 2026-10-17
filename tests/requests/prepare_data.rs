@@ -43,9 +43,6 @@ pub async fn init_user_login(request: &TestServer, ctx: &AppContext) -> LoggedIn
 /// Promotes the logged-in user to an admin so later tests can exercise the
 /// `is_admin` gates. Returns a refreshed `LoggedInUser` whose `user` reflects
 /// the persisted `is_admin == true` rather than the stale pre-update model.
-///
-/// Added ahead of the tests that use it, so it is intentionally unused for now.
-#[allow(dead_code)]
 pub async fn make_admin(logged_in: LoggedInUser, ctx: &AppContext) -> LoggedInUser {
     let mut active = logged_in.user.into_active_model();
     active.is_admin = ActiveValue::Set(true);

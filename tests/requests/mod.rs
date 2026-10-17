@@ -11,3 +11,5 @@ pub mod i18n;
 pub mod leaderboard;
 
 pub mod locale;
+
+pub mod users;

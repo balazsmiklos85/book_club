@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ t(key="user-profile", lang=lang) }}</title>
+</head>
+<body>
+    {% include "menu.html" %}
+    <h2>{{ t(key="user-profile", lang=lang) }}</h2>
+    <h3>{{ t(key="user-information", lang=lang) }}</h3>
+    <div>
+        <span>{{ t(key="field-name", lang=lang) }}: </span>
+        <span>{{ profile.name }}</span>
+    </div>
+    <div>
+        <span>{{ t(key="field-external_id", lang=lang) }}: </span>
+        <span>{{ profile.id }}</span>
+    </div>
+    <h3>{{ t(key="field-emails", lang=lang) }}: </h3>
+    <div>
+        <ul>
+            <li><span>{{ profile.email }}</span></li>
+        </ul>
+    </div>
+    <h3>{{ t(key="field-password-change", lang=lang) }}</h3>
+    <div>
+        {% if error %}
+        <p style="color:red;">{{ error }}</p>
+        {% endif %}
+        <form action="/users/{{ profile.id }}/password" method="POST">
+            <label>{{ t(key="field-password-old", lang=lang) }}: </label>
+            <input type="password" name="old_password" required />
+            <br />
+            <label>{{ t(key="field-password-new", lang=lang) }}: </label>
+            <input type="password" name="password" required />
+            <br />
+            <label>{{ t(key="field-password-confirm", lang=lang) }}: </label>
+            <input type="password" name="confirm_password" required />
+            <br />
+            <button type="submit">🔑{{ t(key="button-change", lang=lang) }}</button>
+        </form>
+    </div>
+</body>
+</html>

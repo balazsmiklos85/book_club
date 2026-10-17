@@ -185,15 +185,31 @@ fn templates_using_lang_require_lang_in_context() {
 
     /// Matches the sequence a `{% for x in y %}` tag loops over, capturing `y`.
     static LOOP_SOURCE: std::sync::LazyLock<regex::Regex> = std::sync::LazyLock::new(|| {
-        regex::Regex::new(r"\{%-?\s*for\s+.*?\s+in\s+([A-Za-z_]\w*)")
+        regex::Regex::new(r"\{%-?\s*for\s+.*?\s+in\s+([A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*)")
             .expect("loop pattern should compile")
+    });
+
+    /// Matches a field read off an object, capturing the object and the field.
+    static FIELD_ACCESS: std::sync::LazyLock<regex::Regex> = std::sync::LazyLock::new(|| {
+        regex::Regex::new(r"(?:\{\{-?\s*|\{%-?\s*if\s+)([A-Za-z_]\w*)\.([A-Za-z_]\w*)")
+            .expect("field-access pattern should compile")
     });
 
     /// The context a template needs to render besides `lang`. Derived from the
     /// template's own source, so a future template is covered without naming
-    /// it here: whatever it loops over gets an empty list, and the menu
-    /// fragment — either rendered directly or included — gets the `user_id`
-    /// and `is_admin` it reads.
+    /// it here: whatever it loops over gets an empty list, the objects it reads
+    /// fields off get those fields stubbed as null, and the menu fragment gets
+    /// the `user_id` and `is_admin` it reads.
+    fn set_loop_source(ctx: &mut serde_json::Value, path: &str) {
+        let mut parts = path.split('.').collect::<Vec<_>>();
+        let leaf = parts.pop().expect("loop source should not be empty");
+        let mut node = ctx;
+        for part in parts {
+            node = &mut node[part];
+        }
+        node[leaf] = serde_json::json!([]);
+    }
+
     fn context_for(relative: &str, content: &str, with_lang: bool) -> serde_json::Value {
         let mut ctx = serde_json::json!({});
         if with_lang {
@@ -204,7 +220,20 @@ fn templates_using_lang_require_lang_in_context() {
             .filter_map(|caps| caps.get(1))
             .map(|m| m.as_str())
         {
-            ctx[name] = serde_json::json!([]);
+            set_loop_source(&mut ctx, name);
+        }
+        for caps in FIELD_ACCESS.captures_iter(content) {
+            let (Some(object), Some(field)) = (caps.get(1), caps.get(2)) else {
+                continue;
+            };
+            let object = ctx
+                .as_object_mut()
+                .expect("context should be a json object")
+                .entry(object.as_str().to_string())
+                .or_insert_with(|| serde_json::json!({}));
+            if let Some(map) = object.as_object_mut() {
+                map.insert(field.as_str().to_string(), serde_json::Value::Null);
+            }
         }
         if relative == "menu.html" || content.contains("menu.html") {
             ctx["is_admin"] = serde_json::json!(true);
