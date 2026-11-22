@@ -58,6 +58,7 @@ impl Hooks for App {
             .add_route(controllers::auth_views::routes())
             .add_route(controllers::leaderboard::routes().layer(require_login_layer.clone()))
             .add_route(controllers::users::routes().layer(require_login_layer.clone()))
+            .add_route(controllers::vote::routes().layer(require_login_layer.clone()))
     }
     async fn connect_workers(ctx: &AppContext, queue: &Queue) -> Result<()> {
         queue.register(DownloadWorker::build(ctx)).await?;

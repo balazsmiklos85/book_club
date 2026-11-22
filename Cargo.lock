@@ -645,6 +645,7 @@ dependencies = [
  "async-trait",
  "axum",
  "axum-extra",
+ "axum-test",
  "chrono",
  "fluent-templates",
  "include_dir",

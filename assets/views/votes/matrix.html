@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head><title>{{ t(key="matrix", lang=lang) }}</title></head>
+<body>
+    {% include "menu.html" %}
+    <table>
+    {% for user in users %}
+    <tr>
+        <td>{{ user.name }}</td>
+        {% for book in books %}
+        <td>
+            {% for pair in voted_pairs %}
+                {% if pair.user_id == user.id and pair.book_id == book.id %}
+                    ✓
+                {% endif %}
+            {% endfor %}
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    </table>
+</body>
+</html>
