@@ -1,4 +1,5 @@
 #![allow(clippy::missing_errors_doc)]
+#![allow(clippy::unused_async)]
 use crate::models::users;
 use axum::extract::{Form, Path};
 use axum::response::Redirect;
@@ -64,6 +65,65 @@ pub async fn details(
 }
 
 #[debug_handler]
+pub async fn list(
+    Extension(user): Extension<users::Model>,
+    Extension(locale): Extension<LanguageIdentifier>,
+    ViewEngine(v): ViewEngine<TeraView>,
+    State(ctx): State<AppContext>,
+) -> Result<Response> {
+    if !user.is_admin {
+        return Ok(Redirect::to("/").into_response());
+    }
+
+    let all_users = users::Entity::find().all(&ctx.db).await?;
+    let users_list: Vec<serde_json::Value> = all_users
+        .into_iter()
+        .map(|u| {
+            serde_json::json!({
+                "id": u.id,
+                "name": u.name,
+                "email": u.email,
+            })
+        })
+        .collect();
+
+    format::render().view(
+        &v,
+        "users/list.html",
+        serde_json::json!({
+            "users": users_list,
+            "is_admin": true,
+            "user_id": user.id,
+            "lang": locale.to_string(),
+        }),
+    )
+}
+
+#[debug_handler]
+pub async fn reset_password(
+    Extension(user): Extension<users::Model>,
+    State(ctx): State<AppContext>,
+    Path(target_id): Path<i64>,
+) -> Result<Response> {
+    if !user.is_admin {
+        return Ok(Redirect::to("/").into_response());
+    }
+
+    let target = users::Entity::find_by_id(target_id)
+        .one(&ctx.db)
+        .await?
+        .ok_or_else(|| Error::string("User not found"))?;
+
+    let password_hash =
+        hash::hash_password("12345678").map_err(|e| Error::string(&e.to_string()))?;
+    let mut active = target.into_active_model();
+    active.password = ActiveValue::Set(password_hash);
+    active.update(&ctx.db).await?;
+
+    Ok(Redirect::to("/users").into_response())
+}
+
+#[debug_handler]
 pub async fn change_password(
     Extension(user): Extension<users::Model>,
     Extension(locale): Extension<LanguageIdentifier>,
@@ -105,6 +165,8 @@ pub async fn change_password(
 pub fn routes() -> Routes {
     Routes::new()
         .prefix("/users")
+        .add("/", get(list))
         .add("/{id}", get(details))
         .add("/{id}/password", post(change_password))
+        .add("/{id}/password-reset", post(reset_password))
 }

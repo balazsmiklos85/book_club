@@ -3,6 +3,7 @@ use book_club::app::App;
 use book_club::models::users;
 use loco_rs::testing::prelude::*;
 use loco_rs::{app::AppContext, TestServer};
+use sea_orm::EntityTrait;
 use serial_test::serial;
 
 use crate::requests::prepare_data;
@@ -10,6 +11,7 @@ use crate::requests::prepare_data;
 const USER_EMAIL: &str = "test@loco.com";
 const OLD_PASSWORD: &str = "1234";
 const NEW_PASSWORD: &str = "new-password";
+const RESET_PASSWORD: &str = "12345678";
 
 #[tokio::test]
 #[serial]
@@ -240,6 +242,170 @@ async fn when_changing_password(
         expected,
         "unexpected change-password response, got: {}",
         res.text()
+    );
+    res.text()
+}
+
+// ── Admin user-list tests ──────────────────────────────────────────────────
+
+#[tokio::test]
+#[serial]
+async fn admin_user_list_shows_all_users_and_password_reset_buttons() {
+    request::<App, _, _>(|request, ctx| async move {
+        let admin = prepare_data::init_user_login(&request, &ctx).await;
+        let admin = prepare_data::make_admin(admin, &ctx).await;
+        let _other = given_user(&ctx, "Other Reader").await;
+
+        let body = when_getting_user_list(&request, &admin).await;
+
+        // body should contain the names and emails of every user
+        assert!(
+            body.contains("loco"),
+            "the user list should contain the admin's name, got: {body}",
+        );
+        assert!(
+            body.contains(USER_EMAIL),
+            "the user list should contain the admin's e-mail, got: {body}",
+        );
+        assert!(
+            body.contains("other-reader"),
+            "the user list should contain the other user's name, got: {body}",
+        );
+        assert!(
+            body.contains("@example.com"),
+            "the user list should contain the other user's e-mail, got: {body}",
+        );
+        // password-reset button should be visible
+        assert!(
+            body.contains("🔓"),
+            "the user list should contain the password-reset button, got: {body}",
+        );
+        assert!(
+            body.contains("Password reset"),
+            "the user list should contain the password-reset label, got: {body}",
+        );
+    })
+    .await;
+}
+
+#[tokio::test]
+#[serial]
+async fn non_admin_gets_redirected_when_accessing_user_list() {
+    request::<App, _, _>(|request, ctx| async move {
+        let logged_in = prepare_data::init_user_login(&request, &ctx).await;
+
+        let (name, value) = cookie(&logged_in.token);
+        let res = request
+            .get("/users")
+            .add_header(name, value)
+            .await;
+
+        assert_eq!(
+            res.status_code(),
+            StatusCode::SEE_OTHER,
+            "non-admin GET /users should redirect, got: {}",
+            res.text(),
+        );
+        assert_eq!(
+            res.maybe_header(axum::http::header::LOCATION)
+                .and_then(|v| v.to_str().ok().map(str::to_string)),
+            Some("/".to_string()),
+            "the redirect should point at /, got: {}",
+            res.text(),
+        );
+    })
+    .await;
+}
+
+#[tokio::test]
+#[serial]
+async fn admin_reset_password_sets_the_new_password() {
+    request::<App, _, _>(|request, ctx| async move {
+        let admin = prepare_data::init_user_login(&request, &ctx).await;
+        let admin = prepare_data::make_admin(admin, &ctx).await;
+        let target = given_user(&ctx, "Reset Target").await;
+
+        let (name, value) = cookie(&admin.token);
+        let res = request
+            .post(&format!("/users/{}/password-reset", target.id))
+            .add_header(name, value)
+            .await;
+
+        assert_eq!(
+            res.status_code(),
+            StatusCode::SEE_OTHER,
+            "admin POST /users/:id/password-reset should redirect, got: {}",
+            res.text(),
+        );
+
+        // fetch the target user fresh and verify its password directly
+        let fresh_target = users::Entity::find_by_id(target.id)
+            .one(&ctx.db)
+            .await
+            .unwrap()
+            .unwrap();
+
+        // old password should no longer work
+        assert!(
+            !fresh_target.verify_password(OLD_PASSWORD),
+            "the old password should no longer work after reset",
+        );
+        // new literal password should work
+        assert!(
+            fresh_target.verify_password(RESET_PASSWORD),
+            "the new password should work after reset",
+        );
+    })
+    .await;
+}
+
+#[tokio::test]
+#[serial]
+async fn non_admin_cannot_reset_password() {
+    request::<App, _, _>(|request, ctx| async move {
+        let logged_in = prepare_data::init_user_login(&request, &ctx).await;
+        let target = given_user(&ctx, "Another Target").await;
+
+        let (name, value) = cookie(&logged_in.token);
+        let res = request
+            .post(&format!("/users/{}/password-reset", target.id))
+            .add_header(name, value)
+            .await;
+
+        assert_eq!(
+            res.status_code(),
+            StatusCode::SEE_OTHER,
+            "non-admin POST /users/:id/password-reset should redirect, got: {}",
+            res.text(),
+        );
+        assert_eq!(
+            res.maybe_header(axum::http::header::LOCATION)
+                .and_then(|v| v.to_str().ok().map(str::to_string)),
+            Some("/".to_string()),
+            "the redirect should point at /, got: {}",
+            res.text(),
+        );
+
+        // password must be unchanged
+        then_password_is(&ctx, OLD_PASSWORD).await;
+    })
+    .await;
+}
+
+async fn when_getting_user_list(
+    request: &TestServer,
+    user: &prepare_data::LoggedInUser,
+) -> String {
+    let (name, value) = cookie(&user.token);
+    let res = request
+        .get("/users")
+        .add_header(name, value)
+        .await;
+    assert_eq!(
+        res.status_code(),
+        StatusCode::OK,
+        "the user list page should be served, got: {}",
+        res.text(),
     );
     res.text()
 }

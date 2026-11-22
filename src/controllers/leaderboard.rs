@@ -18,7 +18,7 @@ pub async fn home(
         book_suggestions::Entity::find().all(&ctx.db),
         users::Entity::find().all(&ctx.db)
     )?;
-    let rows = aggregate_votes(&user, books, &votes, users, suggestions);
+    let rows = aggregate_votes(&user, books, &votes, &users, suggestions);
     format::render().view(
         &v,
         "leaderboard.html",
@@ -61,14 +61,14 @@ fn aggregate_votes(
     user: &crate::models::users::Model,
     books: Vec<books::Model>,
     votes: &[votes::Model],
-    users: Vec<users::Model>,
+    users: &[users::Model],
     suggestions: Vec<book_suggestions::Model>,
 ) -> Vec<sea_orm::prelude::Json> {
     let user_infos: HashMap<i64, (String, String)> = users
         .iter()
         .map(|u| (u.id, (u.name.clone(), u.email.clone())))
         .collect();
-    let suggesters_by_book = aggregate_suggestions(&users, suggestions);
+    let suggesters_by_book = aggregate_suggestions(users, suggestions);
     let mut votes_on_books: HashMap<i64, i64> = HashMap::new();
     for v in votes {
         *votes_on_books.entry(v.book_id).or_default() += 1;
@@ -127,7 +127,7 @@ mod tests {
             &given_user_alice,
             vec![test_book(10), test_book(20)],
             &[test_vote(20, 1)],
-            vec![given_user_alice.clone()],
+            &vec![given_user_alice.clone()],
             vec![test_suggestion(10, 1)],
         );
 
@@ -144,7 +144,7 @@ mod tests {
             &given_user_alice,
             vec![test_book(20), test_book(10)],
             &[test_vote(10, 1), test_vote(10, 2), test_vote(20, 2)],
-            vec![given_user_alice.clone(), given_user_bob.clone()],
+            &vec![given_user_alice.clone(), given_user_bob.clone()],
             vec![test_suggestion(10, 1), test_suggestion(20, 2)],
         );
 

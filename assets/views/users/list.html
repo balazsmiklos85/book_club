@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ t(key="users", lang=lang) }}</title>
+</head>
+<body>
+    {% include "menu.html" %}
+    <h2>{{ t(key="users", lang=lang) }}</h2>
+    <ul>
+    {% for user in users %}
+        <li>
+            <span>{{ user.name }}</span>
+            <span>{{ user.email }}</span>
+            {% if is_admin %}
+            <form method="post" style="display: inline" action="/users/{{ user.id }}/password-reset">
+                <button type="submit">🔓{{ t(key="password-reset", lang=lang) }}</button>
+            </form>
+            {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+</body>
+</html>
