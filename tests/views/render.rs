@@ -266,3 +266,32 @@ fn templates_using_lang_require_lang_in_context() {
             ));
     }
 }
+
+/// The vote matrix renders the grid correctly: a `✓` mark appears where a
+/// user has voted for a book.
+#[test]
+fn renders_vote_matrix_with_checkmarks() {
+    let view = build_view();
+
+    let context = serde_json::json!({
+        "users": [
+            { "id": 1, "name": "Alice" }
+        ],
+        "books": [
+            { "id": 10 }
+        ],
+        "user_votes": { "1" :  [10] },
+        "is_admin": true,
+        "user_id": 1,
+        "lang": "en-US",
+    });
+
+    let rendered = view
+        .render("votes/matrix.html", context)
+        .expect("matrix should render");
+
+    assert!(
+        rendered.contains("✓"),
+        "vote matrix should contain the checkmark mark, got: {rendered}"
+    );
+}

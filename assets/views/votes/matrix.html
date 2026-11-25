@@ -9,11 +9,9 @@
         <td>{{ user.name }}</td>
         {% for book in books %}
         <td>
-            {% for pair in voted_pairs %}
-                {% if pair.user_id == user.id and pair.book_id == book.id %}
-                    ✓
-                {% endif %}
-            {% endfor %}
+            {% if book.id in user_votes[user.id|str] %}
+                ✓
+            {% endif %}
         </td>
         {% endfor %}
     </tr>
